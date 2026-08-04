@@ -1,0 +1,20 @@
+[11-Jun-2026 16:39:02 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: NO)
+[11-Jun-2026 16:39:32 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: NO)
+[11-Jun-2026 16:41:15 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: YES)
+[11-Jun-2026 16:41:45 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: YES)
+[11-Jun-2026 16:42:15 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1044] Access denied for user 'appcas29_ponto_empresarial'@'localhost' to database 'appcas29_pontofacil'
+[11-Jun-2026 16:42:44 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 16:42:47 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 16:42:49 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19

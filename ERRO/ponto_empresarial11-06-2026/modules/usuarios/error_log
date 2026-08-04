@@ -1,0 +1,1 @@
+[11-Jun-2026 09:41:07 America/Sao_Paulo] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home1/appcas29/divulgpontofacil.com.br/includes/config.php on line 48) in /home1/appcas29/divulgpontofacil.com.br/modules/usuarios/salvar.php on line 6

@@ -1,0 +1,4 @@
+[11-Jun-2026 11:33:20 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: NO)
+[11-Jun-2026 11:33:29 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: NO)
+[11-Jun-2026 11:39:20 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: NO)
+[11-Jun-2026 11:40:17 America/Sao_Paulo] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home1/appcas29/divulgpontofacil.com.br/includes/header.php:9) in /home1/appcas29/divulgpontofacil.com.br/index.php on line 20

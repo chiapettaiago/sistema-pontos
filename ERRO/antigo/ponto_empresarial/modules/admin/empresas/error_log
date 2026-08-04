@@ -1,0 +1,2 @@
+[01-Jun-2026 14:22:36 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/ponto_empresarial/modules/admin/empresas/index.php on line 266
+[01-Jun-2026 14:45:18 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/ponto_empresarial/modules/admin/empresas/index.php on line 266

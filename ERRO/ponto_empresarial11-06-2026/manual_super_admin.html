@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual - Cadastro de Empresa e Plano | Ponto Fácil</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Header do Manual */
+        .manual-header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .manual-header h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .manual-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .badge-super {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        
+        /* Navegação do Manual */
+        .manual-nav {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .manual-nav ul {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            list-style: none;
+        }
+        
+        .manual-nav a {
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 25px;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .manual-nav a:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        /* Cards de Conteúdo */
+        .content-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .content-card h2 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+        
+        .content-card h3 {
+            color: #333;
+            font-size: 18px;
+            margin: 20px 0 10px 0;
+        }
+        
+        .content-card h4 {
+            color: #555;
+            font-size: 16px;
+            margin: 15px 0 10px 0;
+        }
+        
+        .step-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .info-box {
+            background: #e0e7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        
+        .warning-box {
+            background: #fed7aa;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        
+        /* Tabelas */
+        .table-plans {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .table-plans th,
+        .table-plans td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .table-plans th {
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .table-plans tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .plan-basic { color: #10b981; font-weight: bold; }
+        .plan-professional { color: #f59e0b; font-weight: bold; }
+        .plan-enterprise { color: #ef4444; font-weight: bold; }
+        
+        /* Screenshot mockup */
+        .screenshot-mock {
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px dashed #667eea;
+        }
+        
+        .screenshot-mock i {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .mock-form {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .mock-form .field {
+            margin-bottom: 15px;
+        }
+        
+        .mock-form .field label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .mock-form .field input,
+        .mock-form .field select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .mock-form button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+        }
+        
+        /* Footer */
+        .manual-footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            padding: 20px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .manual-header h1 {
+                font-size: 24px;
+            }
+            
+            .content-card {
+                padding: 20px;
+            }
+            
+            .table-plans {
+                font-size: 12px;
+            }
+            
+            .table-plans th,
+            .table-plans td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="manual-header">
+            <h1>📘 Manual do Super Administrador</h1>
+            <p>Cadastro de Empresa e Atribuição de Plano</p>
+            <div class="badge-super">👑 Apenas para Super Admin</div>
+        </div>
+        
+        <!-- Navegação -->
+        <div class="manual-nav">
+            <ul>
+                <li><a href="#acesso">🔐 Acesso</a></li>
+                <li><a href="#planos">📋 Planos</a></li>
+                <li><a href="#cadastro">📝 Cadastro</a></li>
+                <li><a href="#passoapasso">🚀 Passo a Passo</a></li>
+                <li><a href="#dicas">💡 Dicas</a></li>
+            </ul>
+        </div>
+        
+        <!-- Credenciais de Acesso -->
+        <div class="content-card" id="acesso">
+            <h2>🔐 Credenciais de Acesso</h2>
+            <p>Para acessar o sistema como Super Administrador, utilize as credenciais abaixo:</p>
+            
+            <div class="info-box">
+                <strong>🌐 URL de Acesso:</strong><br>
+ <code>http://localhost/login.php</code>
+            </div>
+            
+            <div class="step-box">
+                <strong>📧 E-mail:</strong> <code>superadmin@pontofacil.com</code><br>
+                <strong>🔒 Senha:</strong> <code>admin123</code>
+            </div>
+            
+            <div class="warning-box">
+                <strong>⚠️ Importante:</strong> Estas credenciais são exclusivas do Super Administrador e dão acesso total ao sistema, incluindo gerenciamento de todas as empresas, planos e assinaturas.
+            </div>
+        </div>
+        
+        <!-- Planos Disponíveis -->
+        <div class="content-card" id="planos">
+            <h2>📋 Planos Disponíveis</h2>
+            <p>Antes de cadastrar uma empresa, familiarize-se com os planos disponíveis:</p>
+            
+            <table class="table-plans">
+                <thead>
+                    <tr>
+                        <th>Plano</th>
+                        <th>Valor Mensal</th>
+                        <th>Limite Funcionários</th>
+                        <th>Recursos Principais</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="plan-basic">🏷️ BÁSICO</td>
+                        <td>R$ 59,00</td>
+                        <td>Até 10 funcionários</td>
+                        <td>Registro de ponto, acesso web/mobile, relatório simples</td>
+                    </tr>
+                    <tr>
+                        <td class="plan-professional">⭐ PROFISSIONAL</td>
+                        <td>R$ 89,00</td>
+                        <td>Até 30 funcionários</td>
+                        <td>Controle de horas extras, histórico completo, QR Code, relatórios avançados</td>
+                    </tr>
+                    <tr>
+                        <td class="plan-enterprise">🏢 EMPRESARIAL</td>
+                        <td>R$ 189,00</td>
+                        <td>Até 100 funcionários</td>
+                        <td>Multi-usuários, controle por setor, exportação Excel/PDF, backup automático, suporte VIP</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="info-box">
+                <strong>ℹ️ Informação:</strong> Os planos podem ser customizados pelo Super Admin no módulo <strong>"Gerenciar Planos"</strong>. É possível alterar valores, limites e recursos incluídos.
+            </div>
+        </div>
+        
+        <!-- Cadastro de Empresa -->
+        <div class="content-card" id="cadastro">
+            <h2>📝 Cadastro de Nova Empresa</h2>
+            
+            <div class="step-box">
+                <p><strong>📍 Localização no Menu:</strong></p>
+                <p><code>Administração → Empresas → Nova Empresa</code></p>
+ <p>ou acesse diretamente: <code>/modules/admin/empresas/cadastrar.php</code></p>
+            </div>
+            
+            <h3>Campos do Formulário:</h3>
+            
+            <div class="screenshot-mock">
+                <i class="fas fa-desktop"></i>
+                <p style="margin-top: 5px; color: #666;">Pré-visualização do formulário de cadastro</p>
+                <div class="mock-form">
+                    <div class="field">
+                        <label>Nome da Empresa *</label>
+                        <input type="text" value="Exemplo: Tech Solutions Ltda" disabled>
+                    </div>
+                    <div class="field">
+                        <label>Domínio *</label>
+                        <input type="text" value="techsolutions" disabled>
+                        <small>.pontofacil.com</small>
+                    </div>
+                    <div class="field">
+                        <label>E-mail *</label>
+                        <input type="email" value="admin@techsolutions.com" disabled>
+                    </div>
+                    <div class="field">
+                        <label>Telefone</label>
+                        <input type="text" value="(11) 99999-9999" disabled>
+                    </div>
+                    <div class="field">
+                        <label>CNPJ</label>
+                        <input type="text" value="12.345.678/0001-90" disabled>
+                    </div>
+                    <div class="field">
+                        <label>Plano *</label>
+                        <select disabled>
+                            <option>Selecione um plano</option>
+                            <option>Básico - R$ 59,00/mês</option>
+                            <option>Profissional - R$ 89,00/mês</option>
+                            <option selected>Empresarial - R$ 189,00/mês</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Ciclo de Cobrança</label>
+                        <select disabled>
+                            <option>Mensal</option>
+                            <option>Anual (15% desconto)</option>
+                        </select>
+                    </div>
+                    <button disabled>Criar Empresa</button>
+                </div>
+            </div>
+            
+            <h3>Descrição dos Campos:</h3>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li><strong>Nome da Empresa *</strong> - Nome completo da empresa que será cadastrada</li>
+                <li><strong>Domínio *</strong> - Identificador único para acesso da empresa (ex: empresa.pontofacil.com)</li>
+                <li><strong>E-mail *</strong> - E-mail do administrador da empresa (receberá as credenciais de acesso)</li>
+                <li><strong>Telefone</strong> - Telefone de contato da empresa</li>
+                <li><strong>CNPJ</strong> - CNPJ da empresa (opcional)</li>
+                <li><strong>Plano *</strong> - Plano de assinatura que a empresa irá contratar</li>
+                <li><strong>Ciclo de Cobrança</strong> - Mensal ou Anual (anual tem 15% de desconto)</li>
+            </ul>
+        </div>
+        
+        <!-- Passo a Passo -->
+        <div class="content-card" id="passoapasso">
+            <h2>🚀 Passo a Passo para Cadastrar uma Empresa</h2>
+            
+            <div class="step-box">
+                <span class="step-number">1</span>
+                <strong>Faça login como Super Administrador</strong>
+                <p>Acesse o sistema com as credenciais: superadmin@pontofacil.com / admin123</p>
+            </div>
+            
+            <div class="step-box">
+                <span class="step-number">2</span>
+                <strong>Acesse o módulo de Empresas</strong>
+                <p>No menu lateral esquerdo, clique em <strong>"Administração → Empresas"</strong></p>
+            </div>
+            
+            <div class="step-box">
+                <span class="step-number">3</span>
+                <strong>Clique no botão "Nova Empresa"</strong>
+                <p>Localizado no canto superior direito da tela de Empresas</p>
+            </div>
+            
+            <div class="step-box">
+                <span class="step-number">4</span>
+                <strong>Preencha os dados da empresa</strong>
+                <p>Informe Nome, Domínio, E-mail, Telefone, CNPJ (opcional), Endereço e Cidade</p>
+            </div>
+            
+            <div class="step-box">
+                <span class="step-number">5</span>
+                <strong>Selecione o Plano desejado</strong>
+                <p>Escolha entre Básico (R$ 59), Profissional (R$ 89) ou Empresarial (R$ 189)</p>
+            </div>
+            
+            <div class="step-box">
+                <span class="step-number">6</span>
+                <strong>Escolha o ciclo de cobrança</strong>
+                <p>Mensal ou Anual (economize 15% optando pelo plano anual)</p>
+            </div>
+            
+            <div class="step-box">
+                <span class="step-number">7</span>
+                <strong>Clique em "Criar Empresa"</strong>
+                <p>O sistema irá criar a empresa, a assinatura e o usuário administrador automaticamente</p>
+            </div>
+            
+            <div class="step-box">
+                <span class="step-number">8</span>
+                <strong>Confirme a criação</strong>
+                <p>Uma mensagem de sucesso será exibida com a senha padrão do administrador (123456)</p>
+            </div>
+            
+            <div class="success-box">
+                <strong>✅ Sucesso!</strong> A empresa foi criada e agora o administrador pode acessar o sistema.
+                <p style="margin-top: 10px;">🔗 Link de acesso da empresa: <code>http://[dominio].pontofacil.com</code></p>
+                <p>📧 E-mail do administrador: o e-mail informado no cadastro</p>
+                <p>🔒 Senha padrão: <code>123456</code> (recomendamos alterar no primeiro acesso)</p>
+            </div>
+        </div>
+        
+        <!-- Dicas e Boas Práticas -->
+        <div class="content-card" id="dicas">
+            <h2>💡 Dicas e Boas Práticas</h2>
+            
+            <h3>📌 Antes de Cadastrar:</h3>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>Verifique se o plano escolhido atende às necessidades da empresa</li>
+                <li>Confirme se o domínio desejado está disponível (não pode haver duplicidade)</li>
+                <li>Tenha em mãos os dados de contato do administrador da empresa</li>
+            </ul>
+            
+            <h3>📌 Após Cadastrar:</h3>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>Envie as credenciais de acesso para o administrador da empresa</li>
+                <li>Oriente o administrador a alterar a senha padrão no primeiro acesso</li>
+                <li>Monitore o uso dos recursos conforme o plano contratado</li>
+            </ul>
+            
+            <h3>📌 Personalização de Planos:</h3>
+            <div class="info-box">
+                <p>O Super Admin pode personalizar os planos acessando <strong>"Administração → Planos"</strong>.</p>
+                <p>É possível:</p>
+                <ul style="margin-left: 20px;">
+                    <li>✅ Alterar valores (preço mensal e anual)</li>
+                    <li>✅ Modificar limites de funcionários</li>
+                    <li>✅ Adicionar ou remover recursos (horas extras, relatórios, QR Code, etc)</li>
+                    <li>✅ Criar novos planos personalizados</li>
+                    <li>✅ Desativar planos não utilizados</li>
+                </ul>
+            </div>
+            
+            <h3>📌 Gerenciamento de Assinaturas:</h3>
+            <div class="warning-box">
+                <p>Para renovar, cancelar ou alterar o plano de uma empresa existente, utilize o módulo <strong>"Administração → Assinaturas"</strong>.</p>
+                <p>Lá você pode visualizar todas as assinaturas ativas, ver quais estão próximas do vencimento e realizar renovações.</p>
+            </div>
+            
+            <h3>📌 Troubleshooting (Problemas Comuns):</h3>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li><strong>Domínio já existe:</strong> Escolha um domínio diferente para a empresa</li>
+                <li><strong>E-mail já cadastrado:</strong> Verifique se o e-mail não está sendo usado por outra empresa</li>
+                <li><strong>Administrador não consegue acessar:</strong> Confirme se a empresa está com status "Ativa"</li>
+                <li><strong>Plano não aparece:</strong> Verifique se o plano está ativo no módulo de Planos</li>
+            </ul>
+        </div>
+        
+        <!-- Resumo Rápido -->
+        <div class="content-card">
+            <h2>📋 Resumo Rápido</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div class="info-box" style="margin: 0;">
+                    <strong>🔐 Login Super Admin</strong><br>
+                    superadmin@pontofacil.com<br>
+                    admin123
+                </div>
+                <div class="info-box" style="margin: 0;">
+                    <strong>📍 Acesso Empresas</strong><br>
+                    Administração → Empresas
+                </div>
+                <div class="info-box" style="margin: 0;">
+                    <strong>📝 Cadastro</strong><br>
+                    Botão "Nova Empresa"
+                </div>
+                <div class="info-box" style="margin: 0;">
+                    <strong>🔑 Senha Padrão</strong><br>
+                    123456
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="manual-footer">
+            <p>Manual do Super Administrador - Ponto Fácil Empresarial</p>
+            <p>Versão 2.0 | © <?php echo date('Y'); ?> Todos os direitos reservados</p>
+        </div>
+    </div>
+</body>
+</html>

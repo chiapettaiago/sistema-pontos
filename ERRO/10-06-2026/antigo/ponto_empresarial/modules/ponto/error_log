@@ -1,0 +1,42 @@
+[01-Jun-2026 14:25:39 America/Sao_Paulo] === DEBUG PONTO ===
+[01-Jun-2026 14:25:39 America/Sao_Paulo] Tipos registrados: entrada
+[01-Jun-2026 14:25:39 America/Sao_Paulo] tem_entrada: SIM
+[01-Jun-2026 14:25:39 America/Sao_Paulo] tem_saida_almoco: NAO
+[01-Jun-2026 14:25:39 America/Sao_Paulo] tem_volta_almoco: NAO
+[01-Jun-2026 14:25:39 America/Sao_Paulo] tem_saida: NAO
+[01-Jun-2026 14:25:39 America/Sao_Paulo] Próximo tipo: saida_almoco
+[01-Jun-2026 14:25:54 America/Sao_Paulo] === DEBUG PONTO ===
+[01-Jun-2026 14:25:54 America/Sao_Paulo] Tipos registrados: entrada
+[01-Jun-2026 14:25:54 America/Sao_Paulo] tem_entrada: SIM
+[01-Jun-2026 14:25:54 America/Sao_Paulo] tem_saida_almoco: NAO
+[01-Jun-2026 14:25:54 America/Sao_Paulo] tem_volta_almoco: NAO
+[01-Jun-2026 14:25:54 America/Sao_Paulo] tem_saida: NAO
+[01-Jun-2026 14:25:54 America/Sao_Paulo] Próximo tipo: saida_almoco
+[01-Jun-2026 14:25:54 America/Sao_Paulo] === DEBUG PONTO ===
+[01-Jun-2026 14:25:54 America/Sao_Paulo] Tipos registrados: entrada, saida_almoco
+[01-Jun-2026 14:25:54 America/Sao_Paulo] tem_entrada: SIM
+[01-Jun-2026 14:25:54 America/Sao_Paulo] tem_saida_almoco: SIM
+[01-Jun-2026 14:25:54 America/Sao_Paulo] tem_volta_almoco: NAO
+[01-Jun-2026 14:25:54 America/Sao_Paulo] tem_saida: NAO
+[01-Jun-2026 14:25:54 America/Sao_Paulo] Próximo tipo: volta_almoco
+[01-Jun-2026 14:40:53 America/Sao_Paulo] === DEBUG PONTO ===
+[01-Jun-2026 14:40:53 America/Sao_Paulo] Tipos registrados: entrada, saida_almoco
+[01-Jun-2026 14:40:53 America/Sao_Paulo] tem_entrada: SIM
+[01-Jun-2026 14:40:53 America/Sao_Paulo] tem_saida_almoco: SIM
+[01-Jun-2026 14:40:53 America/Sao_Paulo] tem_volta_almoco: NAO
+[01-Jun-2026 14:40:53 America/Sao_Paulo] tem_saida: NAO
+[01-Jun-2026 14:40:53 America/Sao_Paulo] Próximo tipo: volta_almoco
+[01-Jun-2026 14:41:35 America/Sao_Paulo] === DEBUG PONTO ===
+[01-Jun-2026 14:41:35 America/Sao_Paulo] Tipos registrados: entrada, saida_almoco
+[01-Jun-2026 14:41:35 America/Sao_Paulo] tem_entrada: SIM
+[01-Jun-2026 14:41:35 America/Sao_Paulo] tem_saida_almoco: SIM
+[01-Jun-2026 14:41:35 America/Sao_Paulo] tem_volta_almoco: NAO
+[01-Jun-2026 14:41:35 America/Sao_Paulo] tem_saida: NAO
+[01-Jun-2026 14:41:35 America/Sao_Paulo] Próximo tipo: volta_almoco
+[01-Jun-2026 14:41:35 America/Sao_Paulo] === DEBUG PONTO ===
+[01-Jun-2026 14:41:35 America/Sao_Paulo] Tipos registrados: entrada, saida_almoco, volta_almoco
+[01-Jun-2026 14:41:35 America/Sao_Paulo] tem_entrada: SIM
+[01-Jun-2026 14:41:35 America/Sao_Paulo] tem_saida_almoco: SIM
+[01-Jun-2026 14:41:35 America/Sao_Paulo] tem_volta_almoco: SIM
+[01-Jun-2026 14:41:35 America/Sao_Paulo] tem_saida: NAO
+[01-Jun-2026 14:41:35 America/Sao_Paulo] Próximo tipo: saida

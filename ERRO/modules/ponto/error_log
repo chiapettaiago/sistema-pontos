@@ -1,0 +1,15 @@
+[12-Jun-2026 07:52:07 America/Sao_Paulo] === DEBUG PONTO ===
+[12-Jun-2026 07:52:07 America/Sao_Paulo] Tipos registrados: 
+[12-Jun-2026 07:52:07 America/Sao_Paulo] tem_entrada: NAO
+[12-Jun-2026 07:52:07 America/Sao_Paulo] tem_saida_almoco: NAO
+[12-Jun-2026 07:52:07 America/Sao_Paulo] tem_volta_almoco: NAO
+[12-Jun-2026 07:52:07 America/Sao_Paulo] tem_saida: NAO
+[12-Jun-2026 07:52:07 America/Sao_Paulo] Próximo tipo: entrada
+[12-Jun-2026 07:53:29 America/Sao_Paulo] PHP Warning:  Undefined variable $proximo_tipo in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[12-Jun-2026 07:53:29 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[12-Jun-2026 08:11:20 America/Sao_Paulo] PHP Warning:  Undefined variable $proximo_tipo in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[12-Jun-2026 08:11:20 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[12-Jun-2026 08:11:27 America/Sao_Paulo] PHP Warning:  Undefined variable $proximo_tipo in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[12-Jun-2026 08:11:27 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[12-Jun-2026 08:13:36 America/Sao_Paulo] PHP Warning:  Undefined variable $proximo_tipo in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[12-Jun-2026 08:13:36 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280

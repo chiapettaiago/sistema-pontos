@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual do Administrador - Sistema de Ponto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .manual-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .section h3 {
+            color: #764ba2;
+            margin: 20px 0 15px 0;
+            font-size: 1.3rem;
+        }
+        
+        .step-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .step-box:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .alert-tip {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .alert-warning-custom {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 15px 0;
+        }
+        
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .table-custom th,
+        .table-custom td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .table-custom th {
+            background: #667eea;
+            color: white;
+        }
+        
+        .table-custom tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .btn-print {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .btn-print:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section h2 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media print {
+            .btn-print {
+                display: none;
+            }
+            
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .manual-container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="btn-print" onclick="window.print()">
+        <i class="fas fa-print"></i> Imprimir / Salvar PDF
+    </button>
+    
+    <div class="manual-container">
+        <div class="header">
+            <i class="fas fa-user-shield" style="font-size: 60px; margin-bottom: 20px;"></i>
+            <h1>Manual do Administrador</h1>
+            <p>Sistema de Ponto Eletrônico - Guia Completo</p>
+            <p><small>Versão 1.0 | Atualizado em <?= date('d/m/Y') ?></small></p>
+        </div>
+        
+        <div class="content">
+            <!-- Sumário -->
+            <div class="section">
+                <h2><i class="fas fa-list"></i> Sumário</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li><a href="#introducao">1. Introdução</a></li>
+                            <li><a href="#acesso">2. Acesso ao Sistema</a></li>
+                            <li><a href="#dashboard">3. Dashboard</a></li>
+                            <li><a href="#funcionarios">4. Gerenciar Funcionários</a></li>
+                            <li><a href="#filiais">5. Gerenciar Filiais</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li><a href="#ponto">6. Gerenciar Pontos</a></li>
+                            <li><a href="#relatorios">7. Relatórios</a></li>
+                            <li><a href="#backup">8. Backup e Segurança</a></li>
+                            <li><a href="#suporte">9. Suporte</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 1. Introdução -->
+            <div class="section" id="introducao">
+                <h2><i class="fas fa-info-circle"></i> 1. Introdução</h2>
+                <p>O Sistema de Ponto Eletrônico foi desenvolvido para facilitar o controle de jornada de trabalho dos funcionários, permitindo registro de pontos, gestão de funcionários, geração de relatórios e muito mais.</p>
+                
+                <div class="alert-tip">
+                    <i class="fas fa-lightbulb"></i> <strong>Dica:</strong> Mantenha sempre o sistema atualizado e faça backups regulares dos dados.
+                </div>
+            </div>
+            
+            <!-- 2. Acesso ao Sistema -->
+            <div class="section" id="acesso">
+                <h2><i class="fas fa-sign-in-alt"></i> 2. Acesso ao Sistema</h2>
+                
+                <div class="step-box">
+                    <h3><span class="step-number">1</span> Acessar URL do sistema</h3>
+                    <p>Abra seu navegador e digite o endereço do sistema:</p>
+                    <div class="code-block">https://divulgpontofacil.com.br</div>
+                </div>
+                
+                <div class="step-box">
+                    <h3><span class="step-number">2</span> Fazer login</h3>
+                    <p>Digite suas credenciais de administrador:</p>
+                    <ul>
+                        <li><strong>Email/CPF:</strong> Seu email cadastrado</li>
+                        <li><strong>Senha:</strong> Sua senha de acesso</li>
+                    </ul>
+                    <div class="alert-warning-custom">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Atenção:</strong> Mantenha sua senha em local seguro e troque periodicamente.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 3. Dashboard -->
+            <div class="section" id="dashboard">
+                <h2><i class="fas fa-tachometer-alt"></i> 3. Dashboard</h2>
+                <p>O Dashboard é a tela inicial após o login, onde você pode visualizar informações importantes do sistema.</p>
+                
+                <h3>Principais indicadores:</h3>
+                <ul>
+                    <li><strong>Total de funcionários:</strong> Quantidade de funcionários ativos</li>
+                    <li><strong>Pontos registrados hoje:</strong> Total de marcações do dia</li>
+                    <li><strong>Funcionários ausentes:</strong> Quem não bateu ponto hoje</li>
+                    <li><strong>Horas trabalhadas:</strong> Média de horas no mês</li>
+                </ul>
+                
+                <div class="alert-tip">
+                    <i class="fas fa-chart-line"></i> <strong>Dica:</strong> Use os gráficos para acompanhar tendências e identificar problemas rapidamente.
+                </div>
+            </div>
+            
+            <!-- 4. Gerenciar Funcionários -->
+            <div class="section" id="funcionarios">
+                <h2><i class="fas fa-users"></i> 4. Gerenciar Funcionários</h2>
+                
+                <h3>4.1 Cadastrar novo funcionário</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Clique em <strong>"Funcionários"</strong> no menu lateral</li>
+                        <li>Clique em <strong>"Novo Funcionário"</strong></li>
+                        <li>Preencha os dados obrigatórios:
+                            <ul>
+                                <li>Nome completo</li>
+                                <li>CPF (apenas números)</li>
+                                <li>Email</li>
+                                <li>Data de nascimento</li>
+                                <li>Cargo</li>
+                                <li>Salário base</li>
+                                <li>Horário de trabalho</li>
+                            </ul>
+                        </li>
+                        <li>Clique em <strong>"Salvar"</strong></li>
+                    </ol>
+                </div>
+                
+                <h3>4.2 Editar funcionário</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Vá em <strong>"Funcionários"</strong></li>
+                        <li>Localize o funcionário na lista</li>
+                        <li>Clique no ícone <strong><i class="fas fa-edit"></i> (Editar)</strong></li>
+                        <li>Altere os dados necessários</li>
+                        <li>Clique em <strong>"Atualizar"</strong></li>
+                    </ol>
+                </div>
+                
+                <h3>4.3 Excluir/Desativar funcionário</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Vá em <strong>"Funcionários"</strong></li>
+                        <li>Clique no ícone <strong><i class="fas fa-trash"></i> (Excluir)</strong></li>
+                        <li>Confirme a exclusão</li>
+                    </ol>
+                    <div class="alert-warning-custom">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Nota:</strong> A exclusão é lógica (soft delete), os dados ficam preservados no sistema.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 5. Gerenciar Filiais -->
+            <div class="section" id="filiais">
+                <h2><i class="fas fa-building"></i> 5. Gerenciar Filiais</h2>
+                
+                <h3>5.1 Cadastrar filial</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Clique em <strong>"Filiais"</strong></li>
+                        <li>Clique em <strong>"Nova Filial"</strong></li>
+                        <li>Preencha os dados:
+                            <ul>
+                                <li>Nome da filial</li>
+                                <li>CNPJ</li>
+                                <li>Endereço completo</li>
+                                <li>Telefone</li>
+                                <li>Email</li>
+                            </ul>
+                        </li>
+                        <li>Clique em <strong>"Salvar"</strong></li>
+                    </ol>
+                </div>
+                
+                <h3>5.2 Atribuir funcionários à filial</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Vá em <strong>"Funcionários"</strong></li>
+                        <li>Edite o funcionário</li>
+                        <li>Selecione a filial no campo <strong>"Filial"</strong></li>
+                        <li>Salve as alterações</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- 6. Gerenciar Pontos -->
+            <div class="section" id="ponto">
+                <h2><i class="fas fa-clock"></i> 6. Gerenciar Pontos</h2>
+                
+                <h3>6.1 Visualizar pontos dos funcionários</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Clique em <strong>"Pontos"</strong> no menu</li>
+                        <li>Selecione o funcionário desejado</li>
+                        <li>Escolha o período (dia, semana, mês)</li>
+                        <li>Visualize a lista de marcações</li>
+                    </ol>
+                </div>
+                
+                <h3>6.2 Ajustar ponto manualmente (correção)</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Vá em <strong>"Pontos" > "Ajustes"</strong></li>
+                        <li>Selecione o funcionário</li>
+                        <li>Clique em <strong>"Novo Ajuste"</strong></li>
+                        <li>Informe a data e horário correto</li>
+                        <li>Justifique o ajuste</li>
+                        <li>Clique em <strong>"Salvar Ajuste"</strong></li>
+                    </ol>
+                    <div class="alert-warning-custom">
+                        <i class="fas fa-gavel"></i> <strong>Importante:</strong> Todo ajuste fica registrado em auditoria para conformidade legal.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 7. Relatórios -->
+            <div class="section" id="relatorios">
+                <h2><i class="fas fa-chart-bar"></i> 7. Relatórios</h2>
+                
+                <h3>Relatórios disponíveis:</h3>
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>Relatório</th>
+                            <th>Descrição</th>
+                            <th>Exportação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Espelho de Ponto</td>
+                            <td>Detalhamento diário das marcações</td>
+                            <td>PDF / Excel</td>
+                        </tr>
+                        <tr>
+                            <td>Horas trabalhadas</td>
+                            <td>Resumo mensal de horas</td>
+                            <td>PDF / Excel</td>
+                        </tr>
+                        <tr>
+                            <td>Funcionários ausentes</td>
+                            <td>Lista de faltas e atrasos</td>
+                            <td>Excel</td>
+                        </tr>
+                        <tr>
+                            <td>Relatório de ajustes</td>
+                            <td>Histórico de correções de ponto</td>
+                            <td>PDF</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>Como gerar relatório:</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Clique em <strong>"Relatórios"</strong></li>
+                        <li>Selecione o tipo de relatório</li>
+                        <li>Escolha o período (data inicial e final)</li>
+                        <li>Selecione funcionário (ou todos)</li>
+                        <li>Clique em <strong>"Gerar Relatório"</strong></li>
+                        <li>Exporte em PDF ou Excel</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- 8. Backup e Segurança -->
+            <div class="section" id="backup">
+                <h2><i class="fas fa-database"></i> 8. Backup e Segurança</h2>
+                
+                <h3>8.1 Realizar backup manual</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Clique em <strong>"Backup"</strong> no menu</li>
+                        <li>Clique em <strong>"Criar Novo Backup"</strong></li>
+                        <li>Aguarde a conclusão</li>
+                        <li>Download do arquivo gerado</li>
+                    </ol>
+                </div>
+                
+                <h3>8.2 Restaurar backup</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Vá em <strong>"Backup" > "Restaurar"</strong></li>
+                        <li>Selecione o arquivo de backup</li>
+                        <li>Confirme a restauração</li>
+                    </ol>
+                    <div class="alert-warning-custom">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>Cuidado:</strong> Restaurar backup irá sobrescrever todos os dados atuais!
+                    </div>
+                </div>
+                
+                <h3>Boas práticas de segurança:</h3>
+                <ul>
+                    <li>✔ Faça backup diário dos dados</li>
+                    <li>✔ Mantenha o sistema atualizado</li>
+                    <li>✔ Use senhas fortes (mínimo 8 caracteres, letras, números, símbolos)</li>
+                    <li>✔ Não compartilhe suas credenciais</li>
+                    <li>✔ Monitore os logs de acesso regularmente</li>
+                </ul>
+            </div>
+            
+            <!-- 9. Suporte -->
+            <div class="section" id="suporte">
+                <h2><i class="fas fa-headset"></i> 9. Suporte</h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert-tip">
+                            <i class="fas fa-envelope"></i> <strong>Email:</strong><br>
+                            suporte@divulgpontofacil.com.br
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert-tip">
+                            <i class="fas fa-phone"></i> <strong>Telefone:</strong><br>
+                            (21) 99367-8754
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Horário de atendimento:</h3>
+                <p>Segunda a Sexta: 08h às 18h</p>
+                <p>Sábado: 08h às 12h</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><i class="fas fa-copyright"></i> <?= date('Y') ?> Sistema de Ponto Eletrônico - Todos os direitos reservados</p>
+            <p><small>Documentação oficial do sistema</small></p>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

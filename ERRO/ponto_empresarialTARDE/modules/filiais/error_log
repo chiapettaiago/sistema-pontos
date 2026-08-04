@@ -1,0 +1,25 @@
+[10-Jun-2026 19:02:29 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.filialis' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/filiais/editar.php:74
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/filiais/editar.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/filiais/editar.php on line 74
+[10-Jun-2026 19:35:18 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.filialis' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/filiais/editar.php:74
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/filiais/editar.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/filiais/editar.php on line 74
+[10-Jun-2026 19:35:49 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.filialis' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/filiais/editar.php:74
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/filiais/editar.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/filiais/editar.php on line 74
+[11-Jun-2026 12:47:56 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.funcionarios' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/filiais/index.php:26
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/filiais/index.php(26): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/filiais/index.php on line 26
+[11-Jun-2026 14:53:10 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.filialis' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/filiais/editar.php:74
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/filiais/editar.php(74): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/filiais/editar.php on line 74

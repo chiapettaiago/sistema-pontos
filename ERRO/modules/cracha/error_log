@@ -1,0 +1,1 @@
+[12-Jun-2026 08:13:48 America/Sao_Paulo] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home1/appcas29/divulgpontofacil.com.br/includes/header.php:9) in /home1/appcas29/divulgpontofacil.com.br/modules/cracha/index.php on line 23

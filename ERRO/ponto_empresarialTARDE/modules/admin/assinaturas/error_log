@@ -1,0 +1,5 @@
+[11-Jun-2026 12:47:49 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.assinaturas' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/admin/assinaturas/index.php:48
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/admin/assinaturas/index.php(48): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/admin/assinaturas/index.php on line 48

@@ -1,0 +1,17 @@
+# api/.htaccess - Regras de reescrita para API
+RewriteEngine On
+
+# Permitir CORS
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+
+# RewriteBase /ponto_empresarial/api/
+
+# Remover extensão .php das URLs (opcional)
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteCond %{REQUEST_FILENAME}.php -f
+# RewriteRule ^(.*)$ $1.php [L]
+
+# Forçar JSON como padrão
+AddType application/json .json

@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual do Funcionário - Sistema de Ponto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .manual-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            border-left: 4px solid #11998e;
+            padding-left: 20px;
+        }
+        
+        .section h2 {
+            color: #11998e;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .section h3 {
+            color: #0d7a6e;
+            margin: 20px 0 15px 0;
+            font-size: 1.3rem;
+        }
+        
+        .step-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .step-box:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: #11998e;
+            color: white;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .alert-success-custom {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .alert-info-custom {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .alert-warning-custom {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline-item {
+            padding: 15px 30px;
+            border-left: 3px solid #11998e;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .timeline-time {
+            font-weight: bold;
+            color: #11998e;
+            margin-bottom: 10px;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        
+        .faq-question {
+            font-weight: bold;
+            color: #11998e;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .faq-answer {
+            display: none;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .faq-answer.show {
+            display: block;
+        }
+        
+        .btn-print {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #11998e;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .btn-print:hover {
+            background: #0d7a6e;
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section h2 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media print {
+            .btn-print {
+                display: none;
+            }
+            
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .manual-container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="btn-print" onclick="window.print()">
+        <i class="fas fa-print"></i> Imprimir / Salvar PDF
+    </button>
+    
+    <div class="manual-container">
+        <div class="header">
+            <i class="fas fa-user" style="font-size: 60px; margin-bottom: 20px;"></i>
+            <h1>Manual do Funcionário</h1>
+            <p>Sistema de Ponto Eletrônico - Guia Rápido</p>
+            <p><small>Versão 1.0 | Atualizado em <?= date('d/m/Y') ?></small></p>
+        </div>
+        
+        <div class="content">
+            <!-- Bem-vindo -->
+            <div class="section">
+                <h2><i class="fas fa-smile"></i> Bem-vindo!</h2>
+                <p>Este manual foi desenvolvido para ajudá-lo a utilizar o Sistema de Ponto Eletrônico de forma simples e eficiente. Aqui você encontrará todas as informações necessárias para registrar seu ponto, consultar histórico e muito mais.</p>
+                
+                <div class="alert-success-custom">
+                    <i class="fas fa-check-circle"></i> <strong>Seu ponto é sua jornada de trabalho!</strong> Registre sempre nos horários corretos para evitar problemas com seu salário.
+                </div>
+            </div>
+            
+            <!-- Como acessar -->
+            <div class="section">
+                <h2><i class="fas fa-sign-in-alt"></i> Como acessar o sistema</h2>
+                
+                <div class="step-box">
+                    <h3><span class="step-number">1</span> Acesse o site</h3>
+                    <p>Abra seu navegador (Chrome, Firefox, Edge) e digite:</p>
+                    <div class="code-block">https://divulgpontofacil.com.br</div>
+                </div>
+                
+                <div class="step-box">
+                    <h3><span class="step-number">2</span> Faça login</h3>
+                    <p>Digite suas credenciais:</p>
+                    <ul>
+                        <li><strong>Login:</strong> Seu email ou CPF (apenas números)</li>
+                        <li><strong>Senha:</strong> Sua senha de acesso (fornecida pelo RH)</li>
+                    </ul>
+                </div>
+                
+                <div class="step-box">
+                    <h3><span class="step-number">3</span> Primeiro acesso</h3>
+                    <p>No primeiro acesso, recomendamos trocar sua senha:</p>
+                    <ol>
+                        <li>Clique no seu nome no canto superior direito</li>
+                        <li>Selecione "Alterar Senha"</li>
+                        <li>Digite a senha atual e a nova senha</li>
+                        <li>Confirme e clique em "Salvar"</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- Registrar Ponto -->
+            <div class="section">
+                <h2><i class="fas fa-fingerprint"></i> Como registrar o ponto</h2>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-time">🌅 Entrada (Manhã)</div>
+                        <p>Registre ao chegar no trabalho. Horário padrão: 08:00</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🍽️ Saída para almoço</div>
+                        <p>Registre ao sair para o almoço. Horário padrão: 12:00</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🍽️ Retorno do almoço</div>
+                        <p>Registre ao voltar do almoço. Horário padrão: 13:00</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🌙 Saída (Fim do dia)</div>
+                        <p>Registre ao final do expediente. Horário padrão: 17:00</p>
+                    </div>
+                </div>
+                
+                <h3>Passo a passo para registrar o ponto:</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Faça login no sistema</li>
+                        <li>Na tela inicial, clique no botão <strong>"Bater Ponto"</strong></li>
+                        <li>Selecione o tipo de ponto:
+                            <ul>
+                                <li><i class="fas fa-sun"></i> Entrada</li>
+                                <li><i class="fas fa-utensils"></i> Saída para intervalo</li>
+                                <li><i class="fas fa-utensils"></i> Retorno do intervalo</li>
+                                <li><i class="fas fa-moon"></i> Saída</li>
+                            </ul>
+                        </li>
+                        <li>Confirme o horário exibido</li>
+                        <li>Clique em <strong>"Confirmar Ponto"</strong></li>
+                        <li>Aguarde a mensagem de confirmação</li>
+                    </ol>
+                </div>
+                
+                <div class="alert-success-custom">
+                    <i class="fas fa-mobile-alt"></i> <strong>Ponto pelo celular:</strong> O sistema é totalmente responsivo, você pode bater o ponto pelo celular ou tablet!
+                </div>
+            </div>
+            
+            <!-- Histórico de Ponto -->
+            <div class="section">
+                <h2><i class="fas fa-history"></i> Consultar histórico de ponto</h2>
+                
+                <div class="step-box">
+                    <h3>Como visualizar seus registros:</h3>
+                    <ol>
+                        <li>Após fazer login, clique em <strong>"Meu Histórico"</strong></li>
+                        <li>Selecione o período desejado:
+                            <ul>
+                                <li>Hoje</li>
+                                <li>Esta semana</li>
+                                <li>Este mês</li>
+                                <li>Personalizado (escolha as datas)</li>
+                            </ul>
+                        </li>
+                        <li>Clique em <strong>"Buscar"</strong></li>
+                        <li>Visualize todos os seus registros de ponto</li>
+                        <li>Exporte em PDF se necessário</li>
+                    </ol>
+                </div>
+                
+                <div class="alert-info-custom">
+                    <i class="fas fa-info-circle"></i> <strong>Dica:</strong> Verifique seu histórico regularmente para garantir que todos os pontos foram registrados corretamente.
+                </div>
+            </div>
+            
+            <!-- Solicitações -->
+            <div class="section">
+                <h2><i class="fas fa-paper-plane"></i> Solicitações</h2>
+                
+                <h3>Solicitar ajuste de ponto</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Vá em <strong>"Solicitações" > "Nova Solicitação"</strong></li>
+                        <li>Selecione o tipo: <strong>"Ajuste de Ponto"</strong></li>
+                        <li>Informe a data e horário correto</li>
+                        <li>Justifique o motivo do ajuste</li>
+                        <li>Anexe comprovante (se necessário)</li>
+                        <li>Clique em <strong>"Enviar Solicitação"</strong></li>
+                    </ol>
+                </div>
+                
+                <h3>Solicitar abono de falta</h3>
+                <div class="step-box">
+                    <ol>
+                        <li>Vá em <strong>"Solicitações" > "Nova Solicitação"</strong></li>
+                        <li>Selecione o tipo: <strong>"Abono de Falta"</strong></li>
+                        <li>Informe a data da falta</li>
+                        <li>Justifique o motivo (atestado médico, etc.)</li>
+                        <li>Anexe documento comprobatório</li>
+                        <li>Clique em <strong>"Enviar Solicitação"</strong></li>
+                    </ol>
+                </div>
+                
+                <div class="alert-warning-custom">
+                    <i class="fas fa-clock"></i> <strong>Prazo:</strong> Solicitações devem ser feitas em até 48 horas após o ocorrido.
+                </div>
+            </div>
+            
+            <!-- Saldo e Horas -->
+            <div class="section">
+                <h2><i class="fas fa-chart-line"></i> Acompanhar saldo de horas</h2>
+                
+                <div class="step-box">
+                    <h3>Visualizar banco de horas:</h3>
+                    <ol>
+                        <li>No dashboard, veja o card <strong>"Saldo do Mês"</strong></li>
+                        <li>Saldo positivo (verde): Horas extras a receber</li>
+                        <li>Saldo negativo (vermelho): Horas negativas a compensar</li>
+                        <li>Clique em <strong>"Detalhes"</strong> para ver o extrato completo</li>
+                    </ol>
+                </div>
+                
+                <table class="table-custom" style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Saldo</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Significado</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">O que fazer?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px;"><span style="color: green;">Positivo (+)</span></td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">Você trabalhou horas extras</td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">Receberá em folha ou banco de horas</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px;"><span style="color: red;">Negativo (-)</span></td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">Faltam horas a trabalhar</td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">Compense as horas perdidas</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px;"><span style="color: blue;">Zero (0)</span></td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">Carga horária cumprida</td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">Continue assim!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Dicas e Boas Práticas -->
+            <div class="section">
+                <h2><i class="fas fa-lightbulb"></i> Dicas e boas práticas</h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert-success-custom">
+                            <i class="fas fa-check"></i> <strong>✔ FAÇA:</strong>
+                            <ul class="mt-2">
+                                <li>Bata o ponto assim que chegar</li>
+                                <li>Verifique se o horário está correto</li>
+                                <li>Registre todos os 4 pontos do dia</li>
+                                <li>Confira seu histórico semanalmente</li>
+                                <li>Solicite ajustes rapidamente</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert-warning-custom">
+                            <i class="fas fa-times"></i> <strong>✘ NÃO FAÇA:</strong>
+                            <ul class="mt-2">
+                                <li>Não bata ponto fora do seu horário</li>
+                                <li>Não peça para outro funcionário bater por você</li>
+                                <li>Não esqueça de registrar a saída para almoço</li>
+                                <li>Não ignore pontos em atraso</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQ -->
+            <div class="section">
+                <h2><i class="fas fa-question-circle"></i> Perguntas frequentes (FAQ)</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <i class="fas fa-chevron-right"></i> Esqueci de bater o ponto, e agora?
+                    </div>
+                    <div class="faq-answer">
+                        Solicite um ajuste de ponto no sistema em até 48 horas. Justifique o motivo e o RH irá analisar.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <i class="fas fa-chevron-right"></i> Posso bater o ponto de casa?
+                    </div>
+                    <div class="faq-answer">
+                        Sim, desde que esteja em horário de trabalho (home office) ou com autorização da empresa.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <i class="fas fa-chevron-right"></i> Esqueci minha senha, como recuperar?
+                    </div>
+                    <div class="faq-answer">
+                        Na tela de login, clique em "Esqueci minha senha". Você receberá um email com instruções para redefinir.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <i class="fas fa-chevron-right"></i> O sistema não está funcionando, o que fazer?
+                    </div>
+                    <div class="faq-answer">
+                        Entre em contato com o suporte técnico imediatamente e anote o horário para registro manual posterior.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <i class="fas fa-chevron-right"></i> Como vejo meu saldo de horas?
+                    </div>
+                    <div class="faq-answer">
+                        No dashboard principal, há um card "Saldo do Mês" com seu saldo atual. Clique em detalhes para extrato completo.
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <i class="fas fa-chevron-right"></i> Posso usar o sistema no celular?
+                    </div>
+                    <div class="faq-answer">
+                        Sim! O sistema é responsivo e funciona perfeitamente no celular, tablet ou computador.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contato Suporte -->
+            <div class="section">
+                <h2><i class="fas fa-headset"></i> Precisa de ajuda?</h2>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="alert-info-custom text-center">
+                            <i class="fas fa-envelope fa-2x mb-2"></i>
+                            <h5>Email</h5>
+                            <p>suporte@divulgpontofacil.com.br</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="alert-info-custom text-center">
+                            <i class="fas fa-phone fa-2x mb-2"></i>
+                            <h5>Telefone</h5>
+                            <p>(21) 99367-8754</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="alert-info-custom text-center">
+                            <i class="fas fa-comments fa-2x mb-2"></i>
+                            <h5>Chat</h5>
+                            <p>Disponível no sistema</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert-warning-custom">
+                    <i class="fas fa-clock"></i> <strong>Horário de atendimento:</strong> Segunda a Sexta, 08h às 18h
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer" style="background: #2d3748; color: white; padding: 20px; text-align: center;">
+            <p><i class="fas fa-copyright"></i> <?= date('Y') ?> Sistema de Ponto Eletrônico - Todos os direitos reservados</p>
+            <p><small>Manual do Funcionário - Mantenha este guia para consulta</small></p>
+        </div>
+    </div>
+    
+    <script>
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            answer.classList.toggle('show');
+            const icon = element.querySelector('i');
+            if (answer.classList.contains('show')) {
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-down');
+            } else {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-right');
+            }
+        }
+        
+        // Estilo para tabela
+        const style = document.createElement('style');
+        style.textContent = `
+            .table-custom {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+            }
+            .table-custom th,
+            .table-custom td {
+                border: 1px solid #ddd;
+                padding: 12px;
+                text-align: left;
+            }
+            .table-custom th {
+                background: #11998e;
+                color: white;
+            }
+            .table-custom tr:nth-child(even) {
+                background: #f8f9fa;
+            }
+            .footer {
+                background: #2d3748;
+                color: white;
+                padding: 20px;
+                text-align: center;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

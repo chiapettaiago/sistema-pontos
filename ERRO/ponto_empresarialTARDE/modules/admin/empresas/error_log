@@ -1,0 +1,18 @@
+[10-Jun-2026 17:48:09 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266
+[10-Jun-2026 17:49:13 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266
+[10-Jun-2026 17:49:37 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266
+[10-Jun-2026 18:40:42 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266
+[10-Jun-2026 19:01:33 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266
+[10-Jun-2026 19:03:13 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266
+[10-Jun-2026 19:11:16 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266
+[10-Jun-2026 22:25:55 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266
+[11-Jun-2026 12:47:48 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.empresas' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php:58
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php(58): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 58
+[11-Jun-2026 12:50:42 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266
+[11-Jun-2026 12:52:15 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266
+[11-Jun-2026 14:35:49 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266
+[11-Jun-2026 14:36:14 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266
+[11-Jun-2026 15:20:30 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/admin/empresas/index.php on line 266

@@ -1,0 +1,103 @@
+[11-Jun-2026 12:47:38 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:47:44 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:47:46 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:47:48 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:47:48 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:47:49 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:47:51 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:47:54 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:47:55 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:47:56 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:48:26 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:48:56 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:49:26 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:49:56 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 12:50:26 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 15:15:46 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1044] Access denied for user 'appcas29_ponto_empresarial'@'localhost' to database 'appcas29_pontofacil'
+[11-Jun-2026 15:15:56 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1044] Access denied for user 'appcas29_ponto_empresarial'@'localhost' to database 'appcas29_pontofacil'
+[11-Jun-2026 15:16:16 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: YES)
+[11-Jun-2026 15:16:26 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: YES)
+[11-Jun-2026 15:16:46 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: YES)
+[11-Jun-2026 15:16:56 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: YES)
+[11-Jun-2026 15:17:17 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: YES)
+[11-Jun-2026 15:17:26 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: YES)
+[11-Jun-2026 15:17:49 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: YES)
+[11-Jun-2026 15:17:56 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: YES)
+[11-Jun-2026 15:18:19 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: YES)
+[11-Jun-2026 15:18:26 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1045] Access denied for user 'appcas29_ponto_empresarial'@'localhost' (using password: YES)
+[11-Jun-2026 15:18:52 America/Sao_Paulo] Erro de conexao: SQLSTATE[HY000] [1044] Access denied for user 'appcas29_ponto_empresarial'@'localhost' to database 'appcas29_pontofacil'
+[11-Jun-2026 15:19:23 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 15:19:51 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19
+[11-Jun-2026 15:19:56 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.notificacoes' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php:19
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php(19): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/notificacoes/buscar.php on line 19

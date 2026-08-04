@@ -1,0 +1,7 @@
+[11-Jun-2026 09:41:07 America/Sao_Paulo] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home1/appcas29/divulgpontofacil.com.br/includes/config.php on line 48) in /home1/appcas29/divulgpontofacil.com.br/modules/usuarios/salvar.php on line 6
+[11-Jun-2026 12:47:54 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.usuarios_sistema' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/usuarios/index.php:44
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/usuarios/index.php(44): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/usuarios/index.php on line 44
+[11-Jun-2026 14:40:52 America/Sao_Paulo] PHP Notice:  session_start(): Ignoring session_start() because a session is already active (started from /home1/appcas29/divulgpontofacil.com.br/includes/config.php on line 48) in /home1/appcas29/divulgpontofacil.com.br/modules/usuarios/salvar.php on line 6

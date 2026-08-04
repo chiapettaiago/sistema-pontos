@@ -1,0 +1,57 @@
+[12-Jun-2026 11:06:22 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'et.horas_por_dia' in 'field list' in /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php:83
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php(83): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php on line 83
+[12-Jun-2026 19:24:30 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'et.horas_por_dia' in 'field list' in /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php:83
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php(83): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php on line 83
+[12-Jun-2026 22:27:38 America/Sao_Paulo] PHP Warning:  Undefined array key "dias_trabalhados" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 22:27:38 America/Sao_Paulo] PHP Warning:  Undefined array key "horas_por_dia" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 22:27:38 America/Sao_Paulo] PHP Warning:  Undefined array key "noturno" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 451
+[12-Jun-2026 22:28:37 America/Sao_Paulo] PHP Warning:  Undefined array key "dias_trabalhados" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 22:28:37 America/Sao_Paulo] PHP Warning:  Undefined array key "horas_por_dia" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 22:28:37 America/Sao_Paulo] PHP Warning:  Undefined array key "noturno" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 451
+[12-Jun-2026 22:28:44 America/Sao_Paulo] PHP Warning:  Undefined array key "dias_trabalhados" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 22:28:44 America/Sao_Paulo] PHP Warning:  Undefined array key "horas_por_dia" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 22:28:44 America/Sao_Paulo] PHP Warning:  Undefined array key "noturno" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 451
+[12-Jun-2026 22:30:27 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'et.horas_por_dia' in 'field list' in /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php:83
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php(83): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php on line 83
+[12-Jun-2026 23:20:57 America/Sao_Paulo] PHP Warning:  Undefined array key "dias_trabalhados" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 23:20:57 America/Sao_Paulo] PHP Warning:  Undefined array key "horas_por_dia" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 23:20:57 America/Sao_Paulo] PHP Warning:  Undefined array key "noturno" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 451
+[12-Jun-2026 23:26:56 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'et.horas_por_dia' in 'field list' in /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php:83
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php(83): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php on line 83
+[12-Jun-2026 23:27:09 America/Sao_Paulo] PHP Warning:  Undefined array key "dias_trabalhados" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 23:27:09 America/Sao_Paulo] PHP Warning:  Undefined array key "horas_por_dia" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 23:27:09 America/Sao_Paulo] PHP Warning:  Undefined array key "noturno" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 451
+[12-Jun-2026 23:27:21 America/Sao_Paulo] PHP Warning:  Undefined array key "dias_trabalhados" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 23:27:21 America/Sao_Paulo] PHP Warning:  Undefined array key "horas_por_dia" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 23:27:21 America/Sao_Paulo] PHP Warning:  Undefined array key "noturno" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 451
+[12-Jun-2026 23:30:02 America/Sao_Paulo] PHP Warning:  Undefined array key "dias_trabalhados" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 23:30:02 America/Sao_Paulo] PHP Warning:  Undefined array key "horas_por_dia" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 23:30:02 America/Sao_Paulo] PHP Warning:  Undefined array key "noturno" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 451
+[12-Jun-2026 23:30:45 America/Sao_Paulo] PHP Warning:  Undefined array key "dias_trabalhados" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 23:30:45 America/Sao_Paulo] PHP Warning:  Undefined array key "horas_por_dia" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 23:30:45 America/Sao_Paulo] PHP Warning:  Undefined array key "noturno" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 451
+[12-Jun-2026 23:30:45 America/Sao_Paulo] PHP Warning:  Undefined array key "dias_trabalhados" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 23:30:45 America/Sao_Paulo] PHP Warning:  Undefined array key "horas_por_dia" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 449
+[12-Jun-2026 23:30:45 America/Sao_Paulo] PHP Warning:  Undefined array key "noturno" in /home1/appcas29/divulgpontofacil.com.br/modules/escala/configurar.php on line 451
+[12-Jun-2026 23:37:39 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'et.horas_por_dia' in 'field list' in /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php:83
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php(83): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php on line 83
+[12-Jun-2026 23:38:06 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'et.horas_por_dia' in 'field list' in /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php:83
+Stack trace:
+#0 /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php(83): PDOStatement->execute(Array)
+#1 {main}
+  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/escala/calendario.php on line 83

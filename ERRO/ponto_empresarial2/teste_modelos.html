@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Modelos FaceAPI</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Teste de Carregamento dos Modelos</h1>
+    <div id="status">Carregando...</div>
+    <pre id="detalhes"></pre>
+
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script>
+        const statusDiv = document.getElementById('status');
+        const detalhesDiv = document.getElementById('detalhes');
+        
+        async function testarModelos() {
+            const MODEL_URL = '/ponto_empresarial/assets/models';
+            
+            statusDiv.innerHTML = '📥 Verificando arquivos...';
+            detalhesDiv.innerHTML = '';
+            
+            // Lista de arquivos necessários
+            const files = [
+                'tiny_face_detector_model-weights_manifest.json',
+                'tiny_face_detector_model-shard1',
+                'face_landmark_68_model-weights_manifest.json',
+                'face_landmark_68_model-shard1',
+                'face_recognition_model-weights_manifest.json',
+                'face_recognition_model-shard1'
+            ];
+            
+            // Verificar cada arquivo
+            for (const file of files) {
+                try {
+                    const response = await fetch(`${MODEL_URL}/${file}`);
+                    if (response.ok) {
+                        detalhesDiv.innerHTML += `✅ ${file} - OK (${response.status})\n`;
+                    } else {
+                        detalhesDiv.innerHTML += `❌ ${file} - ERRO ${response.status}\n`;
+                    }
+                } catch (err) {
+                    detalhesDiv.innerHTML += `❌ ${file} - FALHA: ${err.message}\n`;
+                }
+            }
+            
+            // Tentar carregar os modelos
+            statusDiv.innerHTML = '🔄 Carregando modelos...';
+            
+            try {
+                await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+                detalhesDiv.innerHTML += `\n✅ tinyFaceDetector carregado!\n`;
+            } catch (err) {
+                detalhesDiv.innerHTML += `\n❌ tinyFaceDetector: ${err.message}\n`;
+            }
+            
+            try {
+                await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+                detalhesDiv.innerHTML += `✅ faceLandmark68Net carregado!\n`;
+            } catch (err) {
+                detalhesDiv.innerHTML += `❌ faceLandmark68Net: ${err.message}\n`;
+            }
+            
+            try {
+                await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+                detalhesDiv.innerHTML += `✅ faceRecognitionNet carregado!\n`;
+            } catch (err) {
+                detalhesDiv.innerHTML += `❌ faceRecognitionNet: ${err.message}\n`;
+            }
+            
+            statusDiv.innerHTML = '✅ Teste concluído!';
+        }
+        
+        testarModelos();
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+[11-Jun-2026 12:01:16 America/Sao_Paulo] PHP Warning:  Undefined variable $proximo_tipo in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[11-Jun-2026 12:01:16 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[11-Jun-2026 12:01:31 America/Sao_Paulo] PHP Warning:  Undefined variable $proximo_tipo in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[11-Jun-2026 12:01:31 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[11-Jun-2026 12:01:36 America/Sao_Paulo] PHP Warning:  Undefined variable $proximo_tipo in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[11-Jun-2026 12:01:36 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[11-Jun-2026 12:01:42 America/Sao_Paulo] PHP Warning:  Undefined variable $proximo_tipo in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[11-Jun-2026 12:01:42 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[11-Jun-2026 12:01:49 America/Sao_Paulo] PHP Warning:  Undefined variable $proximo_tipo in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
+[11-Jun-2026 12:01:49 America/Sao_Paulo] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home1/appcas29/divulgpontofacil.com.br/modules/ponto/biometrico.php on line 280
