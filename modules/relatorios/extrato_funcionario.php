@@ -26,7 +26,11 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
 // Parâmetros
 $funcionario_id = $_GET['funcionario_id'] ?? '';
 $periodo = $_GET['periodo'] ?? 'mensal'; // 'semanal' ou 'mensal'
-$data_referencia = $_GET['data_referencia'] ?? date('Y-m-d');
+if ($periodo == 'semanal') {
+    $data_referencia = $_GET['data_referencia_semana'] ?? ($_GET['data_referencia'] ?? date('Y-\WW'));
+} else {
+    $data_referencia = $_GET['data_referencia_mes'] ?? ($_GET['data_referencia'] ?? date('Y-m'));
+}
 
 // Buscar lista de funcionários
 $stmt = $db->prepare("SELECT id, nome, matricula FROM funcionarios 
@@ -410,10 +414,10 @@ function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $carga
             <p>Consulta detalhada de ponto por funcionário</p>
         </div>
         <div class="module-actions">
-            <a href="exportar_excel.php?tipo=extrato_funcionario&funcionario_id=<?php echo $funcionario_id; ?>&periodo=<?php echo $periodo; ?>&data_referencia=<?php echo $data_referencia; ?>" class="btn-exportar btn-excel">
+            <a href="exportar_excel.php?tipo=extrato_funcionario&funcionario_id=<?php echo $funcionario_id; ?>&data_inicio=<?php echo $data_inicio; ?>&data_fim=<?php echo $data_fim; ?>" class="btn-exportar btn-excel">
                 <i class="fas fa-file-excel"></i> Exportar Excel
             </a>
-            <a href="exportar_pdf.php?tipo=extrato_funcionario&funcionario_id=<?php echo $funcionario_id; ?>&periodo=<?php echo $periodo; ?>&data_referencia=<?php echo $data_referencia; ?>" class="btn-exportar btn-pdf" target="_blank">
+            <a href="exportar_pdf.php?tipo=extrato_funcionario&funcionario_id=<?php echo $funcionario_id; ?>&data_inicio=<?php echo $data_inicio; ?>&data_fim=<?php echo $data_fim; ?>" class="btn-exportar btn-pdf" target="_blank">
                 <i class="fas fa-file-pdf"></i> Exportar PDF
             </a>
         </div>
@@ -441,11 +445,11 @@ function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $carga
             </div>
             <div class="filter-group" id="grupo_data_semanal" style="display: <?php echo $periodo == 'semanal' ? 'flex' : 'none'; ?>;">
                 <label>Semana</label>
-                <input type="week" name="data_referencia" value="<?php echo date('Y-\WW', strtotime($data_referencia)); ?>">
+                <input type="week" name="data_referencia_semana" value="<?php echo date('Y-\WW', strtotime($data_referencia)); ?>">
             </div>
             <div class="filter-group" id="grupo_data_mensal" style="display: <?php echo $periodo == 'mensal' ? 'flex' : 'none'; ?>;">
                 <label>Mês</label>
-                <input type="month" name="data_referencia" value="<?php echo substr($data_referencia, 0, 7); ?>">
+                <input type="month" name="data_referencia_mes" value="<?php echo substr($data_referencia, 0, 7); ?>">
             </div>
             <div class="filter-group">
                 <label>&nbsp;</label>

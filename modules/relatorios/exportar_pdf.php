@@ -41,10 +41,14 @@ $nomes_meses = [
     '07'=>'Julho','08'=>'Agosto','09'=>'Setembro','10'=>'Outubro','11'=>'Novembro','12'=>'Dezembro'
 ];
 
-function formatarHorasPDF($horas) { 
-    $h = floor($horas); 
-    $m = round(($horas - $h) * 60); 
-    return sprintf("%02d:%02d", $h, $m); 
+function formatarHorasPDF($horas, $com_sinal = false) { 
+    if ($horas == 0) return ($com_sinal ? '+' : '') . '00:00';
+    $sinal = $horas < 0 ? '-' : ($com_sinal ? '+' : '');
+    $abs = abs($horas);
+    $h = floor($abs);
+    $m = round(($abs - $h) * 60);
+    if ($m >= 60) { $h += 1; $m -= 60; }
+    return $sinal . sprintf("%02d:%02d", $h, $m); 
 }
 
 function formatarMinutosPDF($minutos) {
@@ -112,11 +116,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
     <!-- ============================================ -->
     <?php if ($tipo == 'extrato_funcionario'): ?>
         <?php
-        $carga_diaria = 8;
-        $stmt_config = $db->prepare("SELECT carga_horaria_diaria FROM config_horarios WHERE empresa_id = :empresa_id");
-        $stmt_config->execute([':empresa_id' => $empresa_id]);
-        $config = $stmt_config->fetch();
-        if ($config) $carga_diaria = $config['carga_horaria_diaria'] ?: 8;
+        $carga_diaria = 7 + (20/60); // 7:20h
         
         $stmt_func = $db->prepare("SELECT nome, matricula FROM funcionarios WHERE id = :id AND empresa_id = :empresa_id");
         $stmt_func->execute([':id' => $funcionario_id, ':empresa_id' => $empresa_id]);
@@ -150,7 +150,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
                     $horas = calcularHorasDiaPDF($row['entrada'], $row['saida_almoco'], $row['volta_almoco'], $row['saida']);
                     $saldo = $horas - $carga_diaria;
                     $saldo_class = $saldo >= 0 ? 'saldo-positivo' : 'saldo-negativo';
-                    $saldo_texto = ($saldo >= 0 ? '+' : '') . number_format($saldo, 2, ',', '.');
+                    $saldo_texto = formatarHorasPDF($saldo, true);
                     $status = ($row['entrada'] && $row['entrada'] > '08:00:00') ? 'Atraso' : (($row['entrada'] && $row['saida']) ? 'Normal' : 'Incompleto');
                     if (!$row['entrada'] && !$row['saida']) $status = 'Falta';
                 ?>
@@ -344,13 +344,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
     <!-- ============================================ -->
     <?php elseif ($tipo == 'banco_horas'): ?>
         <?php
-        $carga_diaria = 8;
-        $stmt_config = $db->prepare("SELECT carga_horaria_diaria FROM config_horarios WHERE empresa_id = :empresa_id");
-        $stmt_config->execute([':empresa_id' => $empresa_id]);
-        $config = $stmt_config->fetch();
-        if ($config) {
-            $carga_diaria = $config['carga_horaria_diaria'] ?: 8;
-        }
+        $carga_diaria = 7 + (20/60); // 7:20h
         
         $query_func = "SELECT id, nome, matricula FROM funcionarios 
                        WHERE empresa_id = :empresa_id AND status = 'ativo' 
@@ -434,7 +428,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
             <?php else: ?>
                 <?php foreach ($resultados as $r): 
                     $saldo_class = $r['saldo'] >= 0 ? 'saldo-positivo' : 'saldo-negativo';
-                    $saldo_texto = ($r['saldo'] >= 0 ? '+' : '') . formatarHorasPDF(abs($r['saldo']));
+                    $saldo_texto = formatarHorasPDF($r['saldo'], true);
                 ?>
                     <tr>
                         <td><?php echo htmlspecialchars($r['nome']); ?></td>
@@ -454,7 +448,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
                     <td><strong><?php echo formatarHorasPDF(array_sum(array_column($resultados, 'horas_trab'))); ?></strong></td>
                     <td><strong><?php echo formatarHorasPDF(array_sum(array_column($resultados, 'horas_esp'))); ?></strong></td>
                     <td class="<?php echo $total_saldo >= 0 ? 'saldo-positivo' : 'saldo-negativo'; ?>">
-                        <strong><?php echo ($total_saldo >= 0 ? '+' : '') . formatarHorasPDF(abs($total_saldo)); ?></strong>
+                        <strong><?php echo formatarHorasPDF($total_saldo, true); ?></strong>
                     </td>
                     <td></td>
                 </tr>
@@ -467,11 +461,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
     <!-- ============================================ -->
     <?php elseif ($tipo == 'horas_trabalhadas'): ?>
         <?php
-        $carga_diaria = 8;
-        $stmt_config = $db->prepare("SELECT carga_horaria_diaria FROM config_horarios WHERE empresa_id = :empresa_id");
-        $stmt_config->execute([':empresa_id' => $empresa_id]);
-        $config = $stmt_config->fetch();
-        if ($config) $carga_diaria = $config['carga_horaria_diaria'] ?: 8;
+        $carga_diaria = 7 + (20/60); // 7:20h
         
         switch ($periodo) {
             case 'diario': 
@@ -577,7 +567,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
                     <td colspan="4"><strong>SALDO FINAL</strong></td>
                     <td colspan="3">
                         <strong class="<?php echo ($total_e - $total_c) >= 0 ? 'saldo-positivo' : 'saldo-negativo'; ?>">
-                            <?php echo ($total_e - $total_c) >= 0 ? '+' : ''; ?><?php echo formatarHorasPDF(abs($total_e - $total_c)); ?>
+                            <?php echo formatarHorasPDF($total_e - $total_c, true); ?>
                         </strong>
                     </td>
                     <td></td>

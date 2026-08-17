@@ -45,10 +45,14 @@ $nomes_meses = [
     '07'=>'Julho','08'=>'Agosto','09'=>'Setembro','10'=>'Outubro','11'=>'Novembro','12'=>'Dezembro'
 ];
 
-function formatarHorasExcel($horas) {
-    $h = floor($horas);
-    $m = round(($horas - $h) * 60);
-    return sprintf("%02d:%02d", $h, $m);
+function formatarHorasExcel($horas, $com_sinal = false) {
+    if ($horas == 0) return ($com_sinal ? '+' : '') . '00:00';
+    $sinal = $horas < 0 ? '-' : ($com_sinal ? '+' : '');
+    $abs = abs($horas);
+    $h = floor($abs);
+    $m = round(($abs - $h) * 60);
+    if ($m >= 60) { $h += 1; $m -= 60; }
+    return $sinal . sprintf("%02d:%02d", $h, $m);
 }
 
 function formatarMinutosExcel($minutos) {
@@ -73,11 +77,7 @@ function calcularHorasDiaExcel($entrada, $saida_almoco, $volta_almoco, $saida) {
 // TIPO: EXTRATO FUNCIONÁRIO
 // ============================================
 if ($tipo == 'extrato_funcionario') {
-    $carga_diaria = 8;
-    $stmt_config = $db->prepare("SELECT carga_horaria_diaria FROM config_horarios WHERE empresa_id = :empresa_id");
-    $stmt_config->execute([':empresa_id' => $empresa_id]);
-    $config = $stmt_config->fetch();
-    if ($config) $carga_diaria = $config['carga_horaria_diaria'] ?: 8;
+    $carga_diaria = 7 + (20/60); // 7:20h
     
     $stmt_func = $db->prepare("SELECT nome, matricula FROM funcionarios WHERE id = :id AND empresa_id = :empresa_id");
     $stmt_func->execute([':id' => $funcionario_id, ':empresa_id' => $empresa_id]);
@@ -111,14 +111,14 @@ if ($tipo == 'extrato_funcionario') {
         $saldo = $horas - $carga_diaria;
         $status = ($row['entrada'] && $row['entrada'] > '08:00:00') ? 'Atraso' : (($row['entrada'] && $row['saida']) ? 'Normal' : 'Incompleto');
         if (!$row['entrada'] && !$row['saida']) $status = 'Falta';
-        $saldo_formatado = ($saldo >= 0 ? '+' : '') . number_format($saldo, 2, ',', '.');
+        $saldo_texto = formatarHorasExcel($saldo, true);
         fputcsv($output, [
             date('d/m/Y', strtotime($row['data'])), $dias_semana[$row['dia_semana']],
             $row['entrada'] ? substr($row['entrada'],0,5) : '--:--',
             $row['saida_almoco'] ? substr($row['saida_almoco'],0,5) : '--:--',
             $row['volta_almoco'] ? substr($row['volta_almoco'],0,5) : '--:--',
             $row['saida'] ? substr($row['saida'],0,5) : '--:--',
-            formatarHorasExcel($horas), $saldo_formatado, $status
+            formatarHorasExcel($horas), $saldo_texto, $status
         ], ';');
     }
     if ($rowCount == 0) {
@@ -278,13 +278,7 @@ elseif ($tipo == 'atrasos_faltas') {
 // TIPO: BANCO DE HORAS
 // ============================================
 elseif ($tipo == 'banco_horas') {
-    $carga_diaria = 8;
-    $stmt_config = $db->prepare("SELECT carga_horaria_diaria FROM config_horarios WHERE empresa_id = :empresa_id");
-    $stmt_config->execute([':empresa_id' => $empresa_id]);
-    $config = $stmt_config->fetch();
-    if ($config) {
-        $carga_diaria = $config['carga_horaria_diaria'] ?: 8;
-    }
+    $carga_diaria = 7 + (20/60); // 7:20h
     
     fputcsv($output, ['RELATÓRIO DE BANCO DE HORAS'], ';');
     fputcsv($output, ['Carga Horária Diária: ' . $carga_diaria . 'h'], ';');
@@ -404,11 +398,7 @@ elseif ($tipo == 'banco_horas') {
 // TIPO: HORAS TRABALHADAS
 // ============================================
 elseif ($tipo == 'horas_trabalhadas') {
-    $carga_diaria = 8;
-    $stmt_config = $db->prepare("SELECT carga_horaria_diaria FROM config_horarios WHERE empresa_id = :empresa_id");
-    $stmt_config->execute([':empresa_id' => $empresa_id]);
-    $config = $stmt_config->fetch();
-    if ($config) $carga_diaria = $config['carga_horaria_diaria'] ?: 8;
+    $carga_diaria = 7 + (20/60); // 7:20h
     
     switch ($periodo) {
         case 'diario': 
@@ -471,7 +461,8 @@ elseif ($tipo == 'horas_trabalhadas') {
         fputcsv($output, [], ';');
         fputcsv($output, ['TOTAIS GERAIS', '', '', '', '', formatarHorasExcel($total_n), formatarHorasExcel($total_e), formatarHorasExcel($total_c), ''], ';');
         $saldo_final = $total_e - $total_c;
-        fputcsv($output, ['SALDO FINAL', '', '', '', '', '', '', ($saldo_final >= 0 ? '+' : '') . formatarHorasExcel(abs($saldo_final)), ''], ';');
+        $saldo_texto = formatarHorasExcel($saldo_final, true);
+        fputcsv($output, ['SALDO FINAL', '', '', '', '', '', '', $saldo_texto, ''], ';');
     }
 }
 
