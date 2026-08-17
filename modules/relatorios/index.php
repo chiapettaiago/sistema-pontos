@@ -36,363 +36,65 @@ $stmt = $db->prepare("SELECT COUNT(*) as total FROM solicitacoes WHERE empresa_i
 $stmt->execute([':empresa_id' => $empresa_id]);
 $solicitacoes_pendentes = $stmt->fetch()['total'];
 ?>
+<div class="pf-page-header">
+    <h1><i class="fas fa-chart-bar me-2 text-primary"></i>Relatórios</h1>
+    <p class="text-muted">Acesse todos os relatórios do sistema</p>
+</div>
 
-<style>
-.relatorios-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.module-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.module-title h2 {
-    margin: 0;
-    font-size: 24px;
-}
-
-.module-title p {
-    margin: 8px 0 0 0;
-    color: var(--text-secondary);
-    font-size: 14px;
-}
-
-/* Cards de Estatísticas */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 32px;
-}
-
-.stat-card {
-    background: var(--bg-primary);
-    border-radius: 20px;
-    padding: 20px;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s;
-    text-align: center;
-}
-
-.stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-.stat-card .stat-icon {
-    font-size: 32px;
-    margin-bottom: 12px;
-}
-
-.stat-card .stat-number {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.stat-card .stat-label {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-top: 5px;
-}
-
-/* Grid de Relatórios */
-.relatorios-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 24px;
-}
-
-.relatorio-card {
-    background: var(--bg-primary);
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
-    overflow: hidden;
-    transition: all 0.3s;
-}
-
-.relatorio-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-.relatorio-header {
-    padding: 20px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-}
-
-.relatorio-header i {
-    font-size: 40px;
-    margin-bottom: 12px;
-    display: block;
-}
-
-.relatorio-header h3 {
-    font-size: 18px;
-    margin: 0;
-}
-
-.relatorio-body {
-    padding: 20px;
-}
-
-.relatorio-descricao {
-    color: var(--text-secondary);
-    font-size: 13px;
-    margin-bottom: 20px;
-    line-height: 1.5;
-    min-height: 60px;
-}
-
-.relatorio-acoes {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.btn-relatorio {
-    flex: 1;
-    padding: 10px;
-    border-radius: 10px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: 500;
-    transition: all 0.3s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-}
-
-.btn-visualizar {
-    background: #667eea;
-    color: white;
-}
-
-.btn-visualizar:hover {
-    background: #5a67d8;
-}
-
-.btn-excel {
-    background: #10b981;
-    color: white;
-}
-
-.btn-excel:hover {
-    background: #059669;
-}
-
-.btn-pdf {
-    background: #ef4444;
-    color: white;
-}
-
-.btn-pdf:hover {
-    background: #dc2626;
-}
-
-@media (max-width: 768px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .relatorios-grid {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
-
-<div class="relatorios-container">
-    <div class="module-header">
-        <div class="module-title">
-            <h2><i class="fas fa-chart-bar"></i> Central de Relatórios</h2>
-            <p>Gerencie e exporte relatórios do sistema</p>
-        </div>
+<div class="row g-4">
+    <div class="col-md-6 col-xl-4">
+        <a href="horas_trabalhadas.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="pf-stat-icon" style="background:var(--pf-gradient);"><i class="fas fa-hourglass-half text-white"></i></div>
+                <h5 class="mb-0 fw-semibold">Horas Trabalhadas</h5>
+            </div>
+            <p class="text-muted small mb-0">Relatório detalhado das horas trabalhadas por funcionário</p>
+        </a>
     </div>
-
-    <!-- Cards de Estatísticas -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-users" style="color: #667eea;"></i></div>
-            <div class="stat-number"><?php echo $total_funcionarios; ?></div>
-            <div class="stat-label">Funcionários Ativos</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-fingerprint" style="color: #10b981;"></i></div>
-            <div class="stat-number"><?php echo $total_pontos_hoje; ?></div>
-            <div class="stat-label">Pontos Hoje</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-clipboard-list" style="color: #f59e0b;"></i></div>
-            <div class="stat-number"><?php echo $solicitacoes_pendentes; ?></div>
-            <div class="stat-label">Solicitações Pendentes</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-calendar-alt" style="color: #8b5cf6;"></i></div>
-            <div class="stat-number"><?php echo date('m/Y'); ?></div>
-            <div class="stat-label">Mês Atual</div>
-        </div>
+    <div class="col-md-6 col-xl-4">
+        <a href="banco_horas.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#10b981,#059669);"><i class="fas fa-piggy-bank text-white"></i></div>
+                <h5 class="mb-0 fw-semibold">Banco de Horas</h5>
+            </div>
+            <p class="text-muted small mb-0">Saldo de horas extras e compensadas</p>
+        </a>
     </div>
-
-    <!-- Relatórios -->
-    <div class="relatorios-grid">
-        <!-- Relatório 1: Extrato Individual -->
-        <div class="relatorio-card">
-            <div class="relatorio-header">
-                <i class="fas fa-user-clock"></i>
-                <h3>Extrato Individual</h3>
+    <div class="col-md-6 col-xl-4">
+        <a href="atrasos_faltas.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);"><i class="fas fa-exclamation-triangle text-white"></i></div>
+                <h5 class="mb-0 fw-semibold">Atrasos e Faltas</h5>
             </div>
-            <div class="relatorio-body">
-                <div class="relatorio-descricao">
-                    Relatório detalhado por funcionário com entradas, saídas, horas trabalhadas, 
-                    saldo, faltas e atrasos. Suporta períodos diário, semanal, mensal e personalizado.
-                </div>
-                <div class="relatorio-acoes">
-                    <a href="extrato_funcionario.php" class="btn-relatorio btn-visualizar">
-                        <i class="fas fa-eye"></i> Visualizar
-                    </a>
-                    <a href="exportar_excel.php?tipo=extrato_funcionario" class="btn-relatorio btn-excel">
-                        <i class="fas fa-file-excel"></i> Excel
-                    </a>
-                    <a href="exportar_pdf.php?tipo=extrato_funcionario" class="btn-relatorio btn-pdf" target="_blank">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
-                </div>
+            <p class="text-muted small mb-0">Controle de atrasos, faltas e ausências</p>
+        </a>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <a href="horas_extras.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);"><i class="fas fa-plus-square text-white"></i></div>
+                <h5 class="mb-0 fw-semibold">Horas Extras</h5>
             </div>
-        </div>
-
-        <!-- Relatório 2: Extrato Coletivo -->
-        <div class="relatorio-card">
-            <div class="relatorio-header">
-                <i class="fas fa-users"></i>
-                <h3>Extrato Coletivo</h3>
+            <p class="text-muted small mb-0">Relatório de horas extras realizadas</p>
+        </a>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <a href="extrato_funcionario.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);"><i class="fas fa-user-clock text-white"></i></div>
+                <h5 class="mb-0 fw-semibold">Extrato por Funcionário</h5>
             </div>
-            <div class="relatorio-body">
-                <div class="relatorio-descricao">
-                    Relatório resumido de todos os funcionários com dias trabalhados, 
-                    faltas, atrasos, presença percentual e situação geral.
-                </div>
-                <div class="relatorio-acoes">
-                    <a href="extrato_coletivo.php" class="btn-relatorio btn-visualizar">
-                        <i class="fas fa-eye"></i> Visualizar
-                    </a>
-                    <a href="exportar_excel.php?tipo=extrato_coletivo" class="btn-relatorio btn-excel">
-                        <i class="fas fa-file-excel"></i> Excel
-                    </a>
-                    <a href="exportar_pdf.php?tipo=extrato_coletivo" class="btn-relatorio btn-pdf" target="_blank">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
-                </div>
+            <p class="text-muted small mb-0">Todos os registros de ponto de um funcionário</p>
+        </a>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <a href="extrato_coletivo.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#0891b2,#0e7490);"><i class="fas fa-users text-white"></i></div>
+                <h5 class="mb-0 fw-semibold">Extrato Coletivo</h5>
             </div>
-        </div>
-
-        <!-- Relatório 3: Pontos por Funcionário -->
-        <div class="relatorio-card">
-            <div class="relatorio-header">
-                <i class="fas fa-fingerprint"></i>
-                <h3>Pontos por Funcionário</h3>
-            </div>
-            <div class="relatorio-body">
-                <div class="relatorio-descricao">
-                    Listagem detalhada de todos os registros de ponto de um funcionário 
-                    em um período específico.
-                </div>
-                <div class="relatorio-acoes">
-                    <a href="pontos_funcionario.php" class="btn-relatorio btn-visualizar">
-                        <i class="fas fa-eye"></i> Visualizar
-                    </a>
-                    <a href="exportar_excel.php?tipo=pontos_funcionario" class="btn-relatorio btn-excel">
-                        <i class="fas fa-file-excel"></i> Excel
-                    </a>
-                    <a href="exportar_pdf.php?tipo=pontos_funcionario" class="btn-relatorio btn-pdf" target="_blank">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Relatório 4: Atrasos e Faltas -->
-        <div class="relatorio-card">
-            <div class="relatorio-header">
-                <i class="fas fa-exclamation-triangle"></i>
-                <h3>Atrasos e Faltas</h3>
-            </div>
-            <div class="relatorio-body">
-                <div class="relatorio-descricao">
-                    Relatório de funcionários com atrasos e faltas, incluindo 
-                    análise detalhada e resumo por funcionário.
-                </div>
-                <div class="relatorio-acoes">
-                    <a href="atrasos_faltas.php" class="btn-relatorio btn-visualizar">
-                        <i class="fas fa-eye"></i> Visualizar
-                    </a>
-                    <a href="exportar_excel.php?tipo=atrasos_faltas" class="btn-relatorio btn-excel">
-                        <i class="fas fa-file-excel"></i> Excel
-                    </a>
-                    <a href="exportar_pdf.php?tipo=atrasos_faltas" class="btn-relatorio btn-pdf" target="_blank">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Relatório 5: Horas Trabalhadas -->
-        <div class="relatorio-card">
-            <div class="relatorio-header">
-                <i class="fas fa-chart-line"></i>
-                <h3>Horas Trabalhadas</h3>
-            </div>
-            <div class="relatorio-body">
-                <div class="relatorio-descricao">
-                    Relatório de horas trabalhadas por funcionário, incluindo 
-                    horas normais e horas extras.
-                </div>
-                <div class="relatorio-acoes">
-                    <a href="horas_trabalhadas.php" class="btn-relatorio btn-visualizar">
-                        <i class="fas fa-eye"></i> Visualizar
-                    </a>
-                    <a href="exportar_excel.php?tipo=horas_trabalhadas" class="btn-relatorio btn-excel">
-                        <i class="fas fa-file-excel"></i> Excel
-                    </a>
-                    <a href="exportar_pdf.php?tipo=horas_trabalhadas" class="btn-relatorio btn-pdf" target="_blank">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Relatório 6: Extrato Geral da Empresa -->
-        <div class="relatorio-card">
-            <div class="relatorio-header">
-                <i class="fas fa-building"></i>
-                <h3>Extrato Geral</h3>
-            </div>
-            <div class="relatorio-body">
-                <div class="relatorio-descricao">
-                    Visão geral da empresa com estatísticas de funcionários, 
-                    dias trabalhados, atrasos e situação geral.
-                </div>
-                <div class="relatorio-acoes">
-                    <a href="extrato_geral.php" class="btn-relatorio btn-visualizar">
-                        <i class="fas fa-eye"></i> Visualizar
-                    </a>
-                    <a href="exportar_excel.php?tipo=extrato_geral" class="btn-relatorio btn-excel">
-                        <i class="fas fa-file-excel"></i> Excel
-                    </a>
-                    <a href="exportar_pdf.php?tipo=extrato_geral" class="btn-relatorio btn-pdf" target="_blank">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </a>
-                </div>
-            </div>
-        </div>
+            <p class="text-muted small mb-0">Registros de todos os funcionários por período</p>
+        </a>
     </div>
 </div>
 

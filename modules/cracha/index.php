@@ -20,7 +20,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
@@ -313,5 +313,6 @@ if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa') {
 </div>
 
 <?php require_once '../../includes/footer.php'; ?>
+
 
 

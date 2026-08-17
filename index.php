@@ -17,7 +17,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: /login.php');
+    header('Location: ' . BASE_URL . '/login.php');
     exit;
 }
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? 'funcionario';
@@ -677,5 +677,6 @@ if (ctxDia) {
 </script>
 
 <?php require_once 'includes/footer.php'; ?>
+
 
 

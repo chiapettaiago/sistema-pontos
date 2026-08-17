@@ -5,7 +5,7 @@ require_once '../../includes/auth.php';
 
 session_start();
 if ($_SESSION['usuario_tipo'] !== 'super_admin') {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
@@ -101,3 +101,4 @@ try {
 }
 exit;
 ?>
+

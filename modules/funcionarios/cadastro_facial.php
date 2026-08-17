@@ -17,7 +17,7 @@ $funcionario_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if ($funcionario_id <= 0) {
     $_SESSION['error'] = 'ID do funcionário inválido.';
-    header('Location: /modules/funcionarios/index.php');
+    header('Location: ' . BASE_URL . '/modules/funcionarios/index.php');
     exit;
 }
 
@@ -29,13 +29,13 @@ try {
     
     if (!$funcionario) {
         $_SESSION['error'] = 'Funcionário não encontrado.';
-        header('Location: /modules/funcionarios/index.php');
+        header('Location: ' . BASE_URL . '/modules/funcionarios/index.php');
         exit;
     }
 } catch (PDOException $e) {
     error_log("Erro ao buscar funcionário: " . $e->getMessage());
     $_SESSION['error'] = 'Erro ao carregar dados do funcionário.';
-    header('Location: /modules/funcionarios/index.php');
+    header('Location: ' . BASE_URL . '/modules/funcionarios/index.php');
     exit;
 }
 
@@ -625,3 +625,4 @@ require_once __DIR__ . '/../../includes/header.php';
 </html>
 
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+

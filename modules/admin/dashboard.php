@@ -7,7 +7,7 @@ require_once '../../config/multi_empresa.php';
 
 // Verificar se é super admin
 if ($_SESSION['usuario_tipo'] !== 'super_admin') {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
@@ -64,235 +64,200 @@ $stmt = $db->query("SELECT a.*, e.nome as empresa_nome, p.nome as plano_nome
                     ORDER BY a.data_fim ASC");
 $assinaturas_vencer = $stmt->fetchAll();
 ?>
-
-<style>
-.admin-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 24px;
-    margin-bottom: 32px;
-}
-
-.admin-stat-card {
-    background: var(--bg-primary);
-    border-radius: 20px;
-    padding: 24px;
-    border: 1px solid var(--border-color);
-    transition: var(--transition);
-}
-
-.admin-stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-}
-
-.admin-stat-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 16px;
-}
-
-.admin-stat-icon i {
-    font-size: 24px;
-    color: white;
-}
-
-.admin-stat-value {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.admin-stat-label {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-top: 4px;
-}
-
-.admin-section {
-    background: var(--bg-primary);
-    border-radius: 20px;
-    padding: 24px;
-    margin-bottom: 24px;
-    border: 1px solid var(--border-color);
-}
-
-.admin-section-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.empresa-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.empresa-item:last-child {
-    border-bottom: none;
-}
-
-.vencer-badge {
-    background: #fef3c7;
-    color: #d97706;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-}
-</style>
-
-<div class="module-header">
-    <div class="module-title">
-        <h2><i class="fas fa-crown"></i> Painel Administrativo</h2>
-        <p>Gerencie todas as empresas, planos e assinaturas da plataforma</p>
-    </div>
-</div>
-
-<!-- Cards de Estatísticas -->
-<div class="admin-stats">
-    <div class="admin-stat-card">
-        <div class="admin-stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-            <i class="fas fa-building"></i>
-        </div>
-        <div class="admin-stat-value"><?php echo $stats['total_empresas']; ?></div>
-        <div class="admin-stat-label">Total de Empresas</div>
-        <div style="font-size: 12px; margin-top: 8px;">
-            <span style="color: #10b981;"><?php echo $stats['empresas_ativas']; ?> ativas</span>
-        </div>
-    </div>
-    
-    <div class="admin-stat-card">
-        <div class="admin-stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
-            <i class="fas fa-users"></i>
-        </div>
-        <div class="admin-stat-value"><?php echo $stats['total_funcionarios']; ?></div>
-        <div class="admin-stat-label">Funcionários Ativos</div>
-    </div>
-    
-    <div class="admin-stat-card">
-        <div class="admin-stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-            <i class="fas fa-chart-line"></i>
-        </div>
-        <div class="admin-stat-value">R$ <?php echo number_format($stats['faturamento_mensal'], 2, ',', '.'); ?></div>
-        <div class="admin-stat-label">Faturamento Mensal</div>
-    </div>
-    
-    <div class="admin-stat-card">
-        <div class="admin-stat-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-            <i class="fas fa-crown"></i>
-        </div>
-        <div class="admin-stat-value"><?php echo $stats['total_planos']; ?></div>
-        <div class="admin-stat-label">Planos Disponíveis</div>
-    </div>
-</div>
-
-<!-- Gráficos -->
-<div class="admin-section">
-    <div class="admin-section-title">
-        <i class="fas fa-chart-pie"></i> Distribuição de Empresas por Plano
-    </div>
-    <div style="height: 300px;">
-        <canvas id="planosChart"></canvas>
-    </div>
-</div>
-
-<!-- Últimas Empresas -->
-<div class="admin-section">
-    <div class="admin-section-title">
-        <i class="fas fa-clock"></i> Últimas Empresas Cadastradas
-    </div>
+<!-- PAGE HEADER -->
+<div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
     <div>
-        <?php foreach ($ultimas_empresas as $empresa): ?>
-        <div class="empresa-item">
-            <div>
-                <strong><?php echo htmlspecialchars($empresa['nome']); ?></strong>
-                <div style="font-size: 12px; color: var(--text-secondary);">
-                    <?php echo htmlspecialchars($empresa['email']); ?>
+        <h1><i class="fas fa-crown me-2 text-warning"></i>Painel Administrativo</h1>
+        <p class="text-muted">Gerencie todas as empresas, planos e assinaturas da plataforma</p>
+    </div>
+</div>
+
+<!-- STAT CARDS -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card pf-stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="pf-stat-icon" style="background:var(--pf-gradient);">
+                    <i class="fas fa-building text-white"></i>
+                </div>
+                <div>
+                    <div class="fs-3 fw-bold"><?php echo $stats['total_empresas']; ?></div>
+                    <div class="text-muted small">Total de Empresas</div>
+                    <div class="text-success small"><?php echo $stats['empresas_ativas']; ?> ativas</div>
                 </div>
             </div>
-            <div>
-                <span class="status-badge status-<?php echo $empresa['status']; ?>">
-                    <?php echo ucfirst($empresa['status']); ?>
-                </span>
-                <a href="empresas/visualizar.php?id=<?php echo $empresa['id']; ?>" class="btn-icon">
-                    <i class="fas fa-eye"></i>
-                </a>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card pf-stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#10b981,#059669);">
+                    <i class="fas fa-users text-white"></i>
+                </div>
+                <div>
+                    <div class="fs-3 fw-bold"><?php echo $stats['total_funcionarios']; ?></div>
+                    <div class="text-muted small">Funcionários Cadastrados</div>
+                </div>
             </div>
         </div>
-        <?php endforeach; ?>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card pf-stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">
+                    <i class="fas fa-chart-line text-white"></i>
+                </div>
+                <div>
+                    <div class="fs-3 fw-bold">R$ <?php echo number_format($stats['faturamento_mensal'], 2, ',', '.'); ?></div>
+                    <div class="text-muted small">Faturamento Mensal</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card pf-stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">
+                    <i class="fas fa-crown text-white"></i>
+                </div>
+                <div>
+                    <div class="fs-3 fw-bold"><?php echo $stats['total_planos']; ?></div>
+                    <div class="text-muted small">Planos Disponíveis</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Assinaturas a Vencer -->
+<div class="row g-4 mb-4">
+    <!-- Gráfico -->
+    <div class="col-lg-5">
+        <div class="card pf-table-card h-100">
+            <div class="card-header bg-transparent border-bottom fw-semibold">
+                <i class="fas fa-chart-pie me-2 text-primary"></i>Distribuição por Plano
+            </div>
+            <div class="card-body d-flex align-items-center justify-content-center" style="height:280px;">
+                <canvas id="planosChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Últimas Empresas -->
+    <div class="col-lg-7">
+        <div class="card pf-table-card h-100">
+            <div class="card-header bg-transparent border-bottom fw-semibold">
+                <i class="fas fa-clock me-2 text-primary"></i>Últimas Empresas Cadastradas
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table pf-table-card mb-0">
+                        <thead>
+                            <tr>
+                                <th>Empresa</th>
+                                <th>E-mail</th>
+                                <th>Status</th>
+                                <th class="text-end">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($ultimas_empresas as $empresa): ?>
+                            <tr>
+                                <td class="fw-semibold"><?php echo htmlspecialchars($empresa['nome']); ?></td>
+                                <td class="text-muted small"><?php echo htmlspecialchars($empresa['email']); ?></td>
+                                <td>
+                                    <span class="badge <?php echo $empresa['status'] === 'ativa' ? 'bg-success' : 'bg-secondary'; ?>">
+                                        <?php echo ucfirst($empresa['status']); ?>
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <a href="empresas/visualizar.php?id=<?php echo $empresa['id']; ?>"
+                                       class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Visualizar">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assinaturas a vencer -->
 <?php if (!empty($assinaturas_vencer)): ?>
-<div class="admin-section">
-    <div class="admin-section-title">
-        <i class="fas fa-exclamation-triangle"></i> Assinaturas a Vencer (Próximos 30 dias)
+<div class="card pf-table-card mb-4">
+    <div class="card-header bg-transparent border-bottom fw-semibold text-warning">
+        <i class="fas fa-exclamation-triangle me-2"></i>Assinaturas a Vencer (próximos 30 dias)
     </div>
-    <div>
-        <?php foreach ($assinaturas_vencer as $assinatura): ?>
-        <div class="empresa-item">
-            <div>
-                <strong><?php echo htmlspecialchars($assinatura['empresa_nome']); ?></strong>
-                <div style="font-size: 12px; color: var(--text-secondary);">
-                    Plano: <?php echo htmlspecialchars($assinatura['plano_nome']); ?>
-                </div>
-            </div>
-            <div>
-                <span class="vencer-badge">
-                    <i class="fas fa-calendar"></i> 
-                    Vence em <?php echo date('d/m/Y', strtotime($assinatura['data_fim'])); ?>
-                </span>
-                <a href="assinaturas/renovar.php?id=<?php echo $assinatura['id']; ?>" class="btn-icon">
-                    <i class="fas fa-sync-alt"></i>
-                </a>
-            </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead><tr><th>Empresa</th><th>Plano</th><th>Vencimento</th><th class="text-end">Ação</th></tr></thead>
+                <tbody>
+                    <?php foreach ($assinaturas_vencer as $a): ?>
+                    <tr>
+                        <td class="fw-semibold"><?php echo htmlspecialchars($a['empresa_nome']); ?></td>
+                        <td><?php echo htmlspecialchars($a['plano_nome']); ?></td>
+                        <td>
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-calendar me-1"></i><?php echo date('d/m/Y', strtotime($a['data_fim'])); ?>
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a href="assinaturas/renovar.php?id=<?php echo $a['id']; ?>" class="btn btn-sm btn-warning">
+                                <i class="fas fa-sync-alt"></i> Renovar
+                            </a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
-        <?php endforeach; ?>
     </div>
 </div>
 <?php endif; ?>
 
 <!-- Links Rápidos -->
-<div class="admin-section">
-    <div class="admin-section-title">
-        <i class="fas fa-link"></i> Links Rápidos
+<div class="card pf-table-card mb-4">
+    <div class="card-header bg-transparent border-bottom fw-semibold">
+        <i class="fas fa-link me-2 text-primary"></i>Links Rápidos
     </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-        <a href="empresas/index.php" class="btn btn-secondary">
-            <i class="fas fa-building"></i> Gerenciar Empresas
-        </a>
-        <a href="planos/index.php" class="btn btn-secondary">
-            <i class="fas fa-crown"></i> Gerenciar Planos
-        </a>
-        <a href="assinaturas/index.php" class="btn btn-secondary">
-            <i class="fas fa-receipt"></i> Gerenciar Assinaturas
-        </a>
-        <a href="../relatorios/geral.php" class="btn btn-secondary">
-            <i class="fas fa-chart-bar"></i> Relatórios Globais
-        </a>
+    <div class="card-body">
+        <div class="row g-2">
+            <div class="col-6 col-md-3">
+                <a href="empresas/index.php" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-building d-block mb-1 fs-5"></i>Empresas
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="planos/index.php" class="btn btn-outline-warning w-100">
+                    <i class="fas fa-crown d-block mb-1 fs-5"></i>Planos
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="assinaturas/index.php" class="btn btn-outline-success w-100">
+                    <i class="fas fa-receipt d-block mb-1 fs-5"></i>Assinaturas
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="../relatorios/geral.php" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-chart-bar d-block mb-1 fs-5"></i>Relatórios
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// Gráfico de distribuição por plano
 const ctx = document.getElementById('planosChart').getContext('2d');
 new Chart(ctx, {
     type: 'doughnut',
     data: {
-        labels: [<?php 
-            $labels = [];
-            $values = [];
+        labels: [<?php
+            $labels = []; $values = [];
             foreach ($empresas_por_plano as $p) {
                 $labels[] = "'" . addslashes($p['nome']) . "'";
                 $values[] = $p['total'];
@@ -301,15 +266,15 @@ new Chart(ctx, {
         ?>],
         datasets: [{
             data: [<?php echo implode(',', $values); ?>],
-            backgroundColor: ['#667eea', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+            backgroundColor: ['#667eea','#10b981','#f59e0b','#ef4444','#8b5cf6'],
+            borderWidth: 2,
+            borderColor: '#fff'
         }]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-            legend: { position: 'bottom' }
-        }
+        plugins: { legend: { position: 'bottom' } }
     }
 });
 </script>

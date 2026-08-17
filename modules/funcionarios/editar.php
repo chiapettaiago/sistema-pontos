@@ -42,7 +42,7 @@ if ($_SESSION['usuario_tipo'] === 'super_admin' || $_SESSION['usuario_tipo'] ===
         $empresa_id = $_SESSION['empresa_id'] ?? null;
     }
     if ($empresa_id === null || $empresa_id === '') {
-        header('Location: /index.php');
+        header('Location: ' . BASE_URL . '/index.php');
         exit;
     }
     $stmt = $db->prepare("SELECT id, nome_fantasia FROM filiais WHERE empresa_id = :empresa_id AND ativo = 1 ORDER BY nome_fantasia");
@@ -216,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $empresa_id = $_SESSION['empresa_id'] ?? null;
     }
     if ($empresa_id === null || $empresa_id === '') {
-        header('Location: /index.php');
+        header('Location: ' . BASE_URL . '/index.php');
         exit;
     }
     $filial_id = $_POST['filial_id'] ?? $funcionario['filial_id'];
@@ -1426,5 +1426,6 @@ document.querySelector('select[name="filial_id"]')?.addEventListener('change', f
 <?php endif; ?>
 
 <?php require_once '../../includes/footer.php'; ?>
+
 
 

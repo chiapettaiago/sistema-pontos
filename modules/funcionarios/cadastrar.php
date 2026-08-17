@@ -24,7 +24,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? 'funcionario';
@@ -234,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $empresa_id = $_SESSION['empresa_id'] ?? null;
     }
     if ($empresa_id === null || $empresa_id === '') {
-        header('Location: /index.php');
+        header('Location: ' . BASE_URL . '/index.php');
         exit;
     }
     $filial_id = $_POST['filial_id'] ?? null;
@@ -1416,5 +1416,6 @@ document.querySelector('select[name="filial_id"]')?.addEventListener('change', f
 </script>
 
 <?php require_once '../../includes/footer.php'; ?>
+
 
 

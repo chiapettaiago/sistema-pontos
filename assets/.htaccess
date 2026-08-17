@@ -1,20 +1,17 @@
-# Proteção de diretórios
+﻿# Protecao de diretorios
 Options -Indexes
 
-# Proteger arquivos sensíveis
+# Proteger arquivos sensiveis (sintaxe Apache 2.4+)
 <FilesMatch "^(config|auth|csrf|database)\.php$">
-    Order allow,deny
-    Deny from all
+    Require all denied
 </FilesMatch>
 
 # Prevenir acesso direto a backups
 <FilesMatch "\.(sql|bak|zip|tar|gz)$">
-    Order allow,deny
-    Deny from all
+    Require all denied
 </FilesMatch>
 
-# Redirecionar para HTTPS fora do localhost.
-# Em XAMPP/local, forcar HTTPS quebra o carregamento de assets/modelos.
+# Redirecionamento HTTPS apenas fora do localhost
 RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:[0-9]+)?$ [NC]

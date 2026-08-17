@@ -6,7 +6,7 @@ require_once '../../../includes/header.php';
 require_once '../../../config/database.php';
 
 if ($_SESSION['usuario_tipo'] !== 'super_admin') {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 

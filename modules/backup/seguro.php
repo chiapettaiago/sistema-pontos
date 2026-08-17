@@ -59,7 +59,7 @@ switch ($action) {
             $_SESSION['error'] = 'Erro ao criar backup';
         }
         
-        header('Location: /modules/backup/seguro.php');
+        header('Location: ' . BASE_URL . '/modules/backup/seguro.php');
         break;
         
     case 'restaurar':
@@ -72,7 +72,7 @@ switch ($action) {
         
         if (!file_exists($backupPath)) {
             $_SESSION['error'] = 'Arquivo de backup não encontrado';
-            header('Location: /modules/backup/seguro.php');
+            header('Location: ' . BASE_URL . '/modules/backup/seguro.php');
             exit;
         }
         
@@ -95,7 +95,7 @@ switch ($action) {
             $_SESSION['error'] = 'Erro ao restaurar backup';
         }
         
-        header('Location: /modules/backup/seguro.php');
+        header('Location: ' . BASE_URL . '/modules/backup/seguro.php');
         break;
         
     case 'excluir':
@@ -116,7 +116,7 @@ switch ($action) {
             $_SESSION['error'] = 'Erro ao excluir backup';
         }
         
-        header('Location: /modules/backup/seguro.php');
+        header('Location: ' . BASE_URL . '/modules/backup/seguro.php');
         break;
         
     case 'download':

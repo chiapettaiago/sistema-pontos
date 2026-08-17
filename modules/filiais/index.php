@@ -31,7 +31,7 @@ if (!$empresa_id && isset($_SESSION['usuario_id'])) {
 }
 
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
@@ -139,320 +139,71 @@ try {
     $empresa_nome = 'Empresa ' . $empresa_id;
 }
 ?>
-
-<style>
-.empresa-box {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 24px;
-    color: white;
-}
-.empresa-box h3 {
-    margin: 0 0 5px 0;
-    font-size: 18px;
-}
-.empresa-box p {
-    margin: 0;
-    opacity: 0.8;
-    font-size: 13px;
-}
-.diagnostico-box {
-    background: #fef3c7;
-    border: 1px solid #f59e0b;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 24px;
-    font-size: 13px;
-    color: #92400e;
-}
-.diagnostico-box table {
-    background: white;
-}
-.diagnostico-box th,
-.diagnostico-box td {
-    padding: 8px 12px;
-}
-.btn-corrigir {
-    display: inline-block;
-    background: #f59e0b;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    margin-top: 10px;
-}
-.btn-corrigir:hover {
-    background: #d97706;
-}
-.stats-box {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 20px;
-    margin-bottom: 24px;
-}
-.stat-item {
-    background: var(--bg-primary);
-    border-radius: 16px;
-    padding: 20px;
-    text-align: center;
-    border: 1px solid var(--border-color);
-}
-.stat-number {
-    font-size: 32px;
-    font-weight: 700;
-    color: #667eea;
-}
-.stat-label {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-top: 5px;
-}
-.table-wrapper {
-    background: var(--bg-primary);
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-}
-.table-title {
-    padding: 15px 20px;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--bg-secondary);
-}
-.table-title h3 {
-    margin: 0;
-    font-size: 16px;
-}
-.table-responsive {
-    overflow-x: auto;
-}
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-.data-table th,
-.data-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-}
-.data-table th {
-    background: var(--bg-secondary);
-    font-weight: 600;
-    font-size: 13px;
-}
-.btn-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    color: var(--text-secondary);
-    text-decoration: none;
-}
-.btn-icon:hover {
-    background: var(--bg-secondary);
-    color: #667eea;
-}
-.btn-primary {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-.btn-primary:hover {
-    opacity: 0.9;
-}
-.text-center {
-    text-align: center;
-}
-.status-ativo {
-    background: #d1fae5;
-    color: #059669;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    display: inline-block;
-}
-.status-inativo {
-    background: #fee2e2;
-    color: #dc2626;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    display: inline-block;
-}
-.badge-matriz {
-    background: #e0e7ff;
-    color: #4338ca;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    display: inline-block;
-}
-.badge-filial {
-    background: #d1fae5;
-    color: #059669;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    display: inline-block;
-}
-.badge-loja {
-    background: #fed7aa;
-    color: #c2410c;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    display: inline-block;
-}
-.empty-state {
-    text-align: center;
-    padding: 60px;
-}
-.empty-state i {
-    font-size: 48px;
-    color: #ccc;
-    margin-bottom: 16px;
-}
-.module-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-.module-title h2 {
-    margin: 0 0 5px 0;
-    font-size: 24px;
-}
-.module-title p {
-    margin: 0;
-    color: var(--text-secondary);
-    font-size: 14px;
-}
-</style>
-
-<div class="module-header">
-    <div class="module-title">
-        <h2><i class="fas fa-store"></i> Filiais / Lojas</h2>
-        <p>Gerencie as filiais da empresa</p>
+<div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
+    <div>
+        <h1><i class="fas fa-store me-2 text-primary"></i>Filiais</h1>
+        <p class="text-muted">Gerencie as filiais da empresa</p>
     </div>
-    <div class="module-actions">
-        <a href="cadastrar.php" class="btn-primary">
-            <i class="fas fa-plus"></i> Nova Filial
-        </a>
-    </div>
+    <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
+    <a href="cadastrar.php" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Nova Filial</a>
+    <?php endif; ?>
 </div>
 
-<!-- Informações da Empresa -->
-<div class="empresa-box">
-    <h3><i class="fas fa-building"></i> <?php echo htmlspecialchars($empresa_nome); ?></h3>
-    <p>ID da Empresa: <?php echo $empresa_id; ?> | Total de filiais: <?php echo $total_filiais; ?></p>
-</div>
-
-<!-- Diagnóstico -->
-<?php echo $diagnostico; ?>
-
-<!-- Cards de Estatísticas -->
-<?php if ($total_filiais > 0): ?>
-<div class="stats-box">
-    <div class="stat-item">
-        <div class="stat-number"><?php echo $total_filiais; ?></div>
-        <div class="stat-label">Total de Filiais</div>
+<div class="card pf-table-card">
+    <div class="card-header bg-transparent border-bottom fw-semibold">
+        <i class="fas fa-list me-2 text-primary"></i>Lista de Filiais
+        <span class="badge bg-primary ms-2"><?php echo count($filiais); ?></span>
     </div>
-    <div class="stat-item">
-        <div class="stat-number"><?php echo $total_ativas; ?></div>
-        <div class="stat-label">Filiais Ativas</div>
-    </div>
-    <div class="stat-item">
-        <div class="stat-number"><?php echo $total_matriz; ?></div>
-        <div class="stat-label">Matriz</div>
-    </div>
-</div>
-
-<!-- Lista de Filiais -->
-<div class="table-wrapper">
-    <div class="table-title">
-        <h3><i class="fas fa-list"></i> Filiais Cadastradas</h3>
-    </div>
-    <div class="table-responsive">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Nome Fantasia</th>
-                    <th>Tipo</th>
-                    <th>CNPJ</th>
-                    <th>Cidade/UF</th>
-                    <th>Funcionários</th>
-                    <th>Pontos Hoje</th>
-                    <th>Status</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($filiais as $filial): ?>
-                <tr class="fade-in">
-                    <td><strong><?php echo htmlspecialchars($filial['codigo']); ?></strong></td>
-                    <td><?php echo htmlspecialchars($filial['nome_fantasia']); ?></td>
-                    <td>
-                        <span class="badge-<?php echo $filial['tipo_ramo']; ?>">
-                            <?php 
-                            $tipos = [
-                                'matriz' => '🏢 Matriz',
-                                'filial' => '📌 Filial',
-                                'loja' => '🛍️ Loja'
-                            ];
-                            echo $tipos[$filial['tipo_ramo']] ?? $filial['tipo_ramo'];
-                            ?>
-                        </span>
-                    </td>
-                    <td><?php echo htmlspecialchars($filial['cnpj'] ?: '--'); ?></td>
-                    <td><?php echo htmlspecialchars($filial['cidade'] . '/' . $filial['estado']); ?></td>
-                    <td class="text-center"><?php echo $filial['total_funcionarios']; ?></td>
-                    <td class="text-center"><?php echo $filial['pontos_hoje']; ?></td>
-                    <td>
-                        <?php if ($filial['ativo']): ?>
-                            <span class="status-ativo">Ativa</span>
-                        <?php else: ?>
-                            <span class="status-inativo">Inativa</span>
-                        <?php endif; ?>
-                    </td>
-                    <td class="actions">
-                        <a href="visualizar.php?id=<?php echo $filial['id']; ?>" class="btn-icon" title="Visualizar">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a href="editar.php?id=<?php echo $filial['id']; ?>" class="btn-icon" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <?php if ($filial['ativo']): ?>
-                            <a href="excluir.php?id=<?php echo $filial['id']; ?>" class="btn-icon" style="color: #dc2626;" 
-                               onclick="return confirm('Tem certeza que deseja desativar esta filial?')" title="Desativar">
-                                <i class="fas fa-ban"></i>
-                            </a>
-                        <?php else: ?>
-                            <a href="excluir.php?id=<?php echo $filial['id']; ?>&reativar=1" class="btn-icon" style="color: #10b981;" 
-                               onclick="return confirm('Tem certeza que deseja reativar esta filial?')" title="Reativar">
-                                <i class="fas fa-check-circle"></i>
-                            </a>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th class="d-none d-md-table-cell">Cidade/UF</th>
+                        <th class="d-none d-lg-table-cell">Responsável</th>
+                        <th>Status</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($filiais as $filial): ?>
+                    <tr>
+                        <td>
+                            <div class="fw-semibold"><?php echo htmlspecialchars($filial['nome']); ?></div>
+                            <div class="text-muted small"><?php echo htmlspecialchars($filial['endereco'] ?? ''); ?></div>
+                        </td>
+                        <td class="d-none d-md-table-cell text-muted">
+                            <?php echo htmlspecialchars(trim(($filial['cidade'] ?? '') . '/' . ($filial['uf'] ?? ''), '/')); ?>
+                        </td>
+                        <td class="d-none d-lg-table-cell text-muted"><?php echo htmlspecialchars($filial['responsavel'] ?? '-'); ?></td>
+                        <td>
+                            <span class="badge <?php echo ($filial['ativo'] ?? 1) ? 'bg-success' : 'bg-secondary'; ?>">
+                                <?php echo ($filial['ativo'] ?? 1) ? 'Ativa' : 'Inativa'; ?>
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a href="visualizar.php?id=<?php echo $filial['id']; ?>" class="btn btn-outline-primary" title="Ver"><i class="fas fa-eye"></i></a>
+                                <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa'])): ?>
+                                <a href="editar.php?id=<?php echo $filial['id']; ?>" class="btn btn-outline-secondary" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="excluir.php?id=<?php echo $filial['id']; ?>" class="btn btn-outline-danger" title="Excluir"
+                                   onclick="return confirm('Excluir esta filial?')"><i class="fas fa-trash"></i></a>
+                                <?php endif; ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php if (empty($filiais)): ?>
+                    <tr><td colspan="5" class="text-center text-muted py-4">
+                        <i class="fas fa-store fa-2x d-block mb-2 opacity-25"></i>Nenhuma filial cadastrada
+                    </td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-<?php endif; ?>
 
 <?php require_once '../../includes/footer.php'; ?>
-
 

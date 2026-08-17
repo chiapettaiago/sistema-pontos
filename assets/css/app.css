@@ -1,0 +1,370 @@
+/* ==========================================================
+   app.css  —  PontoFacil  (Bootstrap 5 layer)
+   ========================================================== */
+@import url('./style.css');
+
+/* ----------------------------------------------------------
+   Variáveis de tema
+   ---------------------------------------------------------- */
+:root {
+    --sb-w:      250px;
+    --sb-grad:   linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+    --sb-txt:    rgba(255,255,255,.80);
+    --sb-dim:    rgba(255,255,255,.40);
+    --sb-hover:  rgba(255,255,255,.10);
+    --sb-active: rgba(255,255,255,.18);
+    --topbar-h:  58px;
+    --font:      'Inter', system-ui, sans-serif;
+}
+
+[data-bs-theme="dark"] {
+    --sb-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+}
+
+/* ----------------------------------------------------------
+   Base
+   ---------------------------------------------------------- */
+html, body {
+    font-family: var(--font);
+    font-size: 14px;
+    min-height: 100%;
+}
+
+/* ----------------------------------------------------------
+   Sidebar — estilos compartilhados (fixo + offcanvas)
+   ---------------------------------------------------------- */
+.pf-sidebar {
+    width: var(--sb-w) !important;
+    background: var(--sb-grad) !important;
+    color: var(--sb-txt);
+    border-right: none !important;
+}
+
+/* Sidebar fixo: sticky na altura total */
+.pf-sidebar--fixed {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    flex-shrink: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.15) transparent;
+}
+
+.pf-sidebar--fixed::-webkit-scrollbar { width: 3px; }
+.pf-sidebar--fixed::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.15);
+    border-radius: 2px;
+}
+
+/* ----------------------------------------------------------
+   Logo / Brand
+   ---------------------------------------------------------- */
+.pf-logo {
+    padding: 18px 16px 14px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    flex-shrink: 0;
+}
+
+.pf-logo-emp {
+    font-size: 11px;
+    color: var(--sb-dim);
+    margin-top: 3px;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ----------------------------------------------------------
+   Navegação
+   ---------------------------------------------------------- */
+.pf-nav {
+    padding: 8px;
+}
+
+.pf-nav-section {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--sb-dim);
+    padding: 12px 10px 4px;
+}
+
+.pf-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    margin-bottom: 1px;
+    border-radius: 8px;
+    color: var(--sb-txt);
+    text-decoration: none;
+    font-size: 13.5px;
+    transition: background .15s, color .15s;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.pf-nav-link i {
+    width: 17px;
+    text-align: center;
+    font-size: 13px;
+    flex-shrink: 0;
+    opacity: .8;
+}
+
+.pf-nav-link:hover {
+    background: var(--sb-hover);
+    color: #fff;
+}
+
+.pf-nav-link.active {
+    background: var(--sb-active);
+    color: #fff;
+    font-weight: 600;
+}
+
+.pf-nav-link.active i { opacity: 1; }
+
+/* ----------------------------------------------------------
+   Rodapé do sidebar
+   ---------------------------------------------------------- */
+.pf-sidebar-footer {
+    padding: 12px 14px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    background: rgba(0,0,0,.12);
+    flex-shrink: 0;
+}
+
+.pf-logout-btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,.08);
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: 13px;
+    transition: background .15s, color .15s;
+}
+
+.pf-logout-btn:hover {
+    background: rgba(239,68,68,.25);
+    color: #fca5a5;
+}
+
+/* ----------------------------------------------------------
+   Topbar
+   ---------------------------------------------------------- */
+.pf-topbar {
+    height: var(--topbar-h);
+    background: var(--bs-body-bg);
+    border-bottom: 1px solid var(--bs-border-color);
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    flex-shrink: 0;
+}
+
+/* ----------------------------------------------------------
+   Conteúdo — utilitários de cartão/componentes
+   ---------------------------------------------------------- */
+
+/* Cartão genérico premium */
+.pf-card {
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    transition: transform .2s, box-shadow .2s;
+}
+
+.pf-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,.10);
+}
+
+/* Stat card (métricas) */
+.pf-stat {
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    transition: transform .2s, box-shadow .2s;
+}
+
+.pf-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,.10);
+}
+
+.pf-stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.pf-stat-num  { font-size: 24px; font-weight: 700; line-height: 1.1; }
+.pf-stat-lbl  { font-size: 12px; color: var(--bs-secondary-color); margin-top: 2px; }
+
+/* Ícone colorido por tema */
+.ico-indigo { background: #ede9fe; color: #4f46e5; }
+.ico-green  { background: #d1fae5; color: #059669; }
+.ico-yellow { background: #fef3c7; color: #d97706; }
+.ico-red    { background: #fee2e2; color: #dc2626; }
+.ico-blue   { background: #dbeafe; color: #2563eb; }
+
+[data-bs-theme="dark"] .ico-indigo { background: #312e81; color: #818cf8; }
+[data-bs-theme="dark"] .ico-green  { background: #064e3b; color: #34d399; }
+[data-bs-theme="dark"] .ico-yellow { background: #451a03; color: #fbbf24; }
+[data-bs-theme="dark"] .ico-red    { background: #450a0a; color: #f87171; }
+[data-bs-theme="dark"] .ico-blue   { background: #1e3a5f; color: #60a5fa; }
+
+/* Cartão de relatório */
+.pf-rel-card {
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bs-body-bg);
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform .2s, box-shadow .2s;
+}
+
+.pf-rel-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+}
+
+.pf-rel-head {
+    padding: 18px 18px 14px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #fff;
+}
+
+.pf-rel-head i { font-size: 28px; display: block; margin-bottom: 8px; }
+.pf-rel-head h3 { font-size: 15px; font-weight: 600; margin: 0; }
+
+.pf-rel-body {
+    padding: 14px 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.pf-rel-desc {
+    font-size: 12.5px;
+    color: var(--bs-secondary-color);
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: 12px;
+}
+
+/* Botões de relatório */
+.btn-rel-view    { background: #4f46e5; color: #fff; }
+.btn-rel-excel   { background: #059669; color: #fff; }
+.btn-rel-pdf     { background: #dc2626; color: #fff; }
+
+.btn-rel-view:hover  { background: #3730a3; color: #fff; }
+.btn-rel-excel:hover { background: #047857; color: #fff; }
+.btn-rel-pdf:hover   { background: #b91c1c; color: #fff; }
+
+.btn-rel-view,
+.btn-rel-excel,
+.btn-rel-pdf {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background .15s, transform .15s;
+}
+
+.btn-rel-view:hover,
+.btn-rel-excel:hover,
+.btn-rel-pdf:hover { transform: translateY(-1px); }
+
+/* Tabela premium */
+.pf-table-wrap {
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bs-body-bg);
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+}
+
+.pf-table { width: 100%; border-collapse: collapse; margin: 0; }
+
+.pf-table thead th {
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-secondary-color);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--bs-border-color);
+    white-space: nowrap;
+}
+
+.pf-table tbody td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--bs-border-color);
+    font-size: 13.5px;
+    vertical-align: middle;
+}
+
+.pf-table tbody tr:last-child td { border-bottom: none; }
+.pf-table tbody tr:hover { background: rgba(79,70,229,.04); }
+
+/* Badges */
+.pf-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 600;
+}
+
+.pf-badge-success { background: #d1fae5; color: #065f46; }
+.pf-badge-danger  { background: #fee2e2; color: #991b1b; }
+.pf-badge-warning { background: #fef3c7; color: #92400e; }
+.pf-badge-info    { background: #dbeafe; color: #1e40af; }
+.pf-badge-gray    { background: #f1f5f9; color: #475569; }
+
+[data-bs-theme="dark"] .pf-badge-success { background: #064e3b; color: #34d399; }
+[data-bs-theme="dark"] .pf-badge-danger  { background: #450a0a; color: #f87171; }
+[data-bs-theme="dark"] .pf-badge-warning { background: #451a03; color: #fbbf24; }
+[data-bs-theme="dark"] .pf-badge-info    { background: #1e3a5f; color: #60a5fa; }
+[data-bs-theme="dark"] .pf-badge-gray    { background: #1e293b; color: #94a3b8; }
+
+/* ----------------------------------------------------------
+   Responsivo
+   ---------------------------------------------------------- */
+@media (max-width: 767.98px) {
+    .pf-stat  { flex-direction: column; text-align: center; }
+    .pf-stat-icon { margin: 0 auto; }
+}

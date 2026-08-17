@@ -222,348 +222,78 @@ $nome_mes = $nomes_meses[$mes_num] . ' de ' . $ano;
 
 require_once '../../includes/header.php';
 ?>
-
-<style>
-.extrato-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.module-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.module-title h2 {
-    margin: 0 0 5px 0;
-    font-size: 24px;
-}
-
-.module-title p {
-    margin: 0;
-    color: var(--text-secondary);
-    font-size: 14px;
-}
-
-.filters-card {
-    background: var(--bg-primary);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 24px;
-    border: 1px solid var(--border-color);
-}
-
-.filter-group {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.filter-group label {
-    font-weight: 500;
-    font-size: 14px;
-}
-
-.filtro-mes input {
-    padding: 10px 16px;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    font-size: 14px;
-}
-
-.resumo-card {
-    background: var(--bg-primary);
-    border-radius: 20px;
-    padding: 24px;
-    margin-bottom: 24px;
-    border: 1px solid var(--border-color);
-}
-
-.resumo-card h3 {
-    margin-bottom: 16px;
-    font-size: 18px;
-}
-
-.resumo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 20px;
-}
-
-.resumo-item {
-    text-align: center;
-    padding: 16px;
-    background: var(--bg-secondary);
-    border-radius: 16px;
-}
-
-.resumo-valor {
-    font-size: 32px;
-    font-weight: bold;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-.resumo-label {
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-top: 8px;
-}
-
-.table-card {
-    background: var(--bg-primary);
-    border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-}
-
-.table-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--bg-secondary);
-}
-
-.table-header h3 {
-    margin: 0;
-    font-size: 16px;
-}
-
-.table-responsive {
-    overflow-x: auto;
-}
-
-.extrato-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.extrato-table th,
-.extrato-table td {
-    padding: 12px 16px;
-    text-align: center;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.extrato-table th {
-    background: var(--bg-secondary);
-    font-weight: 600;
-    font-size: 13px;
-}
-
-.extrato-table tfoot td {
-    font-weight: 600;
-    background: var(--bg-secondary);
-}
-
-.horas-positivo {
-    color: #10b981;
-    font-weight: 600;
-}
-
-.status-complete {
-    color: #10b981;
-    font-size: 12px;
-}
-
-.status-incomplete {
-    color: #ef4444;
-    font-size: 12px;
-}
-
-.status-inprogress {
-    color: #3b82f6;
-    font-size: 12px;
-}
-
-.status-pending {
-    color: #9ca3af;
-    font-size: 12px;
-}
-
-.dia-semana {
-    font-size: 11px;
-    color: var(--text-secondary);
-    display: block;
-}
-
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: none;
-}
-
-.btn-secondary {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-    background: var(--bg-tertiary);
-}
-
-.empty-state {
-    text-align: center;
-    padding: 60px;
-}
-
-.empty-state i {
-    font-size: 48px;
-    color: #ccc;
-    margin-bottom: 16px;
-}
-
-@media (max-width: 768px) {
-    .extrato-table {
-        font-size: 12px;
-    }
-    
-    .extrato-table th,
-    .extrato-table td {
-        padding: 8px;
-    }
-    
-    .resumo-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .resumo-valor {
-        font-size: 24px;
-    }
-}
-</style>
-
-<div class="extrato-container">
-    <div class="module-header">
-        <div class="module-title">
-            <h2><i class="fas fa-calendar-alt"></i> Meu Extrato de Ponto</h2>
-            <p><?php echo htmlspecialchars($funcionario['nome']); ?> - Matrícula: <?php echo htmlspecialchars($funcionario['matricula']); ?></p>
-        </div>
-        <div class="module-actions">
-            <button onclick="window.print()" class="btn btn-secondary">
-                <i class="fas fa-print"></i> Imprimir
-            </button>
-        </div>
+<div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
+    <div>
+        <h1><i class="fas fa-list-alt me-2 text-primary"></i>Meu Extrato de Ponto</h1>
+        <p class="text-muted">Histórico completo dos seus registros</p>
     </div>
+</div>
 
-    <div class="filters-card">
-        <form method="GET" action="" class="filters-form">
-            <div class="filter-group">
-                <label><i class="fas fa-calendar"></i> Período:</label>
-                <div class="filtro-mes">
-                    <input type="month" name="mes" value="<?php echo $mes; ?>" onchange="this.form.submit()">
-                </div>
+<!-- Filtros -->
+<div class="card pf-table-card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-sm-4 col-lg-3">
+                <label class="form-label">Mês</label>
+                <select name="mes" class="form-select">
+                    <?php for ($m = 1; $m <= 12; $m++): ?>
+                    <option value="<?php echo $m; ?>" <?php echo ($mes_atual == $m) ? 'selected' : ''; ?>>
+                        <?php echo date('F', mktime(0,0,0,$m,1)); ?>
+                    </option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+            <div class="col-sm-4 col-lg-2">
+                <label class="form-label">Ano</label>
+                <select name="ano" class="form-select">
+                    <?php for ($a = date('Y'); $a >= date('Y')-3; $a--): ?>
+                    <option value="<?php echo $a; ?>" <?php echo ($ano_atual == $a) ? 'selected' : ''; ?>><?php echo $a; ?></option>
+                    <?php endfor; ?>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i>Filtrar</button>
             </div>
         </form>
     </div>
+</div>
 
-    <div class="resumo-card">
-        <h3><i class="fas fa-chart-line"></i> Resumo de <?php echo $nome_mes; ?></h3>
-        <div class="resumo-grid">
-            <div class="resumo-item">
-                <div class="resumo-valor"><?php echo $stats['dias_trabalhados']; ?></div>
-                <div class="resumo-label">Dias Trabalhados</div>
-            </div>
-            <div class="resumo-item">
-                <div class="resumo-valor"><?php echo sprintf("%02d:%02d", $stats['total_horas'], $stats['total_minutos']); ?></div>
-                <div class="resumo-label">Total de Horas</div>
-            </div>
-            <div class="resumo-item">
-                <div class="resumo-valor"><?php echo number_format($stats['media_diaria'], 2, ',', '.'); ?>h</div>
-                <div class="resumo-label">Média Diária</div>
-            </div>
-            <div class="resumo-item">
-                <div class="resumo-valor"><?php echo $stats['dias_completos']; ?></div>
-                <div class="resumo-label">Dias Completos</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="table-card">
-        <div class="table-header">
-            <h3><i class="fas fa-list"></i> Registros de <?php echo $nome_mes; ?></h3>
-        </div>
+<div class="card pf-table-card">
+    <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="extrato-table">
+            <table class="table mb-0">
                 <thead>
                     <tr>
                         <th>Data</th>
-                        <th>Entrada</th>
-                        <th>Saída Almoço</th>
-                        <th>Volta Almoço</th>
-                        <th>Saída</th>
-                        <th>Horas</th>
-                        <th>Status</th>
+                        <th>Tipo</th>
+                        <th>Horário</th>
+                        <th class="d-none d-md-table-cell">Origem</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (empty($extrato)): ?>
-                    <tr class="fade-in">
-                        <td colspan="7" class="empty-state">
-                            <i class="fas fa-calendar-times"></i>
-                            <p>Nenhum registro encontrado neste período</p>
+                    <?php foreach ($pontos as $ponto): ?>
+                    <tr>
+                        <td><?php echo date('d/m/Y', strtotime($ponto['data_hora'])); ?></td>
+                        <td>
+                            <?php
+                            $tipoMap = ['entrada'=>['Entrada','success'],'saida_almoco'=>['Saída Almoço','warning'],'volta_almoco'=>['Volta Almoço','info'],'saida'=>['Saída','danger']];
+                            $t = $tipoMap[$ponto['tipo']] ?? [ucfirst($ponto['tipo']),'secondary'];
+                            ?>
+                            <span class="badge bg-<?php echo $t[1]; ?>"><?php echo $t[0]; ?></span>
                         </td>
+                        <td class="fw-semibold"><?php echo date('H:i', strtotime($ponto['data_hora'])); ?></td>
+                        <td class="d-none d-md-table-cell text-muted"><?php echo htmlspecialchars($ponto['origem'] ?? 'web'); ?></td>
                     </tr>
-                    <?php else: ?>
-                        <?php foreach ($extrato as $dia): ?>
-                        <tr class="fade-in">
-                            <td>
-                                <?php echo $dia['data_formatada']; ?>
-                                <span class="dia-semana"><?php echo $dia['dia_semana']; ?></span>
-                            </td>
-                            <td><?php echo $dia['entrada']; ?></td>
-                            <td><?php echo $dia['saida_almoco']; ?></td>
-                            <td><?php echo $dia['volta_almoco']; ?></td>
-                            <td><?php echo $dia['saida']; ?></td>
-                            <td class="<?php echo $dia['horas'] != '--:--' ? 'horas-positivo' : ''; ?>">
-                                <?php echo $dia['horas'] != '--:--' ? $dia['horas'] . 'h' : '--:--'; ?>
-                            </td>
-                            <td>
-                                <span class="status-<?php echo $dia['status_cor']; ?>">
-                                    <?php echo $dia['status_texto']; ?>
-                                </span>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
+                    <?php endforeach; ?>
+                    <?php if (empty($pontos)): ?>
+                    <tr><td colspan="4" class="text-center text-muted py-4">
+                        <i class="fas fa-clock fa-2x d-block mb-2 opacity-25"></i>Nenhum registro neste período
+                    </td></tr>
                     <?php endif; ?>
                 </tbody>
-                <?php if (!empty($extrato) && $stats['dias_trabalhados'] > 0): ?>
-                <tfoot>
-                    <tr style="background: var(--bg-secondary);">
-                        <td colspan="5" style="text-align: right; font-weight: 600;">Total do mês:</td>
-                        <td style="font-weight: 600;"><?php echo sprintf("%02d:%02d", $stats['total_horas'], $stats['total_minutos']); ?>h</td>
-                        <td style="font-weight: 600;"><?php echo $stats['dias_trabalhados']; ?> dias</td>
-                    </tr>
-                </tfoot>
-                <?php endif; ?>
             </table>
         </div>
     </div>
 </div>
-
-<script>
-document.querySelectorAll('input[type="month"]').forEach(input => {
-    input.addEventListener('change', function() {
-        this.form.submit();
-    });
-});
-</script>
 
 <?php require_once '../../includes/footer.php'; ?>

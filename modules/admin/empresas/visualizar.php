@@ -1,13 +1,10 @@
 <?php
 // modules/admin/empresas/visualizar.php - Visualizar Empresa (REFATORADO)
-// Iniciar sessão se não estiver ativa
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once '../../../includes/config.php';
 
 // Verificar se está logado e é super admin
 if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_tipo'] ?? '') !== 'super_admin') {
-    header('Location: /login.php');
+    header('Location: ' . BASE_URL . '/login.php');
     exit;
 }
 
@@ -461,3 +458,4 @@ $administradores = $stmt->fetchAll();
 </div>
 
 <?php require_once '../../../includes/footer.php'; ?>
+

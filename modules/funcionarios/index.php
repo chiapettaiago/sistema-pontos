@@ -20,14 +20,14 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
 // PARA GESTOR E SUPERVISOR: Só podem ver funcionários da sua filial
 // PARA FUNCIONÁRIO: Não deve acessar esta página (redirect)
 if ($usuario_tipo === 'funcionario') {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
@@ -120,410 +120,187 @@ $statsStmt = $db->prepare($statsQuery);
 $statsStmt->execute($statsParams);
 $stats = $statsStmt->fetch();
 ?>
-
-<style>
-.btn-group {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-toggle {
-    cursor: pointer;
-}
-
-.dropdown-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    z-index: 1000;
-    min-width: 160px;
-    padding: 8px 0;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.dropdown-item {
-    display: block;
-    padding: 8px 16px;
-    text-decoration: none;
-    color: var(--text-primary);
-    font-size: 14px;
-    transition: all 0.2s;
-}
-
-.dropdown-item:hover {
-    background: var(--bg-secondary);
-}
-
-.dropdown-item i {
-    width: 20px;
-    margin-right: 8px;
-}
-
-.module-actions {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.avatar {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    flex-shrink: 0;
-}
-
-.avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.role-admin_empresa { background: #e0e7ff; color: #4338ca; }
-.role-gestor { background: #d1fae5; color: #059669; }
-.role-supervisor { background: #fed7aa; color: #c2410c; }
-.role-funcionario { background: #f3f4f6; color: #4b5563; }
-.status-ferias { background: #fed7aa; color: #c2410c; }
-.status-licenca { background: #bfdbfe; color: #1e40af; }
-.status-desligado { background: #fee2e2; color: #dc2626; }
-.status-afastado { background: #fef3c7; color: #d97706; }
-
-.bio-status-inline {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 8px;
-    padding: 5px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.bio-status-ok {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.bio-status-no {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.fade-in {
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-</style>
-
-<div class="module-header">
-    <div class="module-title">
-        <h2><i class="fas fa-users"></i> Funcionários</h2>
-        <p>Gerencie todos os funcionários da empresa</p>
+<!-- PAGE HEADER -->
+<div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
+    <div>
+        <h1><i class="fas fa-users me-2 text-primary"></i>Funcionários</h1>
+        <p class="text-muted">Gerencie os funcionários da empresa</p>
     </div>
-    <div class="module-actions">
-        <!-- Botão Exportar (apenas admin) -->
-        <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
-        <div class="btn-group">
-            <button class="btn btn-secondary dropdown-toggle" onclick="toggleExportMenu()">
-                <i class="fas fa-download"></i> Exportar <i class="fas fa-chevron-down"></i>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="importar.php" class="btn btn-outline-secondary">
+            <i class="fas fa-file-import me-1"></i>Importar
+        </a>
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-download me-1"></i>Exportar
             </button>
-            <div id="exportMenu" class="dropdown-menu" style="display: none;">
-                <a href="exportar.php?formato=csv&<?php echo htmlspecialchars(http_build_query($_GET)); ?>" class="dropdown-item">
-                    <i class="fas fa-file-csv"></i> CSV
-                </a>
-                <a href="exportar.php?formato=excel&<?php echo htmlspecialchars(http_build_query($_GET)); ?>" class="dropdown-item">
-                    <i class="fas fa-file-excel"></i> Excel
-                </a>
-            </div>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="exportar.php?formato=excel"><i class="fas fa-file-excel me-2"></i>Excel</a></li>
+                <li><a class="dropdown-item" href="exportar.php?formato=pdf"><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
+            </ul>
         </div>
-        
-        <!-- Botão Importar (apenas admin) -->
-        <a href="importar.php" class="btn btn-secondary">
-            <i class="fas fa-file-import"></i> Importar
-        </a>
-        <?php endif; ?>
-        
-        <!-- Botão Novo Funcionário (apenas quem pode cadastrar) -->
-        <?php if (hasPermission('cadastrar_funcionarios') || $usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa' || $usuario_tipo === 'gestor'): ?>
+        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor'])): ?>
         <a href="cadastrar.php" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Novo Funcionário
+            <i class="fas fa-plus me-1"></i>Novo Funcionário
         </a>
         <?php endif; ?>
     </div>
 </div>
 
-<!-- Cards de Estatísticas -->
-<div class="stats-grid" style="margin-bottom: 24px;">
-    <div class="stat-card fade-in">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-            <i class="fas fa-users"></i>
-        </div>
-        <div class="stat-info">
-            <h3><?php echo $stats['total'] ?? 0; ?></h3>
-            <p>Total de Funcionários</p>
-        </div>
-    </div>
-    <div class="stat-card fade-in">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
-            <i class="fas fa-check-circle"></i>
-        </div>
-        <div class="stat-info">
-            <h3><?php echo $stats['ativos'] ?? 0; ?></h3>
-            <p>Funcionários Ativos</p>
-        </div>
-    </div>
-    <div class="stat-card fade-in">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-            <i class="fas fa-umbrella-beach"></i>
-        </div>
-        <div class="stat-info">
-            <h3><?php echo $stats['ferias'] ?? 0; ?></h3>
-            <p>Em Férias</p>
-        </div>
-    </div>
-    <div class="stat-card fade-in">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-            <i class="fas fa-user-slash"></i>
-        </div>
-        <div class="stat-info">
-            <h3><?php echo $stats['desligados'] ?? 0; ?></h3>
-            <p>Desligados</p>
-        </div>
-    </div>
-</div>
-
-<!-- Filtros -->
-<div class="filters-card">
-    <form method="GET" action="" class="filters-form">
-        <div class="filter-group">
-            <label><i class="fas fa-search"></i> Buscar</label>
-            <input type="text" name="search" placeholder="Nome, email, matrícula ou CPF" 
-                   value="<?php echo htmlspecialchars($search); ?>">
-        </div>
-        
-        <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
-        <div class="filter-group">
-            <label><i class="fas fa-store"></i> Filial</label>
-            <select name="filial_id">
-                <option value="">Todas as filiais</option>
-                <?php foreach ($filiais as $filial): ?>
-                <option value="<?php echo $filial['id']; ?>" <?php echo $filial_id == $filial['id'] ? 'selected' : ''; ?>>
-                    <?php echo htmlspecialchars($filial['nome_fantasia']); ?>
-                </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <?php endif; ?>
-        
-        <div class="filter-group">
-            <label><i class="fas fa-filter"></i> Status</label>
-            <select name="status">
-                <option value="todos" <?php echo $status == 'todos' ? 'selected' : ''; ?>>Todos</option>
-                <option value="ativo" <?php echo $status == 'ativo' ? 'selected' : ''; ?>>Ativos</option>
-                <option value="ferias" <?php echo $status == 'ferias' ? 'selected' : ''; ?>>Férias</option>
-                <option value="licenca" <?php echo $status == 'licenca' ? 'selected' : ''; ?>>Licença</option>
-                <option value="desligado" <?php echo $status == 'desligado' ? 'selected' : ''; ?>>Desligados</option>
-            </select>
-        </div>
-        
-        <div class="filter-group">
-            <label><i class="fas fa-user-tag"></i> Tipo</label>
-            <select name="tipo_usuario">
-                <option value="">Todos</option>
-                <option value="admin_empresa" <?php echo $tipo_usuario == 'admin_empresa' ? 'selected' : ''; ?>>Administrador</option>
-                <option value="gestor" <?php echo $tipo_usuario == 'gestor' ? 'selected' : ''; ?>>Gestor</option>
-                <option value="supervisor" <?php echo $tipo_usuario == 'supervisor' ? 'selected' : ''; ?>>Supervisor</option>
-                <option value="funcionario" <?php echo $tipo_usuario == 'funcionario' ? 'selected' : ''; ?>>Funcionário</option>
-            </select>
-        </div>
-        
-        <div class="filter-group">
-            <label>&nbsp;</label>
-            <div>
-                <button type="submit" class="btn btn-secondary">
-                    <i class="fas fa-search"></i> Filtrar
-                </button>
-                <a href="index.php" class="btn btn-outline">
-                    <i class="fas fa-times"></i> Limpar
-                </a>
+<!-- STAT CARDS -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card pf-stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="pf-stat-icon" style="background:var(--pf-gradient);"><i class="fas fa-users text-white"></i></div>
+                <div>
+                    <div class="fs-3 fw-bold"><?php echo $stats['total'] ?? 0; ?></div>
+                    <div class="text-muted small">Total</div>
+                </div>
             </div>
         </div>
-    </form>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card pf-stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#10b981,#059669);"><i class="fas fa-user-check text-white"></i></div>
+                <div>
+                    <div class="fs-3 fw-bold"><?php echo $stats['ativos'] ?? 0; ?></div>
+                    <div class="text-muted small">Ativos</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card pf-stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);"><i class="fas fa-umbrella-beach text-white"></i></div>
+                <div>
+                    <div class="fs-3 fw-bold"><?php echo ($stats['ferias'] ?? 0) + ($stats['licenca'] ?? 0); ?></div>
+                    <div class="text-muted small">Afastados</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card pf-stat-card p-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);"><i class="fas fa-user-times text-white"></i></div>
+                <div>
+                    <div class="fs-3 fw-bold"><?php echo $stats['desligados'] ?? 0; ?></div>
+                    <div class="text-muted small">Desligados</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Lista de Funcionários -->
-<div class="table-card">
-    <div class="table-responsive">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Matrícula</th>
-                    <th>Funcionário</th>
-                    <th>Filial</th>
-                    <th>Cargo</th>
-                    <th>Departamento</th>
-                    <th>Tipo</th>
-                    <th>Status</th>
-                    <th width="160">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($funcionarios as $func): ?>
-                <tr class="fade-in">
-                    <td>
-                        <strong><?php echo htmlspecialchars($func['matricula']); ?></strong>
-                    </td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div class="avatar">
-                                <?php if ($func['foto'] && file_exists('../../' . $func['foto'])): ?>
-                                    <img src="../../<?php echo $func['foto']; ?>" alt="Foto de <?php echo htmlspecialchars($func['nome']); ?>">
-                                <?php else: ?>
-                                    <i class="fas fa-user" style="font-size: 20px;"></i>
-                                <?php endif; ?>
-                            </div>
-                            <div>
-                                <strong><?php echo htmlspecialchars($func['nome']); ?></strong><br>
-                                <small><?php echo htmlspecialchars($func['email']); ?></small>
-                                <?php
-                                $bioFacial = !empty($func['tem_facial']) ? true : false;
-                                $bioDigital = !empty($func['tem_digital']) ? true : false;
-                                ?>
-                                <div class="bio-status-inline <?php echo ($bioFacial || $bioDigital) ? 'bio-status-ok' : 'bio-status-no'; ?>">
-                                    <i class="fas fa-fingerprint"></i>
-                                    <?php echo ($bioFacial || $bioDigital) ? 'Biometria pronta' : 'Biometria pendente'; ?>
+<!-- FILTROS -->
+<div class="card pf-table-card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-sm-6 col-lg-3">
+                <label class="form-label">Buscar</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" name="busca" class="form-control" placeholder="Nome, email, matrícula..." value="<?php echo htmlspecialchars($_GET['busca'] ?? ''); ?>">
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-2">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="ativo" <?php echo ($_GET['status'] ?? '') === 'ativo' ? 'selected' : ''; ?>>Ativo</option>
+                    <option value="ferias" <?php echo ($_GET['status'] ?? '') === 'ferias' ? 'selected' : ''; ?>>Férias</option>
+                    <option value="licenca" <?php echo ($_GET['status'] ?? '') === 'licenca' ? 'selected' : ''; ?>>Licença</option>
+                    <option value="desligado" <?php echo ($_GET['status'] ?? '') === 'desligado' ? 'selected' : ''; ?>>Desligado</option>
+                </select>
+            </div>
+            <div class="col-sm-6 col-lg-2">
+                <label class="form-label">Departamento</label>
+                <input type="text" name="departamento" class="form-control" placeholder="Dep." value="<?php echo htmlspecialchars($_GET['departamento'] ?? ''); ?>">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i>Filtrar</button>
+                <a href="?" class="btn btn-outline-secondary ms-1"><i class="fas fa-times"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- TABELA -->
+<div class="card pf-table-card">
+    <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">
+            <i class="fas fa-list me-2 text-primary"></i>Lista de Funcionários
+            <span class="badge bg-primary ms-2"><?php echo count($funcionarios); ?></span>
+        </span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table pf-table-card mb-0">
+                <thead>
+                    <tr>
+                        <th>Funcionário</th>
+                        <th class="d-none d-md-table-cell">Matrícula</th>
+                        <th class="d-none d-lg-table-cell">Cargo</th>
+                        <th class="d-none d-lg-table-cell">Filial</th>
+                        <th>Status</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($funcionarios as $func): ?>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="width:38px;height:38px;border-radius:50%;background:var(--pf-gradient);display:grid;place-items:center;flex-shrink:0;">
+                                    <i class="fas fa-user text-white small"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-semibold"><?php echo htmlspecialchars($func['nome']); ?></div>
+                                    <div class="text-muted small"><?php echo htmlspecialchars($func['email']); ?></div>
                                 </div>
                             </div>
-                        </div>
-                    </td>
-                    <td><?php echo htmlspecialchars($func['filial_nome']); ?></td>
-                    <td><?php echo htmlspecialchars($func['cargo_nome'] ?? '--'); ?></td>
-                    <td><?php echo htmlspecialchars($func['departamento_nome'] ?? '--'); ?></td>
-                    <td>
-                        <span class="role-badge role-<?php echo $func['tipo_usuario']; ?>">
-                            <?php 
-                            $tipos = [
-                                'admin_empresa' => '👑 Admin',
-                                'gestor' => '📊 Gestor',
-                                'supervisor' => '👁️ Supervisor',
-                                'funcionario' => '👤 Funcionário'
-                            ];
-                            echo $tipos[$func['tipo_usuario']] ?? $func['tipo_usuario'];
+                        </td>
+                        <td class="d-none d-md-table-cell text-muted"><?php echo htmlspecialchars($func['matricula'] ?? '-'); ?></td>
+                        <td class="d-none d-lg-table-cell text-muted"><?php echo htmlspecialchars($func['cargo'] ?? '-'); ?></td>
+                        <td class="d-none d-lg-table-cell text-muted"><?php echo htmlspecialchars($func['filial_nome'] ?? '-'); ?></td>
+                        <td>
+                            <?php
+                            $sc = ['ativo'=>'success','ferias'=>'info','licenca'=>'warning','desligado'=>'danger'];
+                            $s  = $func['status'] ?? 'ativo';
                             ?>
-                        </span>
-                    </td>
-                    <td>
-                        <span class="status-badge status-<?php echo $func['status']; ?>">
-                            <?php 
-                            $statusLabels = [
-                                'ativo' => '✅ Ativo',
-                                'ferias' => '🏖️ Férias',
-                                'licenca' => '📋 Licença',
-                                'desligado' => '❌ Desligado',
-                                'afastado' => '⚠️ Afastado'
-                            ];
-                            echo $statusLabels[$func['status']] ?? $func['status'];
-                            ?>
-                        </span>
-                    </td>
-                    <td class="actions">
-                        <!-- Visualizar - todos podem ver (se tiver acesso à lista) -->
-                        <a href="visualizar.php?id=<?php echo $func['id']; ?>" class="btn-icon" title="Visualizar">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        
-                        <!-- Editar - apenas quem tem permissão -->
-                        <?php if (canEditFuncionario($func['id'])): ?>
-                        <a href="editar.php?id=<?php echo $func['id']; ?>" class="btn-icon" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <?php endif; ?>
-                        
-                        <!-- Alterar Senha - apenas quem tem permissão -->
-                        <?php if (canEditFuncionario($func['id'])): ?>
-                        <a href="alterar_senha.php?id=<?php echo $func['id']; ?>" class="btn-icon" title="Alterar Senha">
-                            <i class="fas fa-key"></i>
-                        </a>
-                        <?php endif; ?>
-                        
-                        <!-- Desligar/Reativar - apenas admin e super admin -->
-                        <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
-                            <?php if ($func['status'] != 'desligado'): ?>
-                                <a href="excluir.php?id=<?php echo $func['id']; ?>" class="btn-icon btn-danger" 
-                                   onclick="return confirm('Tem certeza que deseja desligar este funcionário?')" title="Desligar">
-                                    <i class="fas fa-user-slash"></i>
+                            <span class="badge bg-<?php echo $sc[$s] ?? 'secondary'; ?>"><?php echo ucfirst($s); ?></span>
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a href="visualizar.php?id=<?php echo $func['id']; ?>" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Visualizar">
+                                    <i class="fas fa-eye"></i>
                                 </a>
-                            <?php else: ?>
-                                <a href="excluir.php?id=<?php echo $func['id']; ?>&reativar=1" class="btn-icon btn-success" 
-                                   onclick="return confirm('Tem certeza que deseja reativar este funcionário?')" title="Reativar">
-                                    <i class="fas fa-check-circle"></i>
+                                <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor'])): ?>
+                                <a href="editar.php?id=<?php echo $func['id']; ?>" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Editar">
+                                    <i class="fas fa-edit"></i>
                                 </a>
-                            <?php endif; ?>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-                
-                <?php if (empty($funcionarios)): ?>
-                <tr class="fade-in">
-                    <td colspan="8" style="text-align: center; padding: 60px;">
-                        <i class="fas fa-user-slash" style="font-size: 48px; color: #ccc;"></i>
-                        <p style="margin-top: 10px;">Nenhum funcionário encontrado</p>
-                        <?php if (hasPermission('cadastrar_funcionarios') || $usuario_tipo === 'gestor'): ?>
-                        <a href="cadastrar.php" class="btn btn-primary" style="margin-top: 10px;">
-                            <i class="fas fa-plus"></i> Cadastrar primeiro funcionário
-                        </a>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                                <a href="excluir.php?id=<?php echo $func['id']; ?>" class="btn btn-outline-danger" data-bs-toggle="tooltip" title="Excluir"
+                                   onclick="return confirm('Excluir funcionário?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                <?php endif; ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php if (empty($funcionarios)): ?>
+                    <tr><td colspan="6" class="text-center text-muted py-4">
+                        <i class="fas fa-users fa-2x d-block mb-2 opacity-25"></i>Nenhum funcionário encontrado
+                    </td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<script>
-function toggleExportMenu() {
-    const menu = document.getElementById('exportMenu');
-    if (menu.style.display === 'none' || menu.style.display === '') {
-        menu.style.display = 'block';
-    } else {
-        menu.style.display = 'none';
-    }
-}
-
-document.addEventListener('click', function(event) {
-    const menu = document.getElementById('exportMenu');
-    const btn = document.querySelector('.dropdown-toggle');
-    if (menu && !menu.contains(event.target) && !btn?.contains(event.target)) {
-        menu.style.display = 'none';
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const cards = document.querySelectorAll('.stat-card, .table-card');
-    cards.forEach((card, index) => {
-        setTimeout(() => {
-            card.classList.add('fade-in');
-        }, index * 50);
-    });
-});
-</script>
-
 <?php require_once '../../includes/footer.php'; ?>
-
-
 

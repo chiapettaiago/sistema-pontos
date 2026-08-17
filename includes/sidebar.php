@@ -1,583 +1,213 @@
 <?php
-// includes/sidebar.php - Menu Lateral Completo (COM TODOS OS MENUS E PERMISSÕES)
-$activePage = $activePage ?? '';
+// includes/sidebar.php — Bootstrap 5 (links via $baseUrl)
+$activePage   = $activePage ?? '';
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? 'funcionario';
+
+// $baseUrl e calculado no header.php antes de incluir este arquivo
+// Fallback para garantir que nunca sera undefined
+if (!isset($baseUrl)) {
+    $_bd  = str_replace('\\', '/', dirname(__DIR__));
+    $_dr  = str_replace('\\', '/', rtrim($_SERVER['DOCUMENT_ROOT'], '/\\'));
+    $baseUrl = rtrim(str_replace($_dr, '', $_bd), '/');
+}
+
+function pfNav(string $href, string $icon, string $label, bool $active, string $badge = ''): string {
+    $cls    = $active ? ' active' : '';
+    $bdg    = $badge !== '' ? "<span class=\"pf-nav-badge\">$badge</span>" : '';
+    return "<a href=\"$href\" class=\"pf-nav-item$cls\"><i class=\"fas $icon\"></i><span>$label</span>$bdg</a>";
+}
 ?>
-<aside class="sidebar">
-    <div class="sidebar-header">
-        <div class="logo">
-            <i class="fas fa-clock"></i>
+
+<aside class="pf-sidebar" id="pfSidebar">
+    <!-- Logo -->
+    <div class="pf-sidebar-header">
+        <a href="<?php echo $baseUrl; ?>/" class="pf-sidebar-logo">
+            <div class="logo-icon"><i class="fas fa-clock"></i></div>
             <span>PontoFácil</span>
-        </div>
+        </a>
     </div>
-    
-    <nav class="sidebar-nav">
-        <!-- ============================================ -->
-        <!-- DASHBOARD - visível para todos EXCETO funcionário comum -->
-        <!-- ============================================ -->
+
+    <!-- Nav -->
+    <nav class="pf-sidebar-nav">
+
+        <!-- DASHBOARD (todos exceto funcionario comum) -->
         <?php if ($usuario_tipo !== 'funcionario'): ?>
-        <a href="/index.php" class="nav-item <?php echo $activePage === 'dashboard' ? 'active' : ''; ?>">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-        </a>
+        <?php echo pfNav($baseUrl.'/index.php', 'fa-tachometer-alt', 'Dashboard', $activePage === 'dashboard'); ?>
         <?php endif; ?>
 
-        <!-- ============================================ -->
-        <!-- ADMINISTRAÇÃO (apenas Super Admin) -->
-        <!-- ============================================ -->
+        <!-- SUPER ADMIN -->
         <?php if ($usuario_tipo === 'super_admin'): ?>
-        <div class="nav-divider"></div>
-        <div class="nav-section-title">
-            <i class="fas fa-crown"></i> <span>Administração</span>
-        </div>
-        
-        <a href="/modules/admin/empresas/index.php" class="nav-item <?php echo $activePage === 'admin_empresas' ? 'active' : ''; ?>">
-            <i class="fas fa-building"></i>
-            <span>Empresas</span>
-        </a>
-        
-        <a href="/modules/admin/planos/index.php" class="nav-item <?php echo $activePage === 'admin_planos' ? 'active' : ''; ?>">
-            <i class="fas fa-crown"></i>
-            <span>Planos</span>
-        </a>
-        
-        <a href="/modules/admin/assinaturas/index.php" class="nav-item <?php echo $activePage === 'admin_assinaturas' ? 'active' : ''; ?>">
-            <i class="fas fa-receipt"></i>
-            <span>Assinaturas</span>
-        </a>
+        <div class="pf-nav-divider"></div>
+        <div class="pf-nav-section"><i class="fas fa-crown"></i><span>Administração</span></div>
+        <?php echo pfNav($baseUrl.'/modules/admin/empresas/index.php', 'fa-building', 'Empresas', $activePage === 'admin_empresas'); ?>
+        <?php echo pfNav($baseUrl.'/modules/admin/planos/index.php', 'fa-crown', 'Planos', $activePage === 'admin_planos'); ?>
+        <?php echo pfNav($baseUrl.'/modules/admin/assinaturas/index.php', 'fa-receipt', 'Assinaturas', $activePage === 'admin_assinaturas'); ?>
         <?php endif; ?>
 
-        <!-- ============================================ -->
-        <!-- DASHBOARD EMPRESA (Admin Empresa e Gestor - NÃO para funcionário) -->
-        <!-- ============================================ -->
+        <!-- DASHBOARD EMPRESA -->
         <?php if ($usuario_tipo === 'admin_empresa' || $usuario_tipo === 'gestor'): ?>
-        <div class="nav-divider"></div>
-        <div class="nav-section-title">
-            <i class="fas fa-chart-pie"></i> <span>Visão Geral</span>
-        </div>
-        
-        <a href="/modules/dashboard_empresa/index.php" class="nav-item <?php echo $activePage === 'dashboard_empresa' ? 'active' : ''; ?>">
-            <i class="fas fa-chart-line"></i>
-            <span>Dashboard Empresa</span>
-        </a>
+        <div class="pf-nav-divider"></div>
+        <div class="pf-nav-section"><i class="fas fa-chart-pie"></i><span>Visão Geral</span></div>
+        <?php echo pfNav($baseUrl.'/modules/dashboard_empresa/index.php', 'fa-chart-line', 'Dashboard Empresa', $activePage === 'dashboard_empresa'); ?>
         <?php endif; ?>
 
-        <!-- ============================================ -->
-        <!-- EMPRESA (Apenas Admin e Gestor - NÃO para funcionário) -->
-        <!-- ============================================ -->
+        <!-- EMPRESA -->
         <?php if ($usuario_tipo !== 'funcionario'): ?>
-        <div class="nav-divider"></div>
-        <div class="nav-section-title">
-            <i class="fas fa-building"></i> <span>Empresa</span>
-        </div>
+        <div class="pf-nav-divider"></div>
+        <div class="pf-nav-section"><i class="fas fa-building"></i><span>Empresa</span></div>
         <?php endif; ?>
-        
-        <!-- Usuários do Sistema (apenas admin) -->
+
         <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
-        <a href="/modules/usuarios/index.php" class="nav-item <?php echo $activePage === 'usuarios' ? 'active' : ''; ?>">
-            <i class="fas fa-user-shield"></i>
-            <span>Usuários</span>
-        </a>
+        <?php echo pfNav($baseUrl.'/modules/usuarios/index.php', 'fa-user-shield', 'Usuários', $activePage === 'usuarios'); ?>
         <?php endif; ?>
-        
-        <!-- Funcionários (admin, gestor - NÃO para funcionário) -->
-        <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa' || $usuario_tipo === 'gestor'): ?>
-        <a href="/modules/funcionarios/index.php" class="nav-item <?php echo $activePage === 'funcionarios' ? 'active' : ''; ?>">
-            <i class="fas fa-users"></i>
-            <span>Funcionários</span>
-        </a>
+
+        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor'])): ?>
+        <?php echo pfNav($baseUrl.'/modules/funcionarios/index.php', 'fa-users', 'Funcionários', $activePage === 'funcionarios'); ?>
         <?php endif; ?>
-        
-        <!-- Filiais (apenas admin - NÃO para funcionário) -->
+
         <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
-        <a href="/modules/filiais/index.php" class="nav-item <?php echo $activePage === 'filiais' ? 'active' : ''; ?>">
-            <i class="fas fa-store"></i>
-            <span>Filiais</span>
-        </a>
+        <?php echo pfNav($baseUrl.'/modules/filiais/index.php', 'fa-store', 'Filiais', $activePage === 'filiais'); ?>
         <?php endif; ?>
 
-        <!-- ============================================ -->
-        <!-- BIOMETRIA (APENAS Admin, Gestor e Supervisor - NÃO para funcionário) -->
-        <!-- ============================================ -->
-        <?php if ($usuario_tipo !== 'funcionario'): ?>
-        <div class="nav-divider"></div>
-        <div class="nav-section-title">
-            <i class="fas fa-fingerprint"></i> <span>Biometria</span>
-        </div>
-        <?php endif; ?>
-        
-        <?php if ($usuario_tipo === 'super_admin' || 
-                  $usuario_tipo === 'admin_empresa' || 
-                  $usuario_tipo === 'gestor' || 
-                  $usuario_tipo === 'supervisor'): ?>
-        <a href="/modules/biometrico/index.php" class="nav-item <?php echo $activePage === 'biometrico' ? 'active' : ''; ?>">
-            <i class="fas fa-fingerprint"></i>
-            <span>Gestão Biométrica</span>
-        </a>
-        
-        <a href="/modules/biometrico/cadastrar.php" class="nav-item <?php echo $activePage === 'biometrico_cadastro' ? 'active' : ''; ?>">
-            <i class="fas fa-user-plus"></i>
-            <span>Cadastrar Biometria</span>
-        </a>
-        
-        <a href="/modules/ponto/biometrico.php" class="nav-item <?php echo $activePage === 'ponto_biometrico' ? 'active' : ''; ?>">
-            <i class="fas fa-camera"></i>
-            <span>Ponto por Biometria</span>
-        </a>
+        <!-- PONTO -->
+        <div class="pf-nav-divider"></div>
+        <div class="pf-nav-section"><i class="fas fa-fingerprint"></i><span>Ponto</span></div>
+        <?php echo pfNav($baseUrl.'/modules/ponto/ponto.php', 'fa-clock', 'Registrar Ponto', $activePage === 'ponto'); ?>
+        <?php echo pfNav($baseUrl.'/modules/ponto/extrato.php', 'fa-list-alt', 'Meu Extrato', $activePage === 'extrato'); ?>
+
+        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor','supervisor'])): ?>
+        <?php echo pfNav($baseUrl.'/modules/ponto/autorizar_gerente.php', 'fa-user-check', 'Autorizar Ponto', $activePage === 'autorizar'); ?>
         <?php endif; ?>
 
-        <!-- ============================================ -->
-        <!-- PONTO (VISÍVEL PARA TODOS - inclusive funcionário) -->
-        <!-- ============================================ -->
-        <div class="nav-divider"></div>
-        <div class="nav-section-title">
-            <i class="fas fa-clock"></i> <span>Ponto</span>
-        </div>
-        
-        <a href="/modules/ponto/registrar.php" class="nav-item <?php echo $activePage === 'ponto' ? 'active' : ''; ?>">
-            <i class="fas fa-fingerprint"></i>
-            <span>Registrar Ponto</span>
-        </a>
-        
-        <a href="/modules/ponto/extrato.php" class="nav-item <?php echo $activePage === 'extrato' ? 'active' : ''; ?>">
-            <i class="fas fa-calendar-alt"></i>
-            <span>Meu Extrato</span>
-        </a>
-
-        <!-- ============================================ -->
-        <!-- ESCALA DE TRABALHO (NOVO - Admin, Gestor) -->
-        <!-- ============================================ -->
-        <?php if ($usuario_tipo !== 'funcionario'): ?>
-        <div class="nav-divider"></div>
-        <div class="nav-section-title">
-            <i class="fas fa-calendar-alt"></i> <span>Escala</span>
-        </div>
-        
-        <a href="/modules/escala/index.php" class="nav-item <?php echo $activePage === 'escala' ? 'active' : ''; ?>">
-            <i class="fas fa-calendar-alt"></i>
-            <span>Escala de Trabalho</span>
-        </a>
-        
-        <a href="/modules/escala/calendario.php" class="nav-item <?php echo $activePage === 'calendario_escala' ? 'active' : ''; ?>">
-            <i class="fas fa-calendar-week"></i>
-            <span>Calendário</span>
-        </a>
+        <!-- BIOMETRIA -->
+        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor','supervisor'])): ?>
+        <div class="pf-nav-divider"></div>
+        <div class="pf-nav-section"><i class="fas fa-fingerprint"></i><span>Biometria</span></div>
+        <?php echo pfNav($baseUrl.'/modules/funcionarios/cadastro_facial.php', 'fa-camera', 'Cad. Facial', $activePage === 'cadastro_facial'); ?>
+        <?php echo pfNav($baseUrl.'/modules/biometrico/index.php', 'fa-id-card', 'Biométrico', $activePage === 'biometrico'); ?>
         <?php endif; ?>
 
-        <!-- ============================================ -->
-        <!-- GESTÃO (VISÍVEL PARA TODOS) -->
-        <!-- ============================================ -->
-        <div class="nav-divider"></div>
-        <div class="nav-section-title">
-            <i class="fas fa-chart-line"></i> <span>Gestão</span>
-        </div>
-        
-        <!-- Relatórios (apenas admin e gestor - NÃO para funcionário) -->
-        <?php if ($usuario_tipo !== 'funcionario'): ?>
-        <a href="/modules/relatorios/index.php" class="nav-item <?php echo $activePage === 'relatorios' ? 'active' : ''; ?>">
-            <i class="fas fa-chart-bar"></i>
-            <span>Relatórios</span>
-        </a>
-        
-        <a href="/modules/relatorios/extrato_funcionario.php" class="nav-item <?php echo $activePage === 'extrato_funcionario' ? 'active' : ''; ?>">
-            <i class="fas fa-calendar-check"></i>
-            <span>Extrato Funcionários</span>
-        </a>
-        <?php endif; ?>
-        
-        <!-- ============================================ -->
-        <!-- CRACHÁ (DIFERENTE PARA CADA PERFIL) -->
-        <!-- ============================================ -->
-        
-        <!-- Para ADMIN/GESTOR: Gerar crachá de funcionários -->
-        <?php if ($usuario_tipo !== 'funcionario'): ?>
-        <a href="/modules/cracha/index.php" class="nav-item <?php echo $activePage === 'cracha_admin' ? 'active' : ''; ?>">
-            <i class="fas fa-id-card"></i>
-            <span>Gerar Crachás</span>
-        </a>
-        <?php endif; ?>
-        
-        <!-- Para FUNCIONÁRIO: Ver seu próprio crachá -->
-        <?php if ($usuario_tipo === 'funcionario'): ?>
-        <a href="/modules/cracha/meu_cracha.php" class="nav-item <?php echo $activePage === 'cracha' ? 'active' : ''; ?>">
-            <i class="fas fa-id-card"></i>
-            <span>Meu Crachá</span>
-        </a>
-        <?php endif; ?>
-        
-        <!-- ============================================ -->
-        <!-- SOLICITAÇÕES (VISÍVEL PARA TODOS) -->
-        <!-- ============================================ -->
-        
-        <!-- Minhas Solicitações - VISÍVEL PARA TODOS -->
-        <a href="/modules/solicitacoes/index.php" class="nav-item <?php echo $activePage === 'solicitacoes' ? 'active' : ''; ?>">
-            <i class="fas fa-clipboard-list"></i>
-            <span>Solicitações</span>
-        </a>
-        
-        <!-- Gerenciar Solicitações - APENAS ADMIN, GESTOR E SUPER_ADMIN -->
-        <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa' || $usuario_tipo === 'gestor'): ?>
-        <a href="/modules/solicitacoes/admin.php" class="nav-item <?php echo $activePage === 'solicitacoes_admin' ? 'active' : ''; ?>">
-            <i class="fas fa-user-check"></i>
-            <span>Gerenciar Solicitações</span>
-        </a>
+        <!-- ESCALAS -->
+        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor'])): ?>
+        <div class="pf-nav-divider"></div>
+        <div class="pf-nav-section"><i class="fas fa-calendar-alt"></i><span>Escalas</span></div>
+        <?php echo pfNav($baseUrl.'/modules/escala/index.php', 'fa-calendar-week', 'Escalas', $activePage === 'escala'); ?>
+        <?php echo pfNav($baseUrl.'/modules/escala/configurar.php', 'fa-cog', 'Configurar Escala', $activePage === 'escala_config'); ?>
         <?php endif; ?>
 
-        <!-- ============================================ -->
-        <!-- CONFIGURAÇÕES (APENAS ADMIN E SUPER_ADMIN) -->
-        <!-- ============================================ -->
+        <!-- SOLICITAÇÕES -->
+        <div class="pf-nav-divider"></div>
+        <div class="pf-nav-section"><i class="fas fa-paper-plane"></i><span>Solicitações</span></div>
+        <?php echo pfNav($baseUrl.'/modules/solicitacoes/index.php', 'fa-envelope-open-text', 'Minhas Solicitações', $activePage === 'solicitacoes'); ?>
+        <?php echo pfNav($baseUrl.'/modules/solicitacoes/nova.php', 'fa-plus-circle', 'Nova Solicitação', $activePage === 'nova_solicitacao'); ?>
+
+        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor','supervisor'])): ?>
+        <?php echo pfNav($baseUrl.'/modules/solicitacoes/admin.php', 'fa-clipboard-check', 'Gerenciar Solicitações', $activePage === 'solicitacoes_admin'); ?>
+        <?php endif; ?>
+
+        <!-- RELATÓRIOS -->
+        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor'])): ?>
+        <div class="pf-nav-divider"></div>
+        <div class="pf-nav-section"><i class="fas fa-chart-bar"></i><span>Relatórios</span></div>
+        <?php echo pfNav($baseUrl.'/modules/relatorios/index.php', 'fa-file-alt', 'Relatórios', $activePage === 'relatorios'); ?>
+        <?php echo pfNav($baseUrl.'/modules/relatorios/horas_trabalhadas.php', 'fa-hourglass-half', 'Horas Trabalhadas', $activePage === 'rel_horas'); ?>
+        <?php echo pfNav($baseUrl.'/modules/relatorios/banco_horas.php', 'fa-piggy-bank', 'Banco de Horas', $activePage === 'rel_banco'); ?>
+        <?php echo pfNav($baseUrl.'/modules/relatorios/atrasos_faltas.php', 'fa-exclamation-triangle', 'Atrasos e Faltas', $activePage === 'rel_atrasos'); ?>
+        <?php echo pfNav($baseUrl.'/modules/relatorios/horas_extras.php', 'fa-plus-square', 'Horas Extras', $activePage === 'rel_extras'); ?>
+        <?php endif; ?>
+
+        <!-- SEGURANÇA -->
         <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
-        <div class="nav-divider"></div>
-        <div class="nav-section-title">
-            <i class="fas fa-cogs"></i> <span>Configurações</span>
-        </div>
-        
-        <a href="/modules/configuracoes/index.php" class="nav-item <?php echo $activePage === 'configuracoes' ? 'active' : ''; ?>">
-            <i class="fas fa-building"></i>
-            <span>Empresa</span>
-        </a>
-        
-        <a href="/modules/configuracoes/horarios.php" class="nav-item <?php echo $activePage === 'config_horarios' ? 'active' : ''; ?>">
-            <i class="fas fa-clock"></i>
-            <span>Horários</span>
-        </a>
-        
-        <a href="/modules/configuracoes/regras.php" class="nav-item <?php echo $activePage === 'config_regras' ? 'active' : ''; ?>">
-            <i class="fas fa-gavel"></i>
-            <span>Regras de Ponto</span>
-        </a>
-        
-        <a href="/modules/configuracoes/feriados.php" class="nav-item <?php echo $activePage === 'config_feriados' ? 'active' : ''; ?>">
-            <i class="fas fa-calendar-times"></i>
-            <span>Feriados</span>
-        </a>
-        
-        <a href="/modules/configuracoes/email.php" class="nav-item <?php echo $activePage === 'config_email' ? 'active' : ''; ?>">
-            <i class="fas fa-envelope"></i>
-            <span>E-mail</span>
-        </a>
-        
-        <a href="/modules/configuracoes/facial.php" class="nav-item <?php echo $activePage === 'config_facial' ? 'active' : ''; ?>">
-            <i class="fas fa-camera"></i>
-            <span>Reconhecimento Facial</span>
-        </a>
+        <div class="pf-nav-divider"></div>
+        <div class="pf-nav-section"><i class="fas fa-shield-alt"></i><span>Segurança</span></div>
+        <?php echo pfNav($baseUrl.'/modules/auditoria/index.php', 'fa-history', 'Auditoria', $activePage === 'auditoria'); ?>
         <?php endif; ?>
 
-        <!-- ============================================ -->
-        <!-- BACKUP (APENAS ADMIN E SUPER_ADMIN) -->
-        <!-- ============================================ -->
+        <!-- NOTIFICAÇÕES -->
         <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
-        <div class="nav-divider"></div>
-        <div class="nav-section-title">
-            <i class="fas fa-database"></i> <span>Backup</span>
-        </div>
-        
-        <a href="/modules/backup/index.php" class="nav-item <?php echo $activePage === 'backup' ? 'active' : ''; ?>">
-            <i class="fas fa-database"></i>
-            <span>Backup e Restauração</span>
-        </a>
+        <div class="pf-nav-divider"></div>
+        <div class="pf-nav-section"><i class="fas fa-bell"></i><span>Notificações</span></div>
+        <?php echo pfNav($baseUrl.'/modules/notificacoes/index.php', 'fa-bell', 'Notificações', $activePage === 'notificacoes', ''); ?>
+        <?php echo pfNav($baseUrl.'/modules/notificacoes/config.php', 'fa-cog', 'Configurar Notif.', $activePage === 'notificacoes_config'); ?>
         <?php endif; ?>
 
-        <!-- ============================================ -->
-        <!-- SEGURANÇA / AUDITORIA (APENAS SUPER_ADMIN E ADMIN_EMPRESA) -->
-        <!-- ============================================ -->
-        <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
-        <div class="nav-divider"></div>
-        <div class="nav-section-title">
-            <i class="fas fa-shield-alt"></i> <span>Segurança</span>
-        </div>
-        
-        <a href="/modules/auditoria/index.php" class="nav-item <?php echo $activePage === 'auditoria' ? 'active' : ''; ?>">
-            <i class="fas fa-history"></i>
-            <span>Auditoria</span>
-        </a>
-        <?php endif; ?>
-
-        <!-- ============================================ -->
-        <!-- NOTIFICAÇÕES (APENAS ADMIN E SUPER_ADMIN) -->
-        <!-- ============================================ -->
-        <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
-        <div class="nav-divider"></div>
-        <div class="nav-section-title">
-            <i class="fas fa-bell"></i> <span>Notificações</span>
-        </div>
-        
-        <a href="/modules/notificacoes/index.php" class="nav-item <?php echo $activePage === 'notificacoes' ? 'active' : ''; ?>">
-            <i class="fas fa-bell"></i>
-            <span>Notificações</span>
-            <span class="notificacao-badge" style="display: none;"></span>
-        </a>
-        
-        <a href="/modules/notificacoes/config.php" class="nav-item <?php echo $activePage === 'notificacoes_config' ? 'active' : ''; ?>">
-            <i class="fas fa-cog"></i>
-            <span>Configurar Notificações</span>
-        </a>
-        <?php endif; ?>
     </nav>
-    
-    <!-- ============================================ -->
-    <!-- FOOTER DO SIDEBAR -->
-    <!-- ============================================ -->
-    <div class="sidebar-footer">
+
+    <!-- Footer do Sidebar -->
+    <div class="pf-sidebar-footer">
         <?php if (function_exists('getCurrentEmpresaNome') && getCurrentEmpresaNome() && $usuario_tipo !== 'super_admin'): ?>
-        <div class="empresa-info">
-            <i class="fas fa-building"></i> 
-            <span title="<?php echo htmlspecialchars(getCurrentEmpresaNome()); ?>">
-                <?php 
-                $empresa_nome = function_exists('getCurrentEmpresaNome') ? getCurrentEmpresaNome() : 'Empresa';
-                echo strlen($empresa_nome) > 25 ? substr($empresa_nome, 0, 22) . '...' : $empresa_nome;
-                ?>
-            </span>
+        <div class="pf-empresa-badge">
+            <i class="fas fa-building me-1"></i>
+            <?php
+            $en = getCurrentEmpresaNome();
+            echo htmlspecialchars(strlen($en) > 28 ? substr($en, 0, 25).'...' : $en);
+            ?>
         </div>
         <?php endif; ?>
-        
-        <div class="user-info">
-            <div class="user-avatar">
-                <i class="fas fa-user-circle"></i>
-            </div>
-            <div class="user-details">
-                <span class="user-name" title="<?php echo $_SESSION['usuario_nome'] ?? 'Usuário'; ?>">
-                    <?php 
+
+        <div class="pf-user-info">
+            <div class="pf-user-avatar"><i class="fas fa-user-circle text-white"></i></div>
+            <div class="flex-grow-1 overflow-hidden">
+                <div class="pf-user-name">
+                    <?php
                     $nome = $_SESSION['usuario_nome'] ?? 'Usuário';
-                    echo strlen($nome) > 20 ? substr($nome, 0, 18) . '...' : $nome;
+                    echo htmlspecialchars(strlen($nome) > 22 ? substr($nome, 0, 20).'...' : $nome);
                     ?>
-                </span>
-                <span class="user-role">
-                    <?php 
+                </div>
+                <div class="pf-user-role">
+                    <?php
                     $roles = [
-                        'super_admin' => '👑 Super Admin',
+                        'super_admin'   => '⭐ Super Admin',
                         'admin_empresa' => '🏢 Administrador',
-                        'gestor' => '📊 Gestor',
-                        'supervisor' => '👁️ Supervisor',
-                        'funcionario' => '👤 Funcionário'
+                        'gestor'        => '📊 Gestor',
+                        'supervisor'    => '👁️ Supervisor',
+                        'funcionario'   => '👤 Funcionário',
                     ];
                     echo $roles[$usuario_tipo] ?? ucfirst($usuario_tipo);
                     ?>
-                </span>
+                </div>
             </div>
         </div>
-        
-        <a href="/logout.php" class="logout-btn">
+
+        <div class="d-flex align-items-center justify-content-between mb-3 px-1">
+            <span class="small opacity-75 text-white"><i class="fas fa-adjust me-1"></i>Tema</span>
+            <div class="pf-theme-toggle" title="Alternar tema">
+                <div class="pf-theme-opt" data-theme="light" title="Modo claro">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="pf-theme-opt" data-theme="dark" title="Modo escuro">
+                    <i class="fas fa-moon"></i>
+                </div>
+            </div>
+        </div>
+
+        <a href="<?php echo $baseUrl; ?>/logout.php" class="pf-logout-btn">
             <i class="fas fa-sign-out-alt"></i>
             <span>Sair</span>
         </a>
     </div>
 </aside>
 
-<style>
-.sidebar {
-    width: 280px;
-    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    position: fixed;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
-    transition: transform 0.3s ease;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar-header {
-    padding: 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.sidebar-header .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.sidebar-nav {
-    flex: 1;
-    padding: 16px;
-    overflow-y: auto;
-}
-
-.sidebar-nav::-webkit-scrollbar {
-    width: 4px;
-}
-
-.sidebar-nav::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-.sidebar-nav::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-}
-
-.nav-divider {
-    height: 1px;
-    background: rgba(255, 255, 255, 0.1);
-    margin: 12px 0;
-}
-
-.nav-section-title {
-    padding: 8px 16px;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: rgba(255, 255, 255, 0.5);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 16px;
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    border-radius: 12px;
-    margin-bottom: 4px;
-    transition: all 0.3s ease;
-    font-size: 14px;
-}
-
-.nav-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    transform: translateX(4px);
-}
-
-.nav-item.active {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.nav-item i {
-    width: 24px;
-    font-size: 18px;
-    text-align: center;
-}
-
-.sidebar-footer {
-    padding: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.empresa-info {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 16px;
-    text-align: center;
-    font-size: 12px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.user-avatar i {
-    font-size: 40px;
-    opacity: 0.9;
-}
-
-.user-details {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    flex: 1;
-}
-
-.user-name {
-    font-weight: 600;
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.user-role {
-    font-size: 10px;
-    opacity: 0.7;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.logout-btn {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    color: white;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    font-size: 13px;
-}
-
-.logout-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateX(4px);
-}
-
-.notificacao-badge {
-    background: #ef4444;
-    color: white;
-    border-radius: 20px;
-    padding: 2px 8px;
-    font-size: 10px;
-    font-weight: bold;
-    margin-left: auto;
-    min-width: 18px;
-    text-align: center;
-}
-
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 280px;
-        box-shadow: none;
-    }
-    
-    .sidebar.open {
-        transform: translateX(0);
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-    }
-}
-</style>
-
 <script>
-// Fun��o para buscar notifica��es n�o lidas
-function buscarNotificacoesNaoLidas() {
-    fetch('/modules/notificacoes/buscar.php')
-        .then(response => response.json())
-        .then(data => {
-            const badge = document.querySelector('.notificacao-badge');
-            if (!badge) return;
-            if (data.success && data.total > 0) {
-                badge.textContent = data.total;
-                badge.style.display = 'inline-flex';
-            } else {
-                badge.style.display = 'none';
-            }
-        })
-        .catch(error => console.log('Erro ao buscar notifica��es:', error));
-}
-
-setInterval(buscarNotificacoesNaoLidas, 30000);
-buscarNotificacoesNaoLidas();
+// Badge de notificacoes nao lidas
+(function () {
+    var base = '<?php echo $baseUrl; ?>';
+    function buscar() {
+        fetch(base + '/modules/notificacoes/buscar.php')
+            .then(function(r){ return r.json(); })
+            .then(function(data) {
+                var badge = document.querySelector('.pf-nav-badge');
+                if (!badge) return;
+                if (data.success && data.total > 0) {
+                    badge.textContent = data.total;
+                    badge.style.display = 'inline-flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            })
+            .catch(function(){});
+    }
+    buscar();
+    setInterval(buscar, 30000);
+})();
 </script>
-

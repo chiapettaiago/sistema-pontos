@@ -8,11 +8,11 @@ require_once __DIR__ . '/includes/csrf.php';
 
 if (isset($_SESSION['usuario_id'])) {
     if ($_SESSION['usuario_tipo'] === 'super_admin') {
-        header('Location: modules/admin/dashboard.php');
+        header('Location: ' . BASE_URL . '/modules/admin/dashboard.php');
     } elseif ($_SESSION['usuario_tipo'] === 'admin_empresa' || $_SESSION['usuario_tipo'] === 'gestor') {
-        header('Location: modules/dashboard_empresa/index.php');
+        header('Location: ' . BASE_URL . '/modules/dashboard_empresa/index.php');
     } else {
-        header('Location: modules/ponto/ponto.php');
+        header('Location: ' . BASE_URL . '/modules/ponto/ponto.php');
     }
     exit;
 }
@@ -102,11 +102,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 logAcao($db, 'LOGIN', 'usuarios_sistema', $usuario['id'], "Login realizado: {$usuario['email']}");
 
                 if ($usuario['tipo'] === 'super_admin') {
-                    header('Location: modules/admin/dashboard.php');
+                    header('Location: ' . BASE_URL . '/modules/admin/dashboard.php');
                 } elseif ($usuario['tipo'] === 'admin_empresa' || $usuario['tipo'] === 'gestor') {
-                    header('Location: modules/dashboard_empresa/index.php');
+                    header('Location: ' . BASE_URL . '/modules/dashboard_empresa/index.php');
                 } else {
-                    header('Location: modules/ponto/ponto.php');
+                    header('Location: ' . BASE_URL . '/modules/ponto/ponto.php');
                 }
                 exit;
             }
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 finalizarLoginFuncionario($funcionario);
                 logAcao($db, 'LOGIN', 'funcionarios', $funcionario['id'], "Login funcionario: {$funcionario['email']}");
 
-                header('Location: modules/ponto/ponto.php');
+                header('Location: ' . BASE_URL . '/modules/ponto/ponto.php');
                 exit;
             }
 
@@ -144,231 +144,180 @@ $csrf_token = generateCSRFToken();
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#667eea">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Ponto Facil Empresarial</title>
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-    <link rel="shortcut icon" href="/assets/favicon.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <!-- Aplica tema antes de renderizar (evita flash) -->
+    <script>
+        (function(){
+            var t = localStorage.getItem('pf_theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', t);
+        })();
+    </script>
+
+    <style>
         body {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            background:
-                radial-gradient(circle at top left, rgba(255,255,255,0.18), transparent 28%),
-                radial-gradient(circle at bottom right, rgba(255,255,255,0.10), transparent 22%),
-                linear-gradient(135deg, #0f172a 0%, #667eea 52%, #764ba2 100%);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .login-card {
-            background: rgba(255,255,255,0.96);
-            border-radius: 28px;
-            padding: 34px;
-            box-shadow: 0 24px 70px rgba(15, 23, 42, 0.30);
-            border: 1px solid rgba(255,255,255,0.35);
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        .logo-mark {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 14px;
-            border-radius: 24px;
-            display: grid;
-            place-items: center;
-            color: #fff;
-            font-size: 32px;
-            background: linear-gradient(135deg, #0f172a, #667eea 55%, #764ba2);
-        }
-
-        .logo h1 {
-            font-size: 28px;
-            color: #1f2937;
-        }
-
-        .logo p {
-            color: #6b7280;
-            margin-top: 6px;
-            font-size: 14px;
-        }
-
-        .error-message {
-            background: #fee2e2;
-            color: #b91c1c;
-            border: 1px solid #fecaca;
-            border-radius: 12px;
-            padding: 12px 14px;
-            margin-bottom: 18px;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #374151;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .input-group {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            font-family: var(--bs-font-sans-serif);
+            transition: background .3s ease, color .3s ease;
             position: relative;
         }
-
-        .input-group i {
+        [data-bs-theme="dark"] body {
+            background: var(--pf-gradient-dark);
+        }
+        .pf-login-theme-pos {
             position: absolute;
-            left: 15px;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 100;
+        }
+        .pf-login-card {
+            background: var(--bg-primary);
+            border-radius: 1.75rem;
+            padding: 2.25rem;
+            box-shadow: 0 24px 70px rgba(15,23,42,.15);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 460px;
+            color: var(--text-primary);
+        }
+        [data-bs-theme="dark"] .pf-login-card {
+            box-shadow: 0 24px 70px rgba(0,0,0,.5);
+        }
+        .pf-login-logo-mark {
+            width: 70px; height: 70px;
+            margin: 0 auto 1rem;
+            border-radius: 1.5rem;
+            display: grid;
+            place-items: center;
+            font-size: 2rem;
+            background: var(--pf-gradient);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(102,126,234,.35);
+        }
+        .pf-login-card .form-control {
+            padding-left: 2.75rem;
+        }
+        .pf-login-card .input-icon {
+            position: absolute;
+            left: .875rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #9ca3af;
+            color: var(--text-muted);
+            pointer-events: none;
         }
-
-        input {
-            width: 100%;
-            min-height: 48px;
-            padding: 13px 14px 13px 44px;
-            border: 1px solid #d1d5db;
-            border-radius: 14px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.16);
-        }
-
+        .pf-login-card .input-group { position: relative; }
         .btn-login {
             width: 100%;
-            min-height: 50px;
-            border: 0;
-            border-radius: 16px;
-            color: #fff;
-            font-size: 16px;
+            padding: .875rem;
+            border-radius: 1rem;
+            font-size: 1rem;
             font-weight: 700;
-            cursor: pointer;
-            background: linear-gradient(135deg, #0f172a, #667eea 55%, #764ba2);
-            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            background: var(--pf-gradient);
+            color: #fff;
+            transition: transform .2s, box-shadow .2s;
         }
-
         .btn-login:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 22px rgba(102, 126, 234, 0.35);
+            box-shadow: 0 10px 24px rgba(102,126,234,.40);
+            color: #fff;
         }
-
-        .footer {
-            text-align: center;
-            color: #6b7280;
-            font-size: 12px;
-            margin-top: 22px;
-        }
-
-        .alt-login {
-            margin-top: 16px;
-            text-align: center;
-        }
-
-        .alt-login a {
-            color: #1d4ed8;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .login-note {
-            margin: 18px 0;
-            padding: 12px 14px;
-            border-radius: 16px;
-            background: #eff6ff;
-            color: #1e40af;
-            border: 1px solid #bfdbfe;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
         @media (max-width: 480px) {
-            body { padding: 14px; align-items: stretch; }
-            .login-container { display: flex; align-items: center; }
-            .login-card { padding: 26px 20px; border-radius: 20px; }
-            .logo h1 { font-size: 24px; }
+            body { align-items: stretch; padding: 1rem; }
+            .pf-login-card { border-radius: 1.25rem; padding: 1.5rem; }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="logo">
-                <div class="logo-mark"><i class="fas fa-clock"></i></div>
-                <h1>Ponto Facil</h1>
-                <p>Sistema empresarial de ponto</p>
-            </div>
 
-            <?php if ($error): ?>
-                <div class="error-message">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <?php echo htmlspecialchars($error); ?>
-                </div>
-            <?php endif; ?>
-
-            <div class="login-note">
-                <strong>Entrada unificada:</strong> use email e senha ou reconhecimento facial.
-                No celular, prefira HTTPS para liberar a câmera sem bloqueios.
-            </div>
-
-            <form method="POST" action="">
-                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-
-                <div class="form-group">
-                    <label for="email">E-mail</label>
-                    <div class="input-group">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="email" name="email" required placeholder="seu@email.com" autocomplete="email" autofocus>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="senha">Senha</label>
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="senha" name="senha" required placeholder="Digite sua senha" autocomplete="current-password">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-login">
-                    <i class="fas fa-sign-in-alt"></i> Entrar
-                </button>
-            </form>
-
-            <div class="alt-login">
-                <a href="modules/funcionarios/login_facial.php">
-                    <i class="fas fa-camera"></i> Entrar com reconhecimento facial
-                </a>
-            </div>
-
-            <div class="footer">
-                &copy; <?php echo date('Y'); ?> Ponto Facil
-            </div>
+<!-- Theme toggle flutuante no login -->
+<div class="pf-login-theme-pos">
+    <div class="pf-theme-toggle" id="pfThemeToggle" title="Alternar tema">
+        <div class="pf-theme-opt" data-theme="light" title="Modo claro">
+            <i class="fas fa-sun"></i>
+        </div>
+        <div class="pf-theme-opt" data-theme="dark" title="Modo escuro">
+            <i class="fas fa-moon"></i>
         </div>
     </div>
+</div>
+
+<div class="pf-login-card mx-auto">
+
+    <!-- Logo -->
+    <div class="text-center mb-4">
+        <div class="pf-login-logo-mark">
+            <i class="fas fa-clock"></i>
+        </div>
+        <h1 class="h3 fw-bold mb-1">Ponto Fácil</h1>
+        <p class="text-muted small">Sistema empresarial de ponto</p>
+    </div>
+
+    <!-- Erro -->
+    <?php if ($error): ?>
+    <div class="alert alert-danger d-flex align-items-center gap-2 py-2" role="alert">
+        <i class="fas fa-exclamation-circle"></i>
+        <span><?php echo htmlspecialchars($error); ?></span>
+    </div>
+    <?php endif; ?>
+
+    <!-- Info -->
+    <div class="alert alert-info d-flex align-items-start gap-2 py-2 small mb-3" role="alert">
+        <i class="fas fa-info-circle mt-1 flex-shrink-0"></i>
+        <span><strong>Entrada unificada:</strong> use e-mail e senha ou reconhecimento facial. No celular, prefira HTTPS para liberar a câmera.</span>
+    </div>
+
+    <!-- Formulário -->
+    <form method="POST" action="" novalidate>
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
+
+        <div class="mb-3">
+            <label for="email" class="form-label">E-mail</label>
+            <div class="input-group">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" id="email" name="email" class="form-control"
+                       placeholder="seu@email.com" required autocomplete="email" autofocus>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="senha" class="form-label">Senha</label>
+            <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="senha" name="senha" class="form-control"
+                       placeholder="Digite sua senha" required autocomplete="current-password">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-login mb-3">
+            <i class="fas fa-sign-in-alt me-2"></i>Entrar
+        </button>
+    </form>
+
+    <!-- Login facial -->
+    <div class="text-center mb-3">
+        <a href="modules/funcionarios/login_facial.php" class="text-primary fw-semibold text-decoration-none small">
+            <i class="fas fa-camera me-1"></i>Entrar com reconhecimento facial
+        </a>
+    </div>
+
+    <p class="text-center text-muted small mb-0">&copy; <?php echo date('Y'); ?> Ponto Fácil</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/js/theme.js"></script>
 </body>
 </html>
+

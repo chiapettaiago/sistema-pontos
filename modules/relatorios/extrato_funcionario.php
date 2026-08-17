@@ -98,8 +98,8 @@ $pontos = $stmt->fetchAll();
 $stmt = $db->prepare("SELECT carga_horaria_diaria, carga_horaria_semanal FROM config_horarios WHERE empresa_id = :empresa_id");
 $stmt->execute([':empresa_id' => $empresa_id]);
 $config = $stmt->fetch();
-$carga_horaria_diaria = $config['carga_horaria_diaria'] ?? 8;
-$carga_horaria_semanal = $config['carga_horaria_semanal'] ?? 44;
+$carga_horaria_diaria = 7 + (20/60); // 7:20h
+$carga_horaria_semanal = 44;
 
 // Processar cada dia
 $dias = [];
@@ -143,6 +143,19 @@ foreach ($pontos as $p) {
 
 // Calcular saldo final
 $saldo_final = $total_horas_normais + $total_horas_extras_50 + $total_horas_extras_100 - ($carga_horaria_semanal * 4);
+
+function formatarHoras($horas_decimais, $com_sinal = false) {
+    if ($horas_decimais == 0) return ($com_sinal ? '+' : '') . '00:00';
+    $sinal = $horas_decimais < 0 ? '-' : ($com_sinal ? '+' : '');
+    $abs = abs($horas_decimais);
+    $h = floor($abs);
+    $m = round(($abs - $h) * 60);
+    if ($m >= 60) {
+        $h += 1;
+        $m -= 60;
+    }
+    return $sinal . str_pad($h, 2, '0', STR_PAD_LEFT) . ':' . str_pad($m, 2, '0', STR_PAD_LEFT);
+}
 
 function retornarDiaSemana($numero) {
     $dias = [
@@ -204,7 +217,7 @@ function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $carga
     
     // Calcular saldo
     $saldo = $horas_trab - $carga_diaria;
-    $result['saldo'] = ($saldo >= 0 ? '+' : '') . number_format($saldo, 2, ',', '.');
+    $result['saldo'] = formatarHoras($saldo, true);
     
     // Verificar atraso (entrada após 08:00)
     if ($entrada > '08:00:00') {
@@ -219,7 +232,7 @@ function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $carga
         // Verificar se é domingo ou sábado para horas extras 100%
         // Simplificado: sábado=7, domingo=1
         $result['horas_extras_50_num'] = $saldo;
-        $result['horas_extras_50'] = number_format($saldo, 2, ',', '.');
+        $result['horas_extras_50'] = formatarHoras($saldo);
     }
     
     return $result;
@@ -452,20 +465,20 @@ function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $carga
         </div>
         <div class="resumo-grid">
             <div class="resumo-item">
-                <div class="resumo-valor"><?php echo floor($total_horas_normais) . 'h ' . round(($total_horas_normais - floor($total_horas_normais)) * 60); ?>min</div>
+                <div class="resumo-valor"><?php echo formatarHoras($total_horas_normais); ?></div>
                 <div class="resumo-label">Horas Normais</div>
             </div>
             <div class="resumo-item">
-                <div class="resumo-valor"><?php echo floor($total_horas_extras_50) . 'h ' . round(($total_horas_extras_50 - floor($total_horas_extras_50)) * 60); ?>min</div>
+                <div class="resumo-valor"><?php echo formatarHoras($total_horas_extras_50); ?></div>
                 <div class="resumo-label">Horas Extras 50%</div>
             </div>
             <div class="resumo-item">
-                <div class="resumo-valor"><?php echo floor($total_horas_extras_100) . 'h ' . round(($total_horas_extras_100 - floor($total_horas_extras_100)) * 60); ?>min</div>
+                <div class="resumo-valor"><?php echo formatarHoras($total_horas_extras_100); ?></div>
                 <div class="resumo-label">Horas Extras 100%</div>
             </div>
             <div class="resumo-item">
                 <div class="resumo-valor <?php echo $saldo_final >= 0 ? 'positivo' : 'negativo'; ?>">
-                    <?php echo ($saldo_final >= 0 ? '+' : '') . number_format($saldo_final, 2, ',', '.') . 'h'; ?>
+                    <?php echo formatarHoras($saldo_final, true); ?>
                 </div>
                 <div class="resumo-label">Saldo Final</div>
             </div>

@@ -1,10 +1,10 @@
 <?php
 // modules/ponto/ponto.php - Tela de Ponto (VERSÃO CORRIGIDA)
-session_start();
+require_once '../../includes/config.php';
 
 // Verificar se está logado
 if (!isset($_SESSION['funcionario_id']) && !isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ' . BASE_URL . '/login.php');
     exit;
 }
 
@@ -227,637 +227,215 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
     exit;
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Bater Ponto - <?php echo htmlspecialchars($funcionario['nome']); ?></title>
+    <title>Bater Ponto - <?php echo htmlspecialchars($funcionario['nome'] ?? 'Usuário'); ?></title>
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <!-- Aplica tema antes de renderizar (evita flash) -->
+    <script>
+        (function(){
+            var t = localStorage.getItem('pf_theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', t);
+        })();
+    </script>
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            font-family: var(--bs-font-sans-serif);
+            padding: 1.5rem 1rem;
+            transition: background .3s ease, color .3s ease;
         }
-        
-        .container { max-width: 550px; margin: 0 auto; }
-        
-        .card {
-            background: white;
-            border-radius: 32px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            animation: fadeInUp 0.5s ease;
+        [data-bs-theme="dark"] body {
+            background: var(--pf-gradient-dark);
         }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .card-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            padding: 28px 24px;
+        .pf-ponto-card { max-width: 540px; margin: 0 auto; position: relative; }
+        .pf-ponto-header {
+            background: var(--pf-gradient);
+            border-radius: 1.5rem 1.5rem 0 0;
+            padding: 2rem;
             text-align: center;
-            color: white;
+            color: #fff;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.25);
+            position: relative;
         }
-        
-        .card-header h1 { font-size: 26px; margin-bottom: 8px; }
-        .card-header p { opacity: 0.9; font-size: 13px; }
-        
-        .datetime {
-            margin-top: 16px;
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
+        .pf-ponto-theme-pos {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 10;
         }
-        
-        .datetime .date, .datetime .time {
-            background: rgba(255,255,255,0.2);
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-size: 13px;
+        .pf-ponto-body {
+            background: var(--bg-primary);
+            border-radius: 0 0 1.5rem 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            color: var(--text-primary);
         }
-        
-        .datetime .time { font-family: monospace; font-size: 16px; font-weight: 600; }
-        
-        .card-body { padding: 28px; }
-        
-        .funcionario-info {
-            background: #f8f9fa;
-            border-radius: 20px;
-            padding: 16px;
-            margin-bottom: 28px;
-            text-align: center;
-        }
-        
-        .funcionario-info h2 { font-size: 18px; font-weight: 700; color: #333; }
-        .funcionario-info .matricula { font-size: 12px; color: #666; }
-        .funcionario-info .filial { font-size: 11px; color: #667eea; margin-top: 6px; }
-        
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 28px;
-        }
-        
-        .status-item {
-            text-align: center;
-            padding: 12px 6px;
-            border-radius: 16px;
-        }
-        
-        .status-item.completed {
-            background: #d1fae5;
-            color: #059669;
-        }
-        
-        .status-item.pending {
-            background: #f1f5f9;
-            color: #94a3b8;
-        }
-        
-        .status-item .icon { font-size: 22px; margin-bottom: 6px; display: block; }
-        .status-item .label { font-size: 10px; font-weight: 500; display: block; }
-        .status-item .time { font-size: 16px; font-weight: 700; display: block; margin-top: 6px; }
-        
-        .botoes-ponto {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .btn-ponto {
-            width: 100%;
-            border: none;
-            border-radius: 20px;
-            padding: 18px;
-            font-size: 16px;
+        .pf-clock { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; }
+        .pf-btn-ponto {
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            font-size: 1rem;
             font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-        
-        .btn-entrada { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .btn-almoco { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
-        .btn-volta { background: linear-gradient(135deg, #10b981, #059669); color: white; }
-        .btn-saida { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
-        .btn-facial {
-            background: #1e293b;
-            color: white;
-            border: 1px solid #334155;
-        }
-        .btn-facial i { color: #38bdf8; }
-        .btn-finalizado {
-            background: #9ca3af;
-            color: white;
-            cursor: not-allowed;
-        }
-        
-        .btn-ponto:hover:not(.btn-finalizado) {
-            transform: scale(1.02);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-        
-        .alert {
-            padding: 12px 16px;
-            border-radius: 14px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .alert-success { background: #d1fae5; color: #059669; border-left: 4px solid #059669; }
-        .alert-error { background: #fee2e2; color: #dc2626; border-left: 4px solid #dc2626; }
-        
-        .info-footer {
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-            color: #64748b;
-            margin-bottom: 8px;
-        }
-        
-        .info-item i { width: 18px; color: #667eea; }
-        
-        .quick-actions {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        
-        .quick-btn {
-            background: #f1f5f9;
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #475569;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s;
-        }
-        
-        .quick-btn:hover {
-            background: #e2e8f0;
-            transform: translateY(-2px);
-        }
-        
-        .camera-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-        
-        .camera-container {
-            background: #000;
-            border-radius: 24px;
-            overflow: hidden;
-            max-width: 500px;
-            width: 90%;
-        }
-        
-        video {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        
-        .camera-buttons {
-            display: flex;
-            gap: 12px;
-            padding: 20px;
-            background: #1e293b;
-        }
-        
-        .btn-capturar {
-            flex: 1;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
             border: none;
-            padding: 14px;
-            border-radius: 40px;
-            font-size: 16px;
-            font-weight: 600;
+            width: 100%;
+            transition: transform .2s, box-shadow .2s;
             cursor: pointer;
+            color: #fff;
         }
-        
-        .btn-fechar-camera {
-            flex: 1;
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 40px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .loading-camera {
-            display: none;
-            text-align: center;
-            padding: 20px;
-            color: white;
-        }
-        
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #fff3;
-            border-top-color: #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 12px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 640px) {
-            body {
-                padding: 10px;
-                min-height: 100svh;
-            }
-
-            .container {
-                width: 100%;
-            }
-
-            .card {
-                border-radius: 20px;
-            }
-
-            .status-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .quick-actions,
-            .camera-buttons {
-                flex-direction: column;
-            }
-
-            .quick-btn,
-            .btn-capturar,
-            .btn-fechar-camera {
-                justify-content: center;
-                width: 100%;
-            }
-
-            .camera-container {
-                width: calc(100vw - 20px);
-                max-height: calc(100svh - 20px);
-                border-radius: 18px;
-            }
-
-            video {
-                max-height: 60svh;
-                object-fit: cover;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .card-header { padding: 20px; }
-            .card-header h1 { font-size: 22px; }
-            .card-body { padding: 20px; }
-            .btn-ponto { padding: 14px; font-size: 14px; }
-        }
+        .pf-btn-ponto:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        .pf-btn-ponto:active { transform: translateY(0); }
+        .btn-entrada  { background: linear-gradient(135deg,#10b981,#059669); }
+        .btn-s-almoco { background: linear-gradient(135deg,#f59e0b,#d97706); }
+        .btn-v-almoco { background: linear-gradient(135deg,#3b82f6,#1d4ed8); }
+        .btn-saida    { background: linear-gradient(135deg,#ef4444,#dc2626); }
+        .btn-ponto-disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h1><i class="fas fa-fingerprint"></i> Bater Ponto</h1>
-                <p>Registre sua jornada de trabalho</p>
-                <div class="datetime">
-                    <div class="date"><i class="fas fa-calendar-alt"></i> <?php echo date('d/m/Y'); ?></div>
-                    <div class="time" id="relogio"><i class="fas fa-clock"></i> <?php echo date('H:i:s'); ?></div>
+
+<?php
+$mensagem = $_SESSION['mensagem_ponto'] ?? '';
+$tipoMsg  = $_SESSION['tipo_mensagem_ponto'] ?? 'info';
+unset($_SESSION['mensagem_ponto'], $_SESSION['tipo_mensagem_ponto']);
+
+// Registros de hoje do funcionário
+$stmt = $db->prepare("SELECT tipo FROM pontos WHERE funcionario_id = :id AND DATE(data_hora) = CURDATE() ORDER BY data_hora ASC");
+$stmt->execute([':id' => $funcionario_id]);
+$pontosHoje = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$tiposRegistrados = array_flip($pontosHoje);
+?>
+
+<div class="pf-ponto-card">
+    <!-- Header -->
+    <div class="pf-ponto-header">
+        <div class="pf-ponto-theme-pos">
+            <div class="pf-theme-toggle" id="pfThemeToggle" title="Alternar tema">
+                <div class="pf-theme-opt" data-theme="light" title="Modo claro">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="pf-theme-opt" data-theme="dark" title="Modo escuro">
+                    <i class="fas fa-moon"></i>
                 </div>
             </div>
-            
-            <div class="card-body">
-                <div class="funcionario-info">
-                    <h2><?php echo htmlspecialchars($funcionario['nome']); ?></h2>
-                    <div class="matricula"><i class="fas fa-id-badge"></i> Matrícula: <?php echo htmlspecialchars($funcionario['matricula']); ?></div>
-                    <div class="filial"><i class="fas fa-store"></i> Filial: <?php echo htmlspecialchars($funcionario['filial_nome']); ?></div>
-                </div>
-                
-                <?php if ($mensagem): ?>
-                <div class="alert alert-<?php echo $tipo_mensagem; ?>">
-                    <i class="fas <?php echo $tipo_mensagem == 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'; ?>"></i>
-                    <?php echo $mensagem; ?>
-                </div>
-                <?php endif; ?>
-                
-                <div class="status-grid">
-                    <div class="status-item <?php echo $horarios['entrada'] != '--:--' ? 'completed' : 'pending'; ?>">
-                        <i class="fas fa-sign-in-alt icon"></i>
-                        <span class="label">Entrada</span>
-                        <span class="time"><?php echo $horarios['entrada']; ?></span>
-                    </div>
-                    <div class="status-item <?php echo $horarios['saida_almoco'] != '--:--' ? 'completed' : 'pending'; ?>">
-                        <i class="fas fa-utensils icon"></i>
-                        <span class="label">Saída Almoço</span>
-                        <span class="time"><?php echo $horarios['saida_almoco']; ?></span>
-                    </div>
-                    <div class="status-item <?php echo $horarios['volta_almoco'] != '--:--' ? 'completed' : 'pending'; ?>">
-                        <i class="fas fa-undo-alt icon"></i>
-                        <span class="label">Volta Almoço</span>
-                        <span class="time"><?php echo $horarios['volta_almoco']; ?></span>
-                    </div>
-                    <div class="status-item <?php echo $horarios['saida'] != '--:--' ? 'completed' : 'pending'; ?>">
-                        <i class="fas fa-sign-out-alt icon"></i>
-                        <span class="label">Saída</span>
-                        <span class="time"><?php echo $horarios['saida']; ?></span>
-                    </div>
-                </div>
-                
-                <?php if ($proximo_tipo !== 'finalizado'): ?>
-                <div class="botoes-ponto">
-                    <button class="btn-ponto btn-facial" id="btnFacial" data-tipo="<?php echo $proximo_tipo; ?>">
-                        <i class="fas fa-camera"></i> 
-                        🔒 <?php echo $proximo_texto; ?> com Facial
-                    </button>
-                    
-                    <form method="POST" action="" id="formManual">
-                        <input type="hidden" name="latitude" id="latitude">
-                        <input type="hidden" name="longitude" id="longitude">
-                        <input type="hidden" name="acao" value="<?php echo $proximo_tipo; ?>">
-                        <button type="submit" class="btn-ponto btn-<?php echo $cores_botao[$proximo_tipo]; ?>">
-                            <i class="fas <?php echo $icones_botao[$proximo_tipo]; ?>"></i>
-                            <?php echo $proximo_texto; ?> (Manual)
-                        </button>
-                    </form>
-                </div>
-                <?php else: ?>
-                <button class="btn-ponto btn-finalizado" disabled>
-                    <i class="fas fa-check-circle"></i> ✅ Dia Finalizado! Volte amanhã.
+        </div>
+        <div class="mb-2 opacity-75 small">Olá,</div>
+        <h1 class="h3 fw-bold mb-0"><?php echo htmlspecialchars($funcionario['nome'] ?? ''); ?></h1>
+        <div class="opacity-75 small mt-1"><?php echo htmlspecialchars($funcionario['cargo'] ?? ''); ?></div>
+        <div class="pf-clock mt-3" id="pfRelógio">--:--:--</div>
+        <div class="opacity-75 small" id="pfData"></div>
+    </div>
+
+    <!-- Body -->
+    <div class="pf-ponto-body">
+
+        <!-- Alerta de retorno -->
+        <?php if ($mensagem): ?>
+        <div class="alert alert-<?php echo $tipoMsg === 'success' ? 'success' : 'danger'; ?> d-flex align-items-center gap-2 mb-4">
+            <i class="fas fa-<?php echo $tipoMsg === 'success' ? 'check-circle' : 'exclamation-circle'; ?>"></i>
+            <?php echo htmlspecialchars($mensagem); ?>
+        </div>
+        <?php endif; ?>
+
+        <!-- Botões de ponto -->
+        <div class="d-grid gap-3">
+            <form method="POST">
+                <input type="hidden" name="tipo" value="entrada">
+                <input type="hidden" name="latitude" id="lat_entrada" value="">
+                <input type="hidden" name="longitude" id="lon_entrada" value="">
+                <button type="submit" class="pf-btn-ponto btn-entrada <?php echo isset($tiposRegistrados['entrada']) ? 'btn-ponto-disabled' : ''; ?>">
+                    <i class="fas fa-sign-in-alt me-2"></i>
+                    <?php echo isset($tiposRegistrados['entrada']) ? '✓ Entrada registrada' : 'Registrar Entrada'; ?>
                 </button>
-                <?php endif; ?>
-                
-                <div class="info-footer">
-                    <div class="info-item"><i class="fas fa-info-circle"></i> <span>Horário permitido: 06:00 às 22:00</span></div>
-                    <div class="info-item" id="gpsStatus"><i class="fas fa-map-marker-alt"></i> <span>Capturando localização...</span></div>
-                </div>
-                
-                <div class="quick-actions">
-                    <a href="extrato.php" class="quick-btn"><i class="fas fa-calendar-alt"></i> Meu Extrato</a>
-                    <a href="../solicitacoes/index.php" class="quick-btn"><i class="fas fa-clipboard-list"></i> Solicitações</a>
-                    <a href="../../logout.php" class="quick-btn"><i class="fas fa-sign-out-alt"></i> Sair</a>
-                </div>
+            </form>
+            <form method="POST">
+                <input type="hidden" name="tipo" value="saida_almoco">
+                <button type="submit" class="pf-btn-ponto btn-s-almoco <?php echo (isset($tiposRegistrados['saida_almoco']) || !isset($tiposRegistrados['entrada'])) ? 'btn-ponto-disabled' : ''; ?>">
+                    <i class="fas fa-utensils me-2"></i>
+                    <?php echo isset($tiposRegistrados['saida_almoco']) ? '✓ Saída almoço registrada' : 'Saída para Almoço'; ?>
+                </button>
+            </form>
+            <form method="POST">
+                <input type="hidden" name="tipo" value="volta_almoco">
+                <button type="submit" class="pf-btn-ponto btn-v-almoco <?php echo (isset($tiposRegistrados['volta_almoco']) || !isset($tiposRegistrados['saida_almoco'])) ? 'btn-ponto-disabled' : ''; ?>">
+                    <i class="fas fa-redo me-2"></i>
+                    <?php echo isset($tiposRegistrados['volta_almoco']) ? '✓ Volta almoço registrada' : 'Volta do Almoço'; ?>
+                </button>
+            </form>
+            <form method="POST">
+                <input type="hidden" name="tipo" value="saida">
+                <button type="submit" class="pf-btn-ponto btn-saida <?php echo (isset($tiposRegistrados['saida']) || !isset($tiposRegistrados['entrada'])) ? 'btn-ponto-disabled' : ''; ?>">
+                    <i class="fas fa-sign-out-alt me-2"></i>
+                    <?php echo isset($tiposRegistrados['saida']) ? '✓ Saída registrada' : 'Registrar Saída'; ?>
+                </button>
+            </form>
+        </div>
+
+        <!-- Registros de hoje -->
+        <?php if (!empty($pontosHoje)): ?>
+        <div class="mt-4 pt-3 border-top">
+            <h6 class="fw-semibold text-muted mb-3"><i class="fas fa-list me-2"></i>Registros de hoje</h6>
+            <div class="d-flex flex-wrap gap-2">
+                <?php
+                $nomes = ['entrada'=>'Entrada','saida_almoco'=>'Saída Almoço','volta_almoco'=>'Volta Almoço','saida'=>'Saída'];
+                foreach ($pontosHoje as $t):
+                ?>
+                <span class="badge bg-success"><i class="fas fa-check me-1"></i><?php echo $nomes[$t] ?? $t; ?></span>
+                <?php endforeach; ?>
             </div>
         </div>
-    </div>
-    
-    <div id="cameraModal" class="camera-modal">
-        <div class="camera-container">
-            <video id="video" autoplay playsinline></video>
-            <canvas id="canvas" style="display: none;"></canvas>
-            <div class="camera-buttons">
-                <button class="btn-capturar" id="capturarFoto">📸 Capturar e Validar</button>
-                <button class="btn-fechar-camera" id="fecharCamera">❌ Fechar</button>
-            </div>
-            <div id="loadingCamera" class="loading-camera">
-                <div class="spinner"></div>
-                <p>Validando reconhecimento facial...</p>
-            </div>
+        <?php endif; ?>
+
+        <!-- Link para extrato -->
+        <div class="text-center mt-4">
+            <a href="extrato.php" class="text-primary text-decoration-none small">
+                <i class="fas fa-list-alt me-1"></i>Ver meu extrato completo
+            </a>
+        </div>
+
+        <!-- Logout -->
+        <div class="text-center mt-2">
+            <a href="/logout.php" class="text-muted text-decoration-none small">
+                <i class="fas fa-sign-out-alt me-1"></i>Sair
+            </a>
         </div>
     </div>
-    
-    <script src="/assets/js/face-api.min.js"></script>
-    <script>
-        let stream = null;
-        let tipoPonto = null;
-        let faceModelsLoaded = false;
-        
-        function atualizarRelogio() {
-            const agora = new Date();
-            const horas = String(agora.getHours()).padStart(2, '0');
-            const minutos = String(agora.getMinutes()).padStart(2, '0');
-            const segundos = String(agora.getSeconds()).padStart(2, '0');
-            const relogio = document.getElementById('relogio');
-            if (relogio) {
-                relogio.innerHTML = `<i class="fas fa-clock"></i> ${horas}:${minutos}:${segundos}`;
-            }
-        }
-        setInterval(atualizarRelogio, 1000);
-        
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                document.getElementById('latitude').value = position.coords.latitude;
-                document.getElementById('longitude').value = position.coords.longitude;
-                document.getElementById('gpsStatus').innerHTML = '<i class="fas fa-check-circle"></i> <span>Localização capturada</span>';
-            }, function(error) {
-                document.getElementById('gpsStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>GPS não disponível</span>';
-            });
-        }
-        
-        const btnFacial = document.getElementById('btnFacial');
-        const cameraModal = document.getElementById('cameraModal');
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const capturarBtn = document.getElementById('capturarFoto');
-        const fecharBtn = document.getElementById('fecharCamera');
-        const loadingCamera = document.getElementById('loadingCamera');
-        
-        if (btnFacial) {
-            btnFacial.addEventListener('click', async function() {
-                tipoPonto = this.getAttribute('data-tipo');
-                console.log('Tipo de ponto:', tipoPonto);
-                
-                if (!tipoPonto || tipoPonto === 'finalizado') {
-                    alert('Nenhum ponto pendente para registrar');
-                    return;
-                }
-                
-                await abrirCamera();
-            });
-        }
+</div>
 
-        async function carregarModelosFaciais() {
-            if (faceModelsLoaded) {
-                return true;
-            }
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+(function() {
+    function tick() {
+        var now = new Date();
+        var relEl  = document.getElementById('pfRelógio');
+        var dataEl = document.getElementById('pfData');
+        if (relEl)  relEl.textContent  = now.toLocaleTimeString('pt-BR');
+        if (dataEl) dataEl.textContent = now.toLocaleDateString('pt-BR', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+    }
+    tick();
+    setInterval(tick, 1000);
 
-            if (!window.faceapi) {
-                console.error('face-api.js nao foi carregado');
-                return false;
-            }
-
-            const localModelUrl = new URL('../../assets/models', window.location.href).href.replace(/\/$/, '');
-            const modelSources = [
-                localModelUrl,
-                '/assets/models',
-                'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights'
-            ];
-
-            for (const modelUrl of modelSources) {
-                try {
-                    await faceapi.nets.tinyFaceDetector.loadFromUri(modelUrl);
-                    await faceapi.nets.faceLandmark68Net.loadFromUri(modelUrl);
-                    await faceapi.nets.faceRecognitionNet.loadFromUri(modelUrl);
-                    faceModelsLoaded = true;
-                    return true;
-                } catch (err) {
-                    console.warn('Falha ao carregar modelos faciais em ' + modelUrl, err);
-                }
-            }
-
-            return false;
-        }
-        
-        async function abrirCamera() {
-            cameraModal.style.display = 'flex';
-            loadingCamera.style.display = 'block';
-            capturarBtn.disabled = true;
-
-            try {
-                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                    throw new Error('Navegador nao suporta acesso a camera');
-                }
-
-                if (!window.isSecureContext && !['localhost', '127.0.0.1', '::1'].includes(window.location.hostname)) {
-                    throw new Error('No celular, a camera exige HTTPS ou acesso via localhost');
-                }
-
-                const modelosOk = await carregarModelosFaciais();
-                if (!modelosOk) {
-                    throw new Error('Nao foi possivel carregar os modelos de reconhecimento facial');
-                }
-
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user' },
-                    audio: false
-                });
-                video.srcObject = stream;
-                await video.play().catch(() => {});
-                loadingCamera.style.display = 'none';
-                capturarBtn.disabled = false;
-            } catch (err) {
-                alert('Erro ao acessar a câmera: ' + err.message);
-                fecharCamera();
-            }
-        }
-        
-        capturarBtn.addEventListener('click', async function() {
-            if (!tipoPonto) {
-                alert('Tipo de ponto não definido');
-                fecharCamera();
-                return;
-            }
-            
-            loadingCamera.style.display = 'block';
-            capturarBtn.disabled = true;
-
-            const modelosOk = await carregarModelosFaciais();
-            if (!modelosOk) {
-                alert('Nao foi possivel carregar o reconhecimento facial. Tente novamente.');
-                loadingCamera.style.display = 'none';
-                capturarBtn.disabled = false;
-                return;
-            }
-
-            const detection = await faceapi
-                .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.5 }))
-                .withFaceLandmarks()
-                .withFaceDescriptor();
-
-            if (!detection) {
-                alert('Nenhum rosto detectado. Centralize o rosto, melhore a iluminacao e tente novamente.');
-                loadingCamera.style.display = 'none';
-                capturarBtn.disabled = false;
-                return;
-            }
-            
-            const context = canvas.getContext('2d');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const fotoBase64 = canvas.toDataURL('image/jpeg', 0.8);
-            
-            const latitude = document.getElementById('latitude')?.value || null;
-            const longitude = document.getElementById('longitude')?.value || null;
-            
-            const dados = {
-                tipo: tipoPonto,
-                foto: fotoBase64,
-                descritor: Array.from(detection.descriptor),
-                latitude: latitude,
-                longitude: longitude
-            };
-            
-            try {
-                const response = await fetch('processar_facial.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dados)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    window.location.href = 'ponto.php';
-                } else {
-                    alert('❌ ' + result.message);
-                    loadingCamera.style.display = 'none';
-                    capturarBtn.disabled = false;
-                }
-            } catch (err) {
-                alert('Erro ao processar: ' + err.message);
-                loadingCamera.style.display = 'none';
-                capturarBtn.disabled = false;
-            }
+    // Geolocalização
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            document.querySelectorAll('[id^="lat_"]').forEach(function(el) { el.value = pos.coords.latitude; });
+            document.querySelectorAll('[id^="lon_"]').forEach(function(el) { el.value = pos.coords.longitude; });
         });
-        
-        function fecharCamera() {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
-            }
-            cameraModal.style.display = 'none';
-            video.srcObject = null;
-            loadingCamera.style.display = 'none';
-            capturarBtn.disabled = false;
-        }
-        
-        fecharBtn.addEventListener('click', fecharCamera);
-    </script>
+    }
+</script>
+<script src="/assets/js/theme.js"></script>
 </body>
 </html>
-

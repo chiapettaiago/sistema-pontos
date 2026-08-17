@@ -18,7 +18,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
@@ -384,5 +384,6 @@ function exportarExcel() {
 </script>
 
 <?php require_once '../../includes/footer.php'; ?>
+
 
 

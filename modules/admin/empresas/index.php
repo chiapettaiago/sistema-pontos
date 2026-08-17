@@ -2,11 +2,11 @@
 // modules/admin/empresas/index.php - Lista de Empresas (COMPLETO)
 // NÃO PODE HAVER NADA ANTES DESTA LINHA
 
-session_start();
+require_once '../../../includes/config.php';
 
 // Verificar se está logado e é super admin
 if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_tipo'] ?? '') !== 'super_admin') {
-    header('Location: /login.php');
+    header('Location: ' . BASE_URL . '/login.php');
     exit;
 }
 
@@ -301,3 +301,4 @@ document.addEventListener('click', function(event) {
 </script>
 
 <?php require_once '../../../includes/footer.php'; ?>
+

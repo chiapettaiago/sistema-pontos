@@ -7,7 +7,7 @@ require_once '../../config/multi_empresa.php';
 
 // Verificar se é admin_empresa ou superior
 if ($_SESSION['usuario_tipo'] !== 'admin_empresa' && $_SESSION['usuario_tipo'] !== 'super_admin') {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
@@ -21,7 +21,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
     exit;
 }
 
@@ -493,6 +493,7 @@ if (ctxTipo) {
 </script>
 
 <?php require_once '../../includes/footer.php'; ?>
+
 
 
 

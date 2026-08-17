@@ -23,14 +23,14 @@ $id = isset($_POST['id']) ? intval($_POST['id']) : (isset($_GET['id']) ? intval(
 
 if ($id <= 0) {
     $_SESSION['error'] = 'ID de funcionário inválido';
-    header('Location: /modules/funcionarios/index.php');
+    header('Location: ' . BASE_URL . '/modules/funcionarios/index.php');
     exit;
 }
 
 // Confirmação adicional (opcional)
 if (!isset($_POST['confirm']) || $_POST['confirm'] !== 'sim') {
     $_SESSION['error'] = 'Confirmação de exclusão necessária';
-    header('Location: /modules/funcionarios/index.php');
+    header('Location: ' . BASE_URL . '/modules/funcionarios/index.php');
     exit;
 }
 
@@ -44,7 +44,7 @@ try {
     
     if (!$funcionario) {
         $_SESSION['error'] = 'Funcionário não encontrado';
-        header('Location: /modules/funcionarios/index.php');
+        header('Location: ' . BASE_URL . '/modules/funcionarios/index.php');
         exit;
     }
     
@@ -62,6 +62,6 @@ try {
     $_SESSION['error'] = 'Erro ao excluir funcionário. Tente novamente.';
 }
 
-header('Location: /modules/funcionarios/index.php');
+header('Location: ' . BASE_URL . '/modules/funcionarios/index.php');
 exit;
 ?>

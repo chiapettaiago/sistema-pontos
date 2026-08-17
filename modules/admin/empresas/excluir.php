@@ -2,11 +2,11 @@
 // modules/admin/empresas/excluir.php - Excluir Empresa (APENAS SUPER ADMIN)
 // NÃO PODE HAVER NADA ANTES DESTA LINHA
 
-session_start();
+require_once '../../../includes/config.php';
 
 // Verificar se está logado e é super admin
 if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_tipo'] ?? '') !== 'super_admin') {
-    header('Location: /login.php');
+    header('Location: ' . BASE_URL . '/login.php');
     exit;
 }
 
@@ -131,3 +131,4 @@ $_SESSION['tipo_mensagem'] = "success";
 header('Location: index.php');
 exit;
 ?>
+

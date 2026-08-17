@@ -23,14 +23,14 @@ $id = isset($_POST['id']) ? intval($_POST['id']) : (isset($_GET['id']) ? intval(
 
 if ($id <= 0) {
     $_SESSION['error'] = 'ID de filial inválido';
-    header('Location: /modules/filiais/index.php');
+    header('Location: ' . BASE_URL . '/modules/filiais/index.php');
     exit;
 }
 
 // Confirmação
 if (!isset($_POST['confirm']) || $_POST['confirm'] !== 'sim') {
     $_SESSION['error'] = 'Confirmação de exclusão necessária';
-    header('Location: /modules/filiais/index.php');
+    header('Location: ' . BASE_URL . '/modules/filiais/index.php');
     exit;
 }
 
@@ -44,7 +44,7 @@ try {
     
     if ($count > 0) {
         $_SESSION['error'] = "Não é possível excluir a filial pois existem $count funcionários vinculados. Reassigne-os primeiro.";
-        header('Location: /modules/filiais/index.php');
+        header('Location: ' . BASE_URL . '/modules/filiais/index.php');
         exit;
     }
     
@@ -60,6 +60,6 @@ try {
     $_SESSION['error'] = 'Erro ao excluir filial.';
 }
 
-header('Location: /modules/filiais/index.php');
+header('Location: ' . BASE_URL . '/modules/filiais/index.php');
 exit;
 ?>

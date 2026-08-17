@@ -17,7 +17,7 @@ $filial_id = $_SESSION['funcionario_filial_id'] ?? null;
 $is_admin = isset($_SESSION['user_tipo']) && $_SESSION['user_tipo'] === 'admin';
 
 if (!$funcionario_id && !$is_admin) {
-    header('Location: /login.php');
+    header('Location: ' . BASE_URL . '/login.php');
     exit;
 }
 

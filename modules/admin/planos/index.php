@@ -2,12 +2,11 @@
 // modules/admin/planos/index.php - Gerenciar Planos (CORRIGIDO)
 // NÃO PODE HAVER NADA ANTES DESTA LINHA
 
-// Iniciar sessão e verificar permissões ANTES de qualquer saída HTML
-session_start();
+require_once '../../../includes/config.php';
 
 // Verificar se é super admin
 if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_tipo'] ?? '') !== 'super_admin') {
-    header('Location: /login.php');
+    header('Location: ' . BASE_URL . '/login.php');
     exit;
 }
 
@@ -487,3 +486,4 @@ function fecharModal() {
 </script>
 
 <?php require_once '../../../includes/footer.php'; ?>
+

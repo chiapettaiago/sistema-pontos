@@ -6,13 +6,21 @@
 
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'appcas29_pontofacil');
-define('DB_USER', 'appcas29_ponto_empresarial');
-define('DB_PASS', 'Cl4r1c#2018@#'); // preencha com a senha do banco no servidor
+define('DB_USER', 'root');
+define('DB_PASS', ''); // ambiente local WAMP
 define('DB_CHARSET', 'utf8mb4');
 
 define('SITE_NAME', 'Sistema de Ponto Eletronico');
 define('SITE_URL', 'https://divulgpontofacil.com.br');
 define('TIMEZONE', 'America/Sao_Paulo');
+
+// BASE_URL: caminho da aplicacao a partir da raiz do servidor web.
+// Calculado automaticamente — funciona em localhost/subpasta e em producao.
+if (!defined('BASE_URL')) {
+    $_cfg_dir = str_replace('\\', '/', dirname(__DIR__));
+    $_cfg_root = str_replace('\\', '/', rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/\\'));
+    define('BASE_URL', rtrim(str_replace($_cfg_root, '', $_cfg_dir), '/'));
+}
 
 define('SESSION_TIMEOUT', 7200);
 define('MAX_LOGIN_ATTEMPTS', 5);

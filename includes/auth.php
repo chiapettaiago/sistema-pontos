@@ -24,10 +24,10 @@ function isLoggedIn() {
 function redirectIfNotLoggedIn() {
     if (!isLoggedIn()) {
         if (!headers_sent()) {
-    header('Location: /login.php');
+    header('Location: ' . BASE_URL . '/login.php');
             exit;
         } else {
-    echo '<script>window.location.href="/login.php";</script>';
+    echo '<script>window.location.href="' . BASE_URL . '/login.php";</script>';
             exit;
         }
     }
@@ -38,10 +38,10 @@ function redirectIfNotAdmin() {
     $tipo = $_SESSION['usuario_tipo'] ?? '';
     if ($tipo !== 'super_admin' && $tipo !== 'admin_empresa') {
         if (!headers_sent()) {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
             exit;
         } else {
-    echo '<script>window.location.href="/index.php";</script>';
+    echo '<script>window.location.href="' . BASE_URL . '/index.php";</script>';
             exit;
         }
     }
@@ -234,7 +234,7 @@ function checkModuleAccess($module) {
     
     if (!in_array($userType, $modulePermissions[$module] ?? [])) {
         if (!headers_sent()) {
-    header('Location: /index.php');
+    header('Location: ' . BASE_URL . '/index.php');
             exit;
         } else {
     echo '<script>window.location.href="/index.php";</script>';
@@ -292,3 +292,4 @@ function getConfig($db, $chave, $empresa_id = null) {
     }
 }
 ?>
+
