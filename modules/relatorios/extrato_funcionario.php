@@ -83,7 +83,9 @@ $query = "SELECT
             MAX(CASE WHEN p.tipo = 'entrada' THEN TIME(p.data_hora) END) as entrada,
             MAX(CASE WHEN p.tipo = 'saida_almoco' THEN TIME(p.data_hora) END) as saida_almoco,
             MAX(CASE WHEN p.tipo = 'volta_almoco' THEN TIME(p.data_hora) END) as volta_almoco,
-            MAX(CASE WHEN p.tipo = 'saida' THEN TIME(p.data_hora) END) as saida
+            MAX(CASE WHEN p.tipo = 'saida' THEN TIME(p.data_hora) END) as saida,
+            MAX(CASE WHEN p.tipo = 'extra_entrada' THEN TIME(p.data_hora) END) as extra_entrada,
+            MAX(CASE WHEN p.tipo = 'extra_saida' THEN TIME(p.data_hora) END) as extra_saida
           FROM pontos p
           WHERE p.funcionario_id = :funcionario_id
           AND DATE(p.data_hora) BETWEEN :data_inicio AND :data_fim
@@ -118,8 +120,10 @@ foreach ($pontos as $p) {
     $saida_almoco = $p['saida_almoco'];
     $volta_almoco = $p['volta_almoco'];
     $saida = $p['saida'];
+    $extra_entrada = $p['extra_entrada'];
+    $extra_saida = $p['extra_saida'];
     
-    $calculo = calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $carga_horaria_diaria);
+    $calculo = calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $extra_entrada, $extra_saida, $carga_horaria_diaria);
     
     $dias[] = [
         'data' => $p['data'],
@@ -129,6 +133,8 @@ foreach ($pontos as $p) {
         'saida_almoco' => $saida_almoco ? substr($saida_almoco, 0, 5) : '--:--',
         'volta_almoco' => $volta_almoco ? substr($volta_almoco, 0, 5) : '--:--',
         'saida' => $saida ? substr($saida, 0, 5) : '--:--',
+        'extra_entrada' => $extra_entrada ? substr($extra_entrada, 0, 5) : '--:--',
+        'extra_saida' => $extra_saida ? substr($extra_saida, 0, 5) : '--:--',
         'horas_trabalhadas' => $calculo['horas_trabalhadas'],
         'horas_extras_50' => $calculo['horas_extras_50'],
         'horas_extras_100' => $calculo['horas_extras_100'],
@@ -174,7 +180,7 @@ function retornarDiaSemana($numero) {
     return $dias[$numero] ?? '';
 }
 
-function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $carga_diaria) {
+function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $extra_entrada, $extra_saida, $carga_diaria) {
     $result = [
         'horas_trabalhadas' => '00:00',
         'horas_trabalhadas_num' => 0,
@@ -215,6 +221,10 @@ function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $carga
         $total_segundos -= ($volta_ts - $almoco_ts);
     }
     
+    if ($extra_entrada && $extra_saida) {
+        $total_segundos += strtotime($extra_saida) - strtotime($extra_entrada);
+    }
+    
     $horas_trab = $total_segundos / 3600;
     $result['horas_trabalhadas_num'] = $horas_trab;
     $result['horas_trabalhadas'] = floor($horas_trab) . ':' . str_pad(round(($horas_trab - floor($horas_trab)) * 60), 2, '0', STR_PAD_LEFT);
@@ -244,6 +254,14 @@ function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $carga
 ?>
 
 <style>
+.positivo {
+    color: var(--bs-success) !important;
+    font-weight: bold;
+}
+.negativo {
+    color: var(--bs-danger) !important;
+    font-weight: bold;
+}
 .relatorio-container {
     max-width: 1300px;
     margin: 0 auto;
@@ -511,6 +529,8 @@ function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $carga
                     <th>Saída Almoço</th>
                     <th>Volta Almoço</th>
                     <th>Saída</th>
+                    <th>Entrada Extra</th>
+                    <th>Saída Extra</th>
                     <th>Horas</th>
                     <th>Saldo</th>
                     <th>Status</th>
@@ -518,7 +538,7 @@ function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $carga
             </thead>
             <tbody>
                 <?php if (empty($dias)): ?>
-                    <tr class="fade-in"><td colspan="9" style="text-align: center;">Nenhum registro encontrado</td></tr>
+                    <tr class="fade-in"><td colspan="11" style="text-align: center;">Nenhum registro encontrado</td></tr>
                 <?php else: ?>
                     <?php foreach ($dias as $dia): ?>
                         <tr class="fade-in">
@@ -528,6 +548,8 @@ function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $carga
                             <td><?php echo $dia['saida_almoco']; ?></td>
                             <td><?php echo $dia['volta_almoco']; ?></td>
                             <td><?php echo $dia['saida']; ?></td>
+                            <td><?php echo $dia['extra_entrada']; ?></td>
+                            <td><?php echo $dia['extra_saida']; ?></td>
                             <td><?php echo $dia['horas_trabalhadas']; ?></td>
                             <td class="<?php echo strpos($dia['saldo'], '-') !== false ? 'negativo' : 'positivo'; ?>"><?php echo $dia['saldo']; ?></td>
                             <td class="status-<?php echo strtolower($dia['status']); ?>"><?php echo $dia['status']; ?></td>

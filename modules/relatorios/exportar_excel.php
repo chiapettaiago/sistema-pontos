@@ -64,12 +64,13 @@ function formatarMinutosExcel($minutos) {
     return $resto . ' minutos';
 }
 
-function calcularHorasDiaExcel($entrada, $saida_almoco, $volta_almoco, $saida) {
+function calcularHorasDiaExcel($entrada, $saida_almoco, $volta_almoco, $saida, $extra_entrada = null, $extra_saida = null) {
     if (!$entrada || !$saida) return 0;
     $entrada_ts = strtotime($entrada);
     $saida_ts = strtotime($saida);
     $total = $saida_ts - $entrada_ts;
     if ($saida_almoco && $volta_almoco) $total -= (strtotime($volta_almoco) - strtotime($saida_almoco));
+    if ($extra_entrada && $extra_saida) $total += (strtotime($extra_saida) - strtotime($extra_entrada));
     return $total / 3600;
 }
 
@@ -92,13 +93,15 @@ if ($tipo == 'extrato_funcionario') {
     fputcsv($output, ['EXTRATO DE PONTO - ' . strtoupper($func['nome'])], ';');
     fputcsv($output, ['Período: ' . date('d/m/Y', strtotime($data_inicio)) . ' a ' . date('d/m/Y', strtotime($data_fim))], ';');
     fputcsv($output, [], ';');
-    fputcsv($output, ['Data', 'Dia da Semana', 'Entrada', 'Saída Almoço', 'Volta Almoço', 'Saída', 'Horas', 'Saldo', 'Status'], ';');
+    fputcsv($output, ['Data', 'Dia da Semana', 'Entrada', 'Saída Almoço', 'Volta Almoço', 'Saída', 'Entrada Extra', 'Saída Extra', 'Horas', 'Saldo', 'Status'], ';');
     
     $query = "SELECT DATE(p.data_hora) as data, DAYOFWEEK(p.data_hora) as dia_semana,
               MAX(CASE WHEN p.tipo='entrada' THEN TIME(p.data_hora) END) as entrada,
               MAX(CASE WHEN p.tipo='saida_almoco' THEN TIME(p.data_hora) END) as saida_almoco,
               MAX(CASE WHEN p.tipo='volta_almoco' THEN TIME(p.data_hora) END) as volta_almoco,
-              MAX(CASE WHEN p.tipo='saida' THEN TIME(p.data_hora) END) as saida
+              MAX(CASE WHEN p.tipo='saida' THEN TIME(p.data_hora) END) as saida,
+              MAX(CASE WHEN p.tipo='extra_entrada' THEN TIME(p.data_hora) END) as extra_entrada,
+              MAX(CASE WHEN p.tipo='extra_saida' THEN TIME(p.data_hora) END) as extra_saida
               FROM pontos p WHERE p.funcionario_id = :id AND DATE(p.data_hora) BETWEEN :inicio AND :fim
               GROUP BY DATE(p.data_hora) ORDER BY data ASC";
     $stmt = $db->prepare($query);
@@ -107,7 +110,7 @@ if ($tipo == 'extrato_funcionario') {
     $rowCount = 0;
     while ($row = $stmt->fetch()) {
         $rowCount++;
-        $horas = calcularHorasDiaExcel($row['entrada'], $row['saida_almoco'], $row['volta_almoco'], $row['saida']);
+        $horas = calcularHorasDiaExcel($row['entrada'], $row['saida_almoco'], $row['volta_almoco'], $row['saida'], $row['extra_entrada'], $row['extra_saida']);
         $saldo = $horas - $carga_diaria;
         $status = ($row['entrada'] && $row['entrada'] > '08:00:00') ? 'Atraso' : (($row['entrada'] && $row['saida']) ? 'Normal' : 'Incompleto');
         if (!$row['entrada'] && !$row['saida']) $status = 'Falta';
@@ -118,6 +121,8 @@ if ($tipo == 'extrato_funcionario') {
             $row['saida_almoco'] ? substr($row['saida_almoco'],0,5) : '--:--',
             $row['volta_almoco'] ? substr($row['volta_almoco'],0,5) : '--:--',
             $row['saida'] ? substr($row['saida'],0,5) : '--:--',
+            $row['extra_entrada'] ? substr($row['extra_entrada'],0,5) : '--:--',
+            $row['extra_saida'] ? substr($row['extra_saida'],0,5) : '--:--',
             formatarHorasExcel($horas), $saldo_texto, $status
         ], ';');
     }
@@ -193,13 +198,15 @@ elseif ($tipo == 'pontos_funcionario') {
     fputcsv($output, ['PONTOS POR FUNCIONÁRIO - ' . strtoupper($func['nome'])], ';');
     fputcsv($output, ['Período: ' . ($nomes_meses[$mes_num] ?? $mes_num) . ' de ' . $ano], ';');
     fputcsv($output, [], ';');
-    fputcsv($output, ['Data', 'Entrada', 'Saída Almoço', 'Volta Almoço', 'Saída', 'Horas', 'Status'], ';');
+    fputcsv($output, ['Data', 'Entrada', 'Saída Almoço', 'Volta Almoço', 'Saída', 'Entrada Extra', 'Saída Extra', 'Horas', 'Status'], ';');
     
     $query = "SELECT DATE(p.data_hora) as data,
               MAX(CASE WHEN p.tipo='entrada' THEN TIME(p.data_hora) END) as entrada,
               MAX(CASE WHEN p.tipo='saida_almoco' THEN TIME(p.data_hora) END) as saida_almoco,
               MAX(CASE WHEN p.tipo='volta_almoco' THEN TIME(p.data_hora) END) as volta_almoco,
-              MAX(CASE WHEN p.tipo='saida' THEN TIME(p.data_hora) END) as saida
+              MAX(CASE WHEN p.tipo='saida' THEN TIME(p.data_hora) END) as saida,
+              MAX(CASE WHEN p.tipo='extra_entrada' THEN TIME(p.data_hora) END) as extra_entrada,
+              MAX(CASE WHEN p.tipo='extra_saida' THEN TIME(p.data_hora) END) as extra_saida
               FROM pontos p 
               WHERE p.funcionario_id = :id 
                 AND MONTH(p.data_hora) = :mes 
@@ -212,7 +219,7 @@ elseif ($tipo == 'pontos_funcionario') {
     $rowCount = 0;
     while ($row = $stmt->fetch()) {
         $rowCount++;
-        $horas = calcularHorasDiaExcel($row['entrada'], $row['saida_almoco'], $row['volta_almoco'], $row['saida']);
+        $horas = calcularHorasDiaExcel($row['entrada'], $row['saida_almoco'], $row['volta_almoco'], $row['saida'], $row['extra_entrada'], $row['extra_saida']);
         $status = ($row['entrada'] && $row['entrada'] > '08:00:00') ? 'Atraso' : (($row['entrada'] && $row['saida']) ? 'Normal' : 'Falta');
         fputcsv($output, [
             date('d/m/Y', strtotime($row['data'])),
@@ -220,6 +227,8 @@ elseif ($tipo == 'pontos_funcionario') {
             $row['saida_almoco'] ? substr($row['saida_almoco'],0,5) : '--:--',
             $row['volta_almoco'] ? substr($row['volta_almoco'],0,5) : '--:--',
             $row['saida'] ? substr($row['saida'],0,5) : '--:--',
+            $row['extra_entrada'] ? substr($row['extra_entrada'],0,5) : '--:--',
+            $row['extra_saida'] ? substr($row['extra_saida'],0,5) : '--:--',
             formatarHorasExcel($horas), $status
         ], ';');
     }

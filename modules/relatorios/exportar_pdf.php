@@ -60,10 +60,11 @@ function formatarMinutosPDF($minutos) {
     return $resto . ' minutos';
 }
 
-function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
+function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida, $extra_entrada = null, $extra_saida = null) {
     if (!$entrada || !$saida) return 0;
     $total = strtotime($saida) - strtotime($entrada);
     if ($saida_almoco && $volta_almoco) $total -= (strtotime($volta_almoco) - strtotime($saida_almoco));
+    if ($extra_entrada && $extra_saida) $total += (strtotime($extra_saida) - strtotime($extra_entrada));
     return $total / 3600;
 }
 ?>
@@ -130,7 +131,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
             <div class="info">Período: <?php echo date('d/m/Y', strtotime($data_inicio)); ?> a <?php echo date('d/m/Y', strtotime($data_fim)); ?></div>
             <table>
                 <thead>
-                    <tr><th>Data</th><th>Dia</th><th>Entrada</th><th>Saída Almoço</th><th>Volta Almoço</th><th>Saída</th><th>Horas</th><th>Saldo</th><th>Status</th></tr>
+                    <tr><th>Data</th><th>Dia</th><th>Entrada</th><th>Saída Almoço</th><th>Volta Almoço</th><th>Saída</th><th>Entrada Extra</th><th>Saída Extra</th><th>Horas</th><th>Saldo</th><th>Status</th></tr>
                 </thead>
                 <tbody>
                 <?php
@@ -138,7 +139,9 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
                           MAX(CASE WHEN p.tipo='entrada' THEN TIME(p.data_hora) END) as entrada,
                           MAX(CASE WHEN p.tipo='saida_almoco' THEN TIME(p.data_hora) END) as saida_almoco,
                           MAX(CASE WHEN p.tipo='volta_almoco' THEN TIME(p.data_hora) END) as volta_almoco,
-                          MAX(CASE WHEN p.tipo='saida' THEN TIME(p.data_hora) END) as saida
+                          MAX(CASE WHEN p.tipo='saida' THEN TIME(p.data_hora) END) as saida,
+                          MAX(CASE WHEN p.tipo='extra_entrada' THEN TIME(p.data_hora) END) as extra_entrada,
+                          MAX(CASE WHEN p.tipo='extra_saida' THEN TIME(p.data_hora) END) as extra_saida
                           FROM pontos p WHERE p.funcionario_id = :id AND DATE(p.data_hora) BETWEEN :inicio AND :fim
                           GROUP BY DATE(p.data_hora) ORDER BY data ASC";
                 $stmt = $db->prepare($query);
@@ -147,7 +150,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
                 $rowCount = 0;
                 while ($row = $stmt->fetch()):
                     $rowCount++;
-                    $horas = calcularHorasDiaPDF($row['entrada'], $row['saida_almoco'], $row['volta_almoco'], $row['saida']);
+                    $horas = calcularHorasDiaPDF($row['entrada'], $row['saida_almoco'], $row['volta_almoco'], $row['saida'], $row['extra_entrada'], $row['extra_saida']);
                     $saldo = $horas - $carga_diaria;
                     $saldo_class = $saldo >= 0 ? 'saldo-positivo' : 'saldo-negativo';
                     $saldo_texto = formatarHorasPDF($saldo, true);
@@ -161,13 +164,15 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
                         <td><?php echo $row['saida_almoco'] ? substr($row['saida_almoco'],0,5) : '--:--'; ?></td>
                         <td><?php echo $row['volta_almoco'] ? substr($row['volta_almoco'],0,5) : '--:--'; ?></td>
                         <td><?php echo $row['saida'] ? substr($row['saida'],0,5) : '--:--'; ?></td>
+                        <td><?php echo $row['extra_entrada'] ? substr($row['extra_entrada'],0,5) : '--:--'; ?></td>
+                        <td><?php echo $row['extra_saida'] ? substr($row['extra_saida'],0,5) : '--:--'; ?></td>
                         <td><?php echo formatarHorasPDF($horas); ?></td>
                         <td class="<?php echo $saldo_class; ?>"><?php echo $saldo_texto; ?>h</td>
                         <td class="status-<?php echo strtolower($status); ?>"><?php echo $status; ?></td>
                     </tr>
                 <?php endwhile; ?>
                 <?php if ($rowCount == 0): ?>
-                    <tr><td colspan="9" style="text-align: center;">Nenhum registro encontrado no período</td></tr>
+                    <tr><td colspan="11" style="text-align: center;">Nenhum registro encontrado no período</td></tr>
                 <?php endif; ?>
                 </tbody>
             </table>
@@ -250,7 +255,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
             <div class="info">Período: <?php echo ($nomes_meses[$mes_num] ?? $mes_num) . '/' . $ano; ?></div>
             <table>
                 <thead>
-                    <tr><th>Data</th><th>Entrada</th><th>Saída Almoço</th><th>Volta Almoço</th><th>Saída</th><th>Horas</th><th>Status</th></tr>
+                    <tr><th>Data</th><th>Entrada</th><th>Saída Almoço</th><th>Volta Almoço</th><th>Saída</th><th>Entrada Extra</th><th>Saída Extra</th><th>Horas</th><th>Status</th></tr>
                 </thead>
                 <tbody>
                 <?php
@@ -258,7 +263,9 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
                           MAX(CASE WHEN p.tipo='entrada' THEN TIME(p.data_hora) END) as entrada,
                           MAX(CASE WHEN p.tipo='saida_almoco' THEN TIME(p.data_hora) END) as saida_almoco,
                           MAX(CASE WHEN p.tipo='volta_almoco' THEN TIME(p.data_hora) END) as volta_almoco,
-                          MAX(CASE WHEN p.tipo='saida' THEN TIME(p.data_hora) END) as saida
+                          MAX(CASE WHEN p.tipo='saida' THEN TIME(p.data_hora) END) as saida,
+                          MAX(CASE WHEN p.tipo='extra_entrada' THEN TIME(p.data_hora) END) as extra_entrada,
+                          MAX(CASE WHEN p.tipo='extra_saida' THEN TIME(p.data_hora) END) as extra_saida
                           FROM pontos p 
                           WHERE p.funcionario_id = :id 
                             AND MONTH(p.data_hora) = :mes 
@@ -271,7 +278,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
                 $rowCount = 0;
                 while ($row = $stmt->fetch()):
                     $rowCount++;
-                    $horas = calcularHorasDiaPDF($row['entrada'], $row['saida_almoco'], $row['volta_almoco'], $row['saida']);
+                    $horas = calcularHorasDiaPDF($row['entrada'], $row['saida_almoco'], $row['volta_almoco'], $row['saida'], $row['extra_entrada'], $row['extra_saida']);
                     $status = ($row['entrada'] && $row['entrada'] > '08:00:00') ? 'Atraso' : (($row['entrada'] && $row['saida']) ? 'Normal' : 'Falta');
                 ?>
                     <tr>
@@ -280,6 +287,8 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
                         <td><?php echo $row['saida_almoco'] ? substr($row['saida_almoco'],0,5) : '--:--'; ?></td>
                         <td><?php echo $row['volta_almoco'] ? substr($row['volta_almoco'],0,5) : '--:--'; ?></td>
                         <td><?php echo $row['saida'] ? substr($row['saida'],0,5) : '--:--'; ?></td>
+                        <td><?php echo $row['extra_entrada'] ? substr($row['extra_entrada'],0,5) : '--:--'; ?></td>
+                        <td><?php echo $row['extra_saida'] ? substr($row['extra_saida'],0,5) : '--:--'; ?></td>
                         <td><?php echo formatarHorasPDF($horas); ?></td>
                         <td class="status-<?php echo strtolower($status); ?>"><?php echo $status; ?></td>
                     </tr>
@@ -287,7 +296,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida) {
                 endwhile;
                 if ($rowCount == 0):
                 ?>
-                    <tr><td colspan="7" style="text-align: center;">Nenhum registro encontrado no período</td></tr>
+                    <tr><td colspan="9" style="text-align: center;">Nenhum registro encontrado no período</td></tr>
                 <?php 
                 endif;
                 ?>
