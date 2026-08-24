@@ -321,7 +321,6 @@ while ($data_atual <= $data_fim_obj) {
                     <th>Faltas</th>
                     <th>Atrasos</th>
                     <th>Presença</th>
-                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -353,7 +352,6 @@ while ($data_atual <= $data_fim_obj) {
                             <td><?php echo $faltas; ?></td>
                             <td><?php echo $func['total_atrasos']; ?></td>
                             <td><?php echo $presenca; ?>%</td>
-                            <td class="<?php echo $status_class; ?>"><?php echo $status; ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>

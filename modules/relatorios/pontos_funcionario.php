@@ -203,7 +203,6 @@ $nomes_meses = [
                         <th>Volta Almoço</th>
                         <th>Saída</th>
                         <th>Horas</th>
-                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -228,7 +227,6 @@ $nomes_meses = [
                             <td><?php echo $reg['volta_almoco'] ? substr($reg['volta_almoco'], 0, 5) : '--:--'; ?></td>
                             <td><?php echo $reg['saida'] ? substr($reg['saida'], 0, 5) : '--:--'; ?></td>
                             <td><?php echo $reg['horas_trabalhadas']; ?></td>
-                            <td class="<?php echo $status_class; ?>"><?php echo $status; ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

@@ -277,7 +277,6 @@ $total_atrasos = array_sum(array_column($funcionarios, 'total_atrasos'));
                     <th>Matrícula</th>
                     <th>Dias Trabalhados</th>
                     <th>Total de Atrasos</th>
-                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -292,13 +291,11 @@ $total_atrasos = array_sum(array_column($funcionarios, 'total_atrasos'));
                         $status = 'Atenção';
                         $status_class = 'atencao';
                     }
-                    ?>
                     <tr>
                         <td><?php echo htmlspecialchars($func['nome']); ?></td>
                         <td><?php echo htmlspecialchars($func['matricula']); ?></td>
                         <td><?php echo $func['dias_trabalhados']; ?></td>
-                        <td><?php echo $func['total_atrasos']; ?></td>
-                        <td class="status-<?php echo $status_class; ?>"><?php echo $status; ?></td>
+                        <td><?php echo $func['total_atrasos']; ?> min</td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

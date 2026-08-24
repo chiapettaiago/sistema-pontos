@@ -168,7 +168,7 @@ $csrf_token = generateCSRFToken();
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            background: linear-gradient(135deg, #2b3962 0%, #57589B 50%, #876EBA 100%);
             font-family: var(--bs-font-sans-serif);
             transition: background .3s ease, color .3s ease;
             position: relative;
@@ -183,14 +183,14 @@ $csrf_token = generateCSRFToken();
             z-index: 100;
         }
         .pf-login-card {
-            background: var(--bg-primary);
+            background: #ffffff;
             border-radius: 1.75rem;
             padding: 2.25rem;
             box-shadow: 0 24px 70px rgba(15,23,42,.15);
             border: 1px solid var(--border-color);
             width: 100%;
             max-width: 460px;
-            color: var(--text-primary);
+            color: #333333;
         }
         [data-bs-theme="dark"] .pf-login-card {
             box-shadow: 0 24px 70px rgba(0,0,0,.5);
@@ -198,13 +198,13 @@ $csrf_token = generateCSRFToken();
         .pf-login-logo-mark {
             width: 70px; height: 70px;
             margin: 0 auto 1rem;
-            border-radius: 1.5rem;
+            border-radius: 1.25rem;
             display: grid;
             place-items: center;
             font-size: 2rem;
-            background: var(--pf-gradient);
+            background: linear-gradient(135deg, #1e293b 0%, #6366f1 100%);
             color: #fff;
-            box-shadow: 0 8px 20px rgba(102,126,234,.35);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
         }
         .pf-login-card .form-control {
             padding-left: 2.75rem;
@@ -221,18 +221,43 @@ $csrf_token = generateCSRFToken();
         .btn-login {
             width: 100%;
             padding: .875rem;
-            border-radius: 1rem;
+            border-radius: 0.75rem;
             font-size: 1rem;
             font-weight: 700;
             border: none;
-            background: var(--pf-gradient);
+            background: linear-gradient(135deg, #1e293b 0%, #6366f1 100%);
             color: #fff;
             transition: transform .2s, box-shadow .2s;
         }
         .btn-login:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 24px rgba(102,126,234,.40);
+            box-shadow: 0 10px 24px rgba(99, 102, 241, 0.40);
             color: #fff;
+        }
+        
+        .custom-alert {
+            background-color: #f0f7ff;
+            border: 1px solid #dbeafe;
+            color: #1e40af;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            text-align: center;
+        }
+        
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+        
+        .form-control {
+            border-radius: 0.5rem;
+            border-color: #e5e7eb;
+            padding-top: 0.625rem;
+            padding-bottom: 0.625rem;
         }
         @media (max-width: 480px) {
             body { align-items: stretch; padding: 1rem; }
@@ -242,17 +267,6 @@ $csrf_token = generateCSRFToken();
 </head>
 <body>
 
-<!-- Theme toggle flutuante no login -->
-<div class="pf-login-theme-pos">
-    <div class="pf-theme-toggle" id="pfThemeToggle" title="Alternar tema">
-        <div class="pf-theme-opt" data-theme="light" title="Modo claro">
-            <i class="fas fa-sun"></i>
-        </div>
-        <div class="pf-theme-opt" data-theme="dark" title="Modo escuro">
-            <i class="fas fa-moon"></i>
-        </div>
-    </div>
-</div>
 
 <div class="pf-login-card mx-auto">
 
@@ -274,9 +288,9 @@ $csrf_token = generateCSRFToken();
     <?php endif; ?>
 
     <!-- Info -->
-    <div class="alert alert-info d-flex align-items-start gap-2 py-2 small mb-3" role="alert">
-        <i class="fas fa-info-circle mt-1 flex-shrink-0"></i>
-        <span><strong>Entrada unificada:</strong> use e-mail e senha ou reconhecimento facial. No celular, prefira HTTPS para liberar a câmera.</span>
+    <div class="custom-alert mb-4">
+        <strong>Entrada unificada:</strong> use email e senha ou reconhecimento facial.<br>
+        No celular, prefira HTTPS para liberar a câmera sem bloqueios.
     </div>
 
     <!-- Formulário -->
@@ -301,7 +315,7 @@ $csrf_token = generateCSRFToken();
             </div>
         </div>
 
-        <button type="submit" class="btn-login mb-3">
+        <button type="submit" class="btn-login mb-4">
             <i class="fas fa-sign-in-alt me-2"></i>Entrar
         </button>
     </form>

@@ -533,7 +533,6 @@ function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $extra
                     <th>Saída Extra</th>
                     <th>Horas</th>
                     <th>Saldo</th>
-                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -552,7 +551,6 @@ function calcularHorasDia($entrada, $saida_almoco, $volta_almoco, $saida, $extra
                             <td><?php echo $dia['extra_saida']; ?></td>
                             <td><?php echo $dia['horas_trabalhadas']; ?></td>
                             <td class="<?php echo strpos($dia['saldo'], '-') !== false ? 'negativo' : 'positivo'; ?>"><?php echo $dia['saldo']; ?></td>
-                            <td class="status-<?php echo strtolower($dia['status']); ?>"><?php echo $dia['status']; ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>

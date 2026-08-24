@@ -49,7 +49,7 @@ try {
     );
 } catch (PDOException $e) {
     error_log('Erro de conexao: ' . $e->getMessage());
-    die('Erro ao conectar ao banco de dados. Contate o administrador.');
+    die('Erro ao conectar ao banco de dados: ' . $e->getMessage());
 }
 
 if (session_status() === PHP_SESSION_NONE) {

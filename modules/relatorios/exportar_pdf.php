@@ -131,7 +131,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida, $ex
             <div class="info">Período: <?php echo date('d/m/Y', strtotime($data_inicio)); ?> a <?php echo date('d/m/Y', strtotime($data_fim)); ?></div>
             <table>
                 <thead>
-                    <tr><th>Data</th><th>Dia</th><th>Entrada</th><th>Saída Almoço</th><th>Volta Almoço</th><th>Saída</th><th>Entrada Extra</th><th>Saída Extra</th><th>Horas</th><th>Saldo</th><th>Status</th></tr>
+                    <tr><th>Data</th><th>Dia</th><th>Entrada</th><th>Saída Almoço</th><th>Volta Almoço</th><th>Saída</th><th>Entrada Extra</th><th>Saída Extra</th><th>Horas</th><th>Saldo</th></tr>
                 </thead>
                 <tbody>
                 <?php
@@ -168,11 +168,10 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida, $ex
                         <td><?php echo $row['extra_saida'] ? substr($row['extra_saida'],0,5) : '--:--'; ?></td>
                         <td><?php echo formatarHorasPDF($horas); ?></td>
                         <td class="<?php echo $saldo_class; ?>"><?php echo $saldo_texto; ?>h</td>
-                        <td class="status-<?php echo strtolower($status); ?>"><?php echo $status; ?></td>
                     </tr>
                 <?php endwhile; ?>
                 <?php if ($rowCount == 0): ?>
-                    <tr><td colspan="11" style="text-align: center;">Nenhum registro encontrado no período</td></tr>
+                    <tr><td colspan="10" style="text-align: center;">Nenhum registro encontrado no período</td></tr>
                 <?php endif; ?>
                 </tbody>
             </table>
@@ -205,7 +204,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida, $ex
         <div class="info">Período: <?php echo $nomes_meses[$mes_num] . '/' . $ano; ?> (<?php echo $dias_uteis; ?> dias úteis)</div>
         <table>
             <thead>
-                <tr><th>Funcionário</th><th>Matrícula</th><th>Filial</th><th>Cargo</th><th>Dias Trabalhados</th><th>Faltas</th><th>Atrasos</th><th>Presença</th><th>Status</th></tr>
+                <tr><th>Funcionário</th><th>Matrícula</th><th>Filial</th><th>Cargo</th><th>Dias Trabalhados</th><th>Faltas</th><th>Atrasos</th><th>Presença</th></tr>
             </thead>
             <tbody>
             <?php 
@@ -226,11 +225,10 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida, $ex
                     <td class="negativo"><?php echo max(0, $faltas); ?></td>
                     <td class="status-atraso"><?php echo $row['atrasos']; ?></td>
                     <td><?php echo $presenca; ?>%</td>
-                    <td class="<?php echo $status_class; ?>"><?php echo $status; ?></td>
                 </tr>
             <?php endwhile; ?>
             <?php if ($rowCount == 0): ?>
-                <tr><td colspan="9" style="text-align: center;">Nenhum funcionário encontrado</td></tr>
+                <tr><td colspan="8" style="text-align: center;">Nenhum funcionário encontrado</td></tr>
             <?php endif; ?>
             </tbody>
         </table>
@@ -255,7 +253,7 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida, $ex
             <div class="info">Período: <?php echo ($nomes_meses[$mes_num] ?? $mes_num) . '/' . $ano; ?></div>
             <table>
                 <thead>
-                    <tr><th>Data</th><th>Entrada</th><th>Saída Almoço</th><th>Volta Almoço</th><th>Saída</th><th>Entrada Extra</th><th>Saída Extra</th><th>Horas</th><th>Status</th></tr>
+                    <tr><th>Data</th><th>Entrada</th><th>Saída Almoço</th><th>Volta Almoço</th><th>Saída</th><th>Entrada Extra</th><th>Saída Extra</th><th>Horas</th></tr>
                 </thead>
                 <tbody>
                 <?php
@@ -290,7 +288,6 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida, $ex
                         <td><?php echo $row['extra_entrada'] ? substr($row['extra_entrada'],0,5) : '--:--'; ?></td>
                         <td><?php echo $row['extra_saida'] ? substr($row['extra_saida'],0,5) : '--:--'; ?></td>
                         <td><?php echo formatarHorasPDF($horas); ?></td>
-                        <td class="status-<?php echo strtolower($status); ?>"><?php echo $status; ?></td>
                     </tr>
                 <?php 
                 endwhile;
@@ -533,7 +530,6 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida, $ex
                     <th>Horas Normais</th>
                     <th>Horas Extras</th>
                     <th>Horas a Compensar</th>
-                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -556,11 +552,10 @@ function calcularHorasDiaPDF($entrada, $saida_almoco, $volta_almoco, $saida, $ex
                     <td class="hora-normal"><?php echo formatarHorasPDF($horas); ?></td>
                     <td class="hora-extra"><?php echo formatarHorasPDF($extras); ?></td>
                     <td class="hora-compensar"><?php echo formatarHorasPDF($compensar); ?></td>
-                    <td><?php echo $status; ?></td>
                 </tr>
             <?php endwhile; ?>
             <?php if ($rowCount == 0): ?>
-                <tr><td colspan="8" style="text-align: center;">Nenhum registro encontrado no período</td></tr>
+                <tr><td colspan="7" style="text-align: center;">Nenhum registro encontrado no período</td></tr>
             <?php endif; ?>
             </tbody>
             <?php if ($rowCount > 0): ?>

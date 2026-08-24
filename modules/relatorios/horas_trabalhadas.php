@@ -363,7 +363,6 @@ foreach ($registros as $reg) {
                     <th>Horas Normais</th>
                     <th>Horas Extras</th>
                     <th>Horas a Compensar</th>
-                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -377,7 +376,6 @@ foreach ($registros as $reg) {
                     <td class="hora-normal"><?php echo $dia['horas_trabalhadas']; ?></td>
                     <td class="hora-extra"><?php echo $dia['horas_extras']; ?></td>
                     <td class="hora-compensar"><?php echo $dia['horas_compensar']; ?></td>
-                    <td class="status-<?php echo strtolower($dia['status']); ?>"><?php echo $dia['status']; ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
