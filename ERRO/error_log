@@ -1,6 +1,0 @@
-[11-Jun-2026 16:42:53 America/Sao_Paulo] Erro ao logar ação: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.logs_sistema' doesn't exist
-[11-Jun-2026 16:43:14 America/Sao_Paulo] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.usuarios_sistema' doesn't exist
-[11-Jun-2026 16:43:55 America/Sao_Paulo] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.usuarios_sistema' doesn't exist
-[11-Jun-2026 16:52:02 America/Sao_Paulo] CSRF inválido - IP: 138.204.67.194
-[11-Jun-2026 20:09:51 America/Sao_Paulo] CSRF inválido - IP: 177.131.167.146
-[12-Jun-2026 08:02:29 America/Sao_Paulo] CSRF inválido - IP: 138.204.67.194

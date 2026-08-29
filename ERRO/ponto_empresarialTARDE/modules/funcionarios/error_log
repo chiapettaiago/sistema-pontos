@@ -1,5 +1,0 @@
-[11-Jun-2026 12:47:55 America/Sao_Paulo] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'appcas29_pontofacil.funcionarios' doesn't exist in /home1/appcas29/divulgpontofacil.com.br/modules/funcionarios/index.php:79
-Stack trace:
-#0 /home1/appcas29/divulgpontofacil.com.br/modules/funcionarios/index.php(79): PDOStatement->execute(Array)
-#1 {main}
-  thrown in /home1/appcas29/divulgpontofacil.com.br/modules/funcionarios/index.php on line 79
