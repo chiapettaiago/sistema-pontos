@@ -17,26 +17,32 @@ $tipo_mensagem = '';
 .biometrico-container {
     max-width: 500px;
     margin: 0 auto;
+    color: var(--text-primary);
 }
 
 .biometrico-card {
-    background: rgba(255,255,255,0.96);
+    background: color-mix(in srgb, var(--bg-primary) 94%, transparent);
     border-radius: 28px;
     padding: 32px;
     text-align: center;
-    border: 1px solid rgba(255,255,255,0.35);
+    border: 1px solid var(--border-color);
     box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18);
+    color: var(--text-primary);
+    backdrop-filter: blur(18px);
 }
 
 .biometrico-icon {
     font-size: 80px;
     margin-bottom: 20px;
+    color: var(--pf-primary);
+    filter: drop-shadow(0 10px 22px rgba(99, 102, 241, .22));
 }
 
 .biometrico-title {
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 16px;
+    color: var(--text-primary);
 }
 
 .biometrico-subtitle {
@@ -92,6 +98,8 @@ $tipo_mensagem = '';
     margin: 20px auto;
     border-radius: 20px;
     overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: #030712;
 }
 
 video {
@@ -130,20 +138,23 @@ video {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.9);
+    background: rgba(2, 6, 23, 0.82);
+    backdrop-filter: blur(8px);
     z-index: 1000;
     align-items: center;
     justify-content: center;
 }
 
 .modal-content {
-    background: rgba(255,255,255,0.97);
+    background: var(--bg-primary);
     border-radius: 28px;
     padding: 24px;
     max-width: 500px;
     width: 90%;
     text-align: center;
     box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
 }
 
 .modal-buttons {
@@ -162,8 +173,9 @@ video {
 }
 
 .btn-cancelar {
-    background: #e5e7eb;
-    color: #374151;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color) !important;
 }
 
 .btn-confirmar {
@@ -180,34 +192,45 @@ video {
 }
 
 .facial-status.success {
-    background: #d1fae5;
-    color: #059669;
+    background: rgba(16, 185, 129, .14);
+    color: #047857;
+    border: 1px solid rgba(16, 185, 129, .25);
 }
 
 .facial-status.error {
-    background: #fee2e2;
-    color: #dc2626;
+    background: rgba(239, 68, 68, .13);
+    color: #b91c1c;
+    border: 1px solid rgba(239, 68, 68, .24);
 }
 
 .facial-status.info {
-    background: #bfdbfe;
-    color: #1e40af;
+    background: rgba(59, 130, 246, .13);
+    color: #1d4ed8;
+    border: 1px solid rgba(59, 130, 246, .24);
 }
 
 .biometrico-note {
     margin-top: 16px;
     padding: 12px 14px;
     border-radius: 14px;
-    background: #eff6ff;
-    color: #1e40af;
+    background: color-mix(in srgb, var(--pf-primary) 9%, var(--bg-secondary));
+    color: var(--text-secondary);
     font-size: 13px;
     line-height: 1.5;
     text-align: left;
-    border: 1px solid #bfdbfe;
+    border: 1px solid color-mix(in srgb, var(--pf-primary) 25%, var(--border-color));
 }
 
 .biometrico-note strong {
-    color: #111827;
+    color: var(--text-primary);
+}
+
+.biometrico-note code {
+    color: var(--pf-primary);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1px 5px;
 }
 
 .back-action {
@@ -216,11 +239,42 @@ video {
     margin-top: 14px;
     padding: 13px 14px;
     border-radius: 16px;
-    background: #f3f4f6;
-    color: #111827;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
     text-decoration: none;
     font-weight: 800;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border-color);
+    transition: background-color .2s, border-color .2s, transform .2s;
+}
+
+.back-action:hover {
+    color: var(--text-primary);
+    background: color-mix(in srgb, var(--pf-primary) 10%, var(--bg-tertiary));
+    border-color: var(--pf-primary);
+    transform: translateY(-1px);
+}
+
+[data-bs-theme="dark"] .biometrico-card,
+[data-bs-theme="dark"] .modal-content {
+    background: rgba(17, 24, 39, .96);
+    border-color: #334155;
+    box-shadow: 0 28px 80px rgba(0, 0, 0, .48);
+}
+
+[data-bs-theme="dark"] .facial-status.success {
+    color: #6ee7b7;
+}
+
+[data-bs-theme="dark"] .facial-status.error {
+    color: #fca5a5;
+}
+
+[data-bs-theme="dark"] .facial-status.info {
+    color: #93c5fd;
+}
+
+[data-bs-theme="dark"] .btn-cancelar:hover {
+    background: #243147;
 }
 
 @media (max-width: 520px) {
