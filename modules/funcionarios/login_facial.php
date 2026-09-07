@@ -1,4 +1,9 @@
 <?php
+// Rota legada: o reconhecimento facial agora e o login principal.
+require_once '../../includes/config.php';
+header('Location: ' . rtrim(BASE_URL, '/') . '/login.php');
+exit;
+
 session_start();
 
 if (!empty($_SESSION['usuario_id'])) {
@@ -493,4 +498,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
     </script>
 </body>
 </html>
-

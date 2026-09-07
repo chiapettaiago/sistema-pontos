@@ -14,7 +14,7 @@ if (!isset($baseUrl)) {
 function pfNav(string $href, string $icon, string $label, bool $active, string $badge = ''): string {
     $cls    = $active ? ' active' : '';
     $bdg    = $badge !== '' ? "<span class=\"pf-nav-badge\">$badge</span>" : '';
-    return "<a href=\"$href\" class=\"pf-nav-item$cls\"><i class=\"fas $icon\"></i><span>$label</span>$bdg</a>";
+    return "<a href=\"$href\" class=\"pf-nav-item$cls\" aria-label=\"$label\" title=\"$label\"><i class=\"fas $icon\"></i><span>$label</span>$bdg</a>";
 }
 ?>
 
@@ -133,59 +133,6 @@ function pfNav(string $href, string $icon, string $label, bool $active, string $
 
     </nav>
 
-    <!-- Footer do Sidebar -->
-    <div class="pf-sidebar-footer">
-        <?php if (function_exists('getCurrentEmpresaNome') && getCurrentEmpresaNome() && $usuario_tipo !== 'super_admin'): ?>
-        <div class="pf-empresa-badge">
-            <i class="fas fa-building me-1"></i>
-            <?php
-            $en = getCurrentEmpresaNome();
-            echo htmlspecialchars(strlen($en) > 28 ? substr($en, 0, 25).'...' : $en);
-            ?>
-        </div>
-        <?php endif; ?>
-
-        <div class="pf-user-info">
-            <div class="pf-user-avatar"><i class="fas fa-user-circle text-white"></i></div>
-            <div class="flex-grow-1 overflow-hidden">
-                <div class="pf-user-name">
-                    <?php
-                    $nome = $_SESSION['usuario_nome'] ?? 'Usuário';
-                    echo htmlspecialchars(strlen($nome) > 22 ? substr($nome, 0, 20).'...' : $nome);
-                    ?>
-                </div>
-                <div class="pf-user-role">
-                    <?php
-                    $roles = [
-                        'super_admin'   => '⭐ Super Admin',
-                        'admin_empresa' => '🏢 Administrador',
-                        'gestor'        => '📊 Gestor',
-                        'supervisor'    => '👁️ Supervisor',
-                        'funcionario'   => '👤 Funcionário',
-                    ];
-                    echo $roles[$usuario_tipo] ?? ucfirst($usuario_tipo);
-                    ?>
-                </div>
-            </div>
-        </div>
-
-        <div class="d-flex align-items-center justify-content-between mb-3 px-1">
-            <span class="small opacity-75 text-white"><i class="fas fa-adjust me-1"></i>Tema</span>
-            <div class="pf-theme-toggle" title="Alternar tema">
-                <div class="pf-theme-opt" data-theme="light" title="Modo claro">
-                    <i class="fas fa-sun"></i>
-                </div>
-                <div class="pf-theme-opt" data-theme="dark" title="Modo escuro">
-                    <i class="fas fa-moon"></i>
-                </div>
-            </div>
-        </div>
-
-        <a href="<?php echo $baseUrl; ?>/logout.php" class="pf-logout-btn">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Sair</span>
-        </a>
-    </div>
 </aside>
 
 <script>

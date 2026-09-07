@@ -8,6 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/router.php';
 
 // Conectar ao banco
 $database = new Database();
@@ -23,6 +24,7 @@ function isLoggedIn() {
 
 function redirectIfNotLoggedIn() {
     if (!isLoggedIn()) {
+        appRememberIntendedRoute();
         if (!headers_sent()) {
     header('Location: ' . BASE_URL . '/login.php');
             exit;
@@ -292,4 +294,3 @@ function getConfig($db, $chave, $empresa_id = null) {
     }
 }
 ?>
-

@@ -84,10 +84,10 @@ $stmt_pontos->execute([':id' => $id]);
 $pontos_recentes = $stmt_pontos->fetchAll();
 
 $stmt_bio = $db->prepare("SELECT 
-    (SELECT COUNT(*) FROM biometricos_faciais WHERE funcionario_id = :id AND ativo = 1) as tem_facial,
-    (SELECT COUNT(*) FROM biometricos_digitais WHERE funcionario_id = :id AND ativo = 1) as tem_digital
+    (SELECT COUNT(*) FROM biometricos_faciais WHERE funcionario_id = ? AND ativo = 1) as tem_facial,
+    (SELECT COUNT(*) FROM biometricos_digitais WHERE funcionario_id = ? AND ativo = 1) as tem_digital
 ");
-$stmt_bio->execute([':id' => $id]);
+$stmt_bio->execute([$id, $id]);
 $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
 ?>
 

@@ -230,7 +230,7 @@ canvas {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-<script src="/assets/js/face-config.js"></script>
+<script src="<?php echo htmlspecialchars($baseUrl, ENT_QUOTES, 'UTF-8'); ?>/assets/js/face-config.js"></script>
 <script>
 // ============================================
 // VARIÁVEIS GLOBAIS

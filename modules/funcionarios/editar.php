@@ -105,58 +105,40 @@ function formatarCPFEdit($cpf) {
 
 // Função para salvar foto base64
 function salvarFotoBase64Edit($base64, $matricula) {
-    $uploadDir = '../../uploads/funcionarios/';
-    
-    if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
+    if (!preg_match('#^data:image/(jpeg|png|gif|webp);base64,([a-zA-Z0-9+/=\s]+)$#', $base64, $matches)) {
+        throw new RuntimeException('A foto capturada possui formato inválido.');
     }
-    
-    $base64 = str_replace('data:image/jpeg;base64,', '', $base64);
-    $base64 = str_replace('data:image/png;base64,', '', $base64);
-    $base64 = str_replace(' ', '+', $base64);
-    
-    $foto_nome = preg_replace('/[^a-zA-Z0-9]/', '_', $matricula) . '_' . time() . '.jpg';
-    $caminhoCompleto = $uploadDir . $foto_nome;
-    
-    file_put_contents($caminhoCompleto, base64_decode($base64));
-    
-    // Redimensionar para 400x400 (centralizando o rosto)
-    $img = @imagecreatefromjpeg($caminhoCompleto);
-    if (!$img) {
-        $img = @imagecreatefrompng($caminhoCompleto);
+
+    $imagem = base64_decode(preg_replace('/\s+/', '', $matches[2]), true);
+    if ($imagem === false || $imagem === '' || strlen($imagem) > 5 * 1024 * 1024) {
+        throw new RuntimeException('A foto capturada é inválida ou excede 5 MB.');
     }
-    if (!$img) {
-        $img = @imagecreatefromgif($caminhoCompleto);
+
+    $uploadDir = __DIR__ . '/../../uploads/funcionarios/';
+    if (!is_dir($uploadDir) && !mkdir($uploadDir, 0775, true) && !is_dir($uploadDir)) {
+        throw new RuntimeException('Não foi possível preparar a pasta de fotos.');
     }
-    
-    if ($img) {
-        $new_width = 400;
-        $new_height = 400;
-        $resized = imagecreatetruecolor($new_width, $new_height);
-        
-        $orig_width = imagesx($img);
-        $orig_height = imagesy($img);
-        $ratio = max($new_width / $orig_width, $new_height / $orig_height);
-        $crop_width = $new_width / $ratio;
-        $crop_height = $new_height / $ratio;
-        $crop_x = ($orig_width - $crop_width) / 2;
-        $crop_y = ($orig_height - $crop_height) / 2;
-        
-        imagecopyresampled($resized, $img, 0, 0, $crop_x, $crop_y, $new_width, $new_height, $crop_width, $crop_height);
-        imagejpeg($resized, $caminhoCompleto, 95);
-        imagedestroy($img);
-        imagedestroy($resized);
+    if (!is_writable($uploadDir)) {
+        throw new RuntimeException('A pasta de fotos não está disponível para gravação.');
     }
-    
+
+    $extensoes = ['jpeg' => 'jpg', 'png' => 'png', 'gif' => 'gif', 'webp' => 'webp'];
+    $foto_nome = preg_replace('/[^a-zA-Z0-9]/', '_', $matricula) . '_' . time() . '.' . $extensoes[$matches[1]];
+    if (file_put_contents($uploadDir . $foto_nome, $imagem, LOCK_EX) === false) {
+        throw new RuntimeException('Não foi possível salvar a foto.');
+    }
+
+    // O redimensionamento é opcional: servidores sem a extensão GD devem
+    // continuar salvando fotos normalmente.
     return 'uploads/funcionarios/' . $foto_nome;
 }
 
 // Função para upload tradicional
 function uploadFotoEdit($file, $matricula) {
-    $uploadDir = '../../uploads/funcionarios/';
+    $uploadDir = __DIR__ . '/../../uploads/funcionarios/';
     
     if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
+        mkdir($uploadDir, 0775, true);
     }
     
     $extensao = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -172,36 +154,8 @@ function uploadFotoEdit($file, $matricula) {
         return ['error' => 'Imagem muito grande. Máximo 5MB.'];
     }
     
-    move_uploaded_file($file['tmp_name'], $caminhoCompleto);
-    
-    // Redimensionar
-    $img = null;
-    switch ($extensao) {
-        case 'jpg': case 'jpeg': $img = imagecreatefromjpeg($caminhoCompleto); break;
-        case 'png': $img = imagecreatefrompng($caminhoCompleto); break;
-        case 'gif': $img = imagecreatefromgif($caminhoCompleto); break;
-        case 'webp': $img = imagecreatefromwebp($caminhoCompleto); break;
-    }
-    
-    if ($img) {
-        $new_width = 400;
-        $new_height = 400;
-        $resized = imagecreatetruecolor($new_width, $new_height);
-        
-        $orig_width = imagesx($img);
-        $orig_height = imagesy($img);
-        $ratio = max($new_width / $orig_width, $new_height / $orig_height);
-        $crop_width = $new_width / $ratio;
-        $crop_height = $new_height / $ratio;
-        $crop_x = ($orig_width - $crop_width) / 2;
-        $crop_y = ($orig_height - $crop_height) / 2;
-        
-        imagecopyresampled($resized, $img, 0, 0, $crop_x, $crop_y, $new_width, $new_height, $crop_width, $crop_height);
-        imagejpeg($resized, $caminhoCompleto, 95);
-        imagedestroy($img);
-        imagedestroy($resized);
-        
-        return ['success' => 'uploads/funcionarios/' . $nomeArquivo];
+    if (!is_writable($uploadDir) || !move_uploaded_file($file['tmp_name'], $caminhoCompleto)) {
+        return ['error' => 'Não foi possível salvar a foto.'];
     }
     
     return ['success' => 'uploads/funcionarios/' . $nomeArquivo];
@@ -245,6 +199,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data_admissao = $_POST['data_admissao'] ?? $funcionario['data_admissao'];
     $tipo_contrato = $_POST['tipo_contrato'] ?? 'clt';
     $tipo_usuario = $_POST['tipo_usuario'] ?? 'funcionario';
+    // A coluna legada usa "admin"; a camada de rotas converte esse valor para
+    // "admin_empresa" na sessão. Nunca envie o valor de sessão ao banco.
+    if ($tipo_usuario === 'admin_empresa') {
+        $tipo_usuario = 'admin';
+    }
+    if (!in_array($tipo_usuario, ['admin', 'gestor', 'supervisor', 'funcionario'], true)) {
+        $tipo_usuario = 'funcionario';
+    }
     
     $pode_gerenciar_filiais = isset($_POST['pode_gerenciar_filiais']) ? 1 : 0;
     $pode_gerenciar_funcionarios = isset($_POST['pode_gerenciar_funcionarios']) ? 1 : 0;
@@ -289,9 +251,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $abrir_facial_pos_salvar = isset($_POST['abrir_facial_pos_salvar']) && $_POST['abrir_facial_pos_salvar'] == '1';
     
     if ($foto_base64) {
-        $foto_path = salvarFotoBase64Edit($foto_base64, $matricula);
-        if ($funcionario['foto'] && file_exists('../../' . $funcionario['foto'])) {
-            unlink('../../' . $funcionario['foto']);
+        try {
+            $foto_path = salvarFotoBase64Edit($foto_base64, $matricula);
+            if ($funcionario['foto'] && file_exists(__DIR__ . '/../../' . $funcionario['foto'])) {
+                unlink(__DIR__ . '/../../' . $funcionario['foto']);
+            }
+        } catch (RuntimeException $e) {
+            $errors[] = $e->getMessage();
         }
     } elseif (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
         if ($funcionario['foto'] && file_exists('../../' . $funcionario['foto'])) {
@@ -396,7 +362,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($abrir_facial_pos_salvar && !empty($foto_path)) {
                 $_SESSION['mensagem_biometria'] = 'Foto atualizada com sucesso. Agora vamos cadastrar/atualizar a biometria facial.';
-                $redirectAfterSave = '../biometrico/facial.php?id=' . $id;
+                $redirectAfterSave = rtrim(BASE_URL, '/') . '/modules/funcionarios/cadastro_facial?id=' . $id;
             }
             
             $success = 'Funcionário atualizado com sucesso!';
@@ -1011,7 +977,7 @@ small {
                             <option value="supervisor" <?php echo $funcionario['tipo_usuario'] == 'supervisor' ? 'selected' : ''; ?>>Supervisor</option>
                             <option value="gestor" <?php echo $funcionario['tipo_usuario'] == 'gestor' ? 'selected' : ''; ?>>Gestor</option>
                             <?php if ($_SESSION['usuario_tipo'] === 'super_admin' || $_SESSION['usuario_tipo'] === 'admin_empresa'): ?>
-                            <option value="admin_empresa" <?php echo $funcionario['tipo_usuario'] == 'admin_empresa' ? 'selected' : ''; ?>>Administrador</option>
+                            <option value="admin" <?php echo $funcionario['tipo_usuario'] == 'admin' ? 'selected' : ''; ?>>Administrador</option>
                             <?php endif; ?>
                         </select>
                     </div>
@@ -1040,7 +1006,7 @@ small {
             
             <div class="alert alert-info">
                 <i class="fas fa-info-circle"></i>
-                <strong>Atenção:</strong> A foto do rosto será usada para validação no reconhecimento facial.
+                <strong>Atenção:</strong> A foto identifica o perfil; para entrar por reconhecimento facial, conclua a captura na tela de cadastro facial.
             </div>
             
             <div class="form-actions">
@@ -1426,6 +1392,3 @@ document.querySelector('select[name="filial_id"]')?.addEventListener('change', f
 <?php endif; ?>
 
 <?php require_once '../../includes/footer.php'; ?>
-
-
-

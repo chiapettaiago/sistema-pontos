@@ -1,0 +1,71 @@
+/* Camada responsiva para telas autenticadas e módulos legados. */
+:root { --pf-content-max: 1600px; }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { overflow-x: hidden; }
+img, svg, video, canvas { max-width: 100%; }
+button, input, select, textarea { font: inherit; }
+
+.pf-content { width: 100%; max-width: var(--pf-content-max); margin-inline: auto; }
+.pf-content > * { min-width: 0; }
+
+/* Grades usadas por dashboards antigos e atuais. */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; }
+.charts-row, .dashboard-grid, .content-grid { min-width: 0; }
+.stat-card, .chart-card, .table-card, .form-card, .info-card { min-width: 0; }
+.table-responsive, .pf-table-wrap { -webkit-overflow-scrolling: touch; }
+
+/* Formulários antigos mantêm boa leitura e ações acessíveis. */
+.form-container { width: min(100%, 980px); margin-inline: auto; }
+.form-card, .form-main, .form-body { max-width: 100%; }
+.form-row, .form-actions, .table-header, .dashboard-header { gap: .875rem; }
+.form-row { flex-wrap: wrap; }
+.form-row > .form-group { min-width: min(100%, 220px); }
+.form-group input, .form-group select, .form-group textarea { max-width: 100%; }
+
+.btn, button, [role="button"] { min-height: 2.5rem; }
+.btn:focus-visible, button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 3px solid rgba(102, 126, 234, .45);
+    outline-offset: 2px;
+}
+
+@media (max-width: 991.98px) {
+    .pf-topbar { padding: .7rem 1rem; }
+    .pf-content { padding: 1.25rem 1rem; }
+    .pf-sidebar { width: min(86vw, 320px); }
+    .dashboard-header, .table-header, .form-actions { align-items: flex-start; }
+}
+
+@media (max-width: 767.98px) {
+    .pf-topbar-title { font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pf-theme-opt { width: 28px; height: 28px; }
+    .pf-content { padding: 1rem .875rem calc(1rem + env(safe-area-inset-bottom)); }
+    .pf-page-header { margin-bottom: 1rem; }
+    .pf-page-header h1, .dashboard-header h1 { font-size: clamp(1.25rem, 6vw, 1.65rem); }
+    .dashboard-header { padding: 1.1rem; border-radius: 1rem; }
+    .welcome-card { padding: 1rem !important; gap: .875rem; }
+    .welcome-avatar { width: 56px !important; height: 56px !important; font-size: 1.35rem !important; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .ponto-status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .75rem !important; }
+    .ponto-status-item { padding: .875rem !important; }
+    .card, .pf-card, .table-card, .form-card { border-radius: .875rem !important; }
+    .card-body { padding: 1rem; }
+    .table thead th, .table tbody td { padding: .75rem .875rem; }
+    .form-row { display: grid !important; grid-template-columns: 1fr !important; }
+    .form-row > .form-group { min-width: 0; width: 100%; }
+    .form-actions, .table-header { flex-direction: column; }
+    .form-actions > .btn, .form-actions > button, .table-header .btn { width: 100%; justify-content: center; }
+    .modal-dialog { margin: .75rem; }
+}
+
+@media (max-width: 420px) {
+    .pf-topbar { gap: .5rem; }
+    .pf-content { padding-inline: .75rem; }
+    .ponto-status-grid { grid-template-columns: 1fr !important; }
+    .btn-group { display: grid; grid-template-columns: 1fr; width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

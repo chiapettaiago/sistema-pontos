@@ -7,13 +7,27 @@
 // Forçar autenticação
 require_once __DIR__ . '/../../includes/auth_check.php';
 forceAuthentication();
-requireAdmin();
-
-// Carregar configurações
-require_once __DIR__ . '/../../includes/config.php';
 
 // Verificar ID do funcionário
 $funcionario_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+if ($funcionario_id <= 0) {
+    $_SESSION['error'] = 'ID do funcionário inválido.';
+    header('Location: ' . BASE_URL . '/modules/funcionarios/index.php');
+    exit;
+}
+
+$funcionarioLogadoId = (int) ($_SESSION['funcionario_id'] ?? 0);
+if ($funcionarioLogadoId !== $funcionario_id) {
+    requireAdmin();
+}
+
+// Carregar configurações
+require_once __DIR__ . '/../../includes/config.php';
+require_once __DIR__ . '/../../includes/csrf.php';
+
+// A aplicação pode estar instalada em um subdiretório (ex.: /sistema-pontos).
+// Nunca use uma URL iniciada em / aqui, pois ela descartaria esse prefixo.
+$urlVisualizacao = rtrim(BASE_URL, '/') . '/modules/funcionarios/visualizar?id=' . $funcionario_id;
 
 if ($funcionario_id <= 0) {
     $_SESSION['error'] = 'ID do funcionário inválido.';
@@ -44,13 +58,13 @@ $erro = '';
 $sucesso = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/../../includes/csrf.php';
     verifyCSRFToken();
     
     $descritor = $_POST['descritor'] ?? '';
     $imagem_base64 = $_POST['imagem_base64'] ?? '';
+    $amostraFacial = json_decode($descritor, true);
     
-    if (empty($descritor)) {
+    if (!is_array($amostraFacial) || count($amostraFacial) !== 128) {
         $erro = 'Nenhum dado facial capturado. Tente novamente.';
     } else {
         try {
@@ -78,7 +92,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->exec("ALTER TABLE funcionarios ADD COLUMN facial_cadastrado TINYINT(1) DEFAULT 0");
             }
             
-            // Salvar no banco
+            // A autenticação facial consulta esta tabela.
+            $pdo->exec("CREATE TABLE IF NOT EXISTS biometricos_faciais (
+                id INT NOT NULL AUTO_INCREMENT,
+                funcionario_id INT NOT NULL,
+                descritores LONGTEXT NOT NULL,
+                modelo VARCHAR(50) DEFAULT 'face-api.js',
+                ativo TINYINT(1) DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY idx_bf_funcionario (funcionario_id),
+                KEY idx_bf_ativo (ativo)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+            $pdo->beginTransaction();
+
+            // Salvar no cadastro legado para compatibilidade com telas existentes.
             $sql = "UPDATE funcionarios SET 
                         descritor_facial = :descritor,
                         imagem_facial = :imagem,
@@ -91,15 +121,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':imagem' => $imagem_nome,
                 ':id' => $funcionario_id
             ]);
+
+            $stmt = $pdo->prepare('DELETE FROM biometricos_faciais WHERE funcionario_id = :id');
+            $stmt->execute([':id' => $funcionario_id]);
+            $stmt = $pdo->prepare('INSERT INTO biometricos_faciais (funcionario_id, descritores, modelo, ativo) VALUES (:id, :descritores, :modelo, 1)');
+            $stmt->execute([
+                ':id' => $funcionario_id,
+                ':descritores' => json_encode([$amostraFacial], JSON_UNESCAPED_UNICODE),
+                ':modelo' => 'face-api.js'
+            ]);
+            $pdo->commit();
             
             $_SESSION['success'] = '✅ Cadastro facial realizado com sucesso!';
-            header('Location: /modules/funcionarios/visualizar.php?id=' . $funcionario_id);
+            header('Location: ' . $urlVisualizacao);
             exit;
             
         } catch (PDOException $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             error_log("Erro ao salvar facial: " . $e->getMessage());
             $erro = 'Erro ao salvar no banco de dados: ' . $e->getMessage();
         } catch (Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             error_log("Erro geral: " . $e->getMessage());
             $erro = 'Erro inesperado: ' . $e->getMessage();
         }
@@ -110,16 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once __DIR__ . '/../../includes/header.php';
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro Facial</title>
-    
-    <!-- Face API - CDN -->
-    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js">
-    </script>
+<script id="faceApiScript" defer src="<?php echo htmlspecialchars(rtrim(BASE_URL, '/')); ?>/assets/js/face-api.min.js"></script>
     
     <style>
         body {
@@ -308,8 +345,6 @@ require_once __DIR__ . '/../../includes/header.php';
             }
         }
     </style>
-</head>
-<body>
     <div class="container">
         <div class="card">
             <div class="card-header">
@@ -326,8 +361,8 @@ require_once __DIR__ . '/../../includes/header.php';
                 <!-- Status do cadastro -->
                 <div class="status-info">
                     <strong>Status:</strong>
-                    <span class="status-badge <?= $funcionario['facial_cadastrado'] ? 'status-ok' : 'status-pending' ?>">
-                        <?= $funcionario['facial_cadastrado'] ? '✅ Cadastrado' : '⏳ Pendente' ?>
+                    <span class="status-badge <?= !empty($funcionario['facial_cadastrado']) ? 'status-ok' : 'status-pending' ?>">
+                        <?= !empty($funcionario['facial_cadastrado']) ? '✅ Cadastrado' : '⏳ Pendente' ?>
                     </span>
                 </div>
                 
@@ -382,7 +417,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 </form>
                 
                 <div style="text-align: center; margin-top: 20px;">
-                    <a href="/modules/funcionarios/visualizar.php?id=<?= $funcionario_id ?>" class="btn btn-secondary" style="background: #6b7280;">
+                    <a href="<?= htmlspecialchars($urlVisualizacao, ENT_QUOTES, 'UTF-8') ?>" class="btn btn-secondary" style="background: #6b7280;">
                         <i class="fas fa-arrow-left"></i> Voltar
                     </a>
                 </div>
@@ -394,7 +429,7 @@ require_once __DIR__ . '/../../includes/header.php';
         // ========================================
         //  CONFIGURAÇÕES DO FACE-API
         // ========================================
-        const MODEL_PATH = '/public/models/';
+        const MODEL_PATH = <?= json_encode(rtrim(BASE_URL, '/') . '/assets/models') ?>;
         const VIDEO_WIDTH = 500;
         const VIDEO_HEIGHT = 375;
         
@@ -583,7 +618,7 @@ require_once __DIR__ . '/../../includes/header.php';
         //  CANCELAR
         // ========================================
         btnCancelar.addEventListener('click', function() {
-            window.location.href = '/modules/funcionarios/visualizar.php?id=<?= $funcionario_id ?>';
+            window.location.href = <?= json_encode($urlVisualizacao) ?>;
         });
         
         // ========================================
@@ -601,16 +636,37 @@ require_once __DIR__ . '/../../includes/header.php';
         // ========================================
         //  INICIAR
         // ========================================
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Verificar se face-api está disponível
+        let inicializacaoIniciada = false;
+
+        async function iniciarCadastroFacial() {
+            if (inicializacaoIniciada) return;
+
+            // Em documentos legados o DOMContentLoaded pode já ter ocorrido
+            // quando este script é alcançado. Aguarde explicitamente o
+            // carregamento do FaceAPI em vez de deixar a tela em "Aguardando".
             if (typeof faceapi === 'undefined') {
-                statusText.textContent = '❌ Face API não carregada. Verifique sua conexão com a internet.';
-                btnCapturar.disabled = true;
+                statusText.textContent = '⏳ Carregando reconhecimento facial...';
+                const scriptFaceApi = document.getElementById('faceApiScript');
+                if (scriptFaceApi && !scriptFaceApi.dataset.listenerAttached) {
+                    scriptFaceApi.dataset.listenerAttached = 'true';
+                    scriptFaceApi.addEventListener('load', iniciarCadastroFacial, { once: true });
+                    scriptFaceApi.addEventListener('error', function() {
+                        statusText.textContent = '❌ Não foi possível carregar o reconhecimento facial.';
+                        btnCapturar.disabled = true;
+                    }, { once: true });
+                }
                 return;
             }
-            
+
+            inicializacaoIniciada = true;
             await carregarFaceAPI();
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', iniciarCadastroFacial, { once: true });
+        } else {
+            iniciarCadastroFacial();
+        }
         
         // ========================================
         //  CLEANUP
@@ -621,8 +677,4 @@ require_once __DIR__ . '/../../includes/header.php';
             }
         });
     </script>
-</body>
-</html>
-
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
-

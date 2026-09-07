@@ -1,6 +1,7 @@
 <?php
+require_once __DIR__ . '/includes/config.php';
+
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=appcas29_pontofacil;charset=utf8mb4', 'root', '');
     $stmt = $pdo->query('SHOW TABLES');
     $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
     echo "Tabelas no banco: \n";
@@ -12,5 +13,5 @@ try {
         print_r($stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 } catch (PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
+    echo 'Falha ao consultar o banco.';
 }

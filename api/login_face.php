@@ -3,6 +3,7 @@ session_start();
 header('Content-Type: application/json; charset=UTF-8');
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/../includes/router.php';
 
 function jsonOut($success, $message, $status = 200, $extra = []) {
     http_response_code($status);
@@ -54,7 +55,7 @@ try {
         jsonOut(false, 'Biometria facial nao cadastrada', 400);
     }
 
-    $stmt = $db->prepare("SELECT bf.funcionario_id, bf.descritores, f.nome, f.email, f.empresa_id, f.filial_id, f.status
+    $stmt = $db->prepare("SELECT bf.funcionario_id, bf.descritores, f.nome, f.email, f.tipo_usuario, f.empresa_id, f.filial_id, f.status
                           FROM biometricos_faciais bf
                           JOIN funcionarios f ON bf.funcionario_id = f.id
                           WHERE bf.ativo = 1 AND f.status = 'ativo'");
@@ -88,10 +89,11 @@ try {
     $_SESSION['usuario_id'] = $melhor['funcionario_id'];
     $_SESSION['usuario_nome'] = $melhor['nome'];
     $_SESSION['usuario_email'] = $melhor['email'];
-    $_SESSION['usuario_tipo'] = 'funcionario';
+    $_SESSION['usuario_tipo'] = appNormalizeUserType($melhor['tipo_usuario'] ?: 'funcionario');
     $_SESSION['funcionario_id'] = $melhor['funcionario_id'];
     $_SESSION['empresa_id'] = $melhor['empresa_id'] ?? null;
     $_SESSION['filial_id'] = $melhor['filial_id'] ?? null;
+    $_SESSION['usuario_filial_id'] = $melhor['filial_id'] ?? null;
     $_SESSION['tipo_login'] = 'facial';
 
     jsonOut(true, 'Login facial realizado com sucesso', 200, [
@@ -100,8 +102,9 @@ try {
             'id' => (int) $melhor['funcionario_id'],
             'nome' => $melhor['nome'],
             'email' => $melhor['email'],
-            'tipo' => 'funcionario'
-        ]
+            'tipo' => $_SESSION['usuario_tipo']
+        ],
+        'redirect' => appUrl(appDestinationAfterLogin($_SESSION['usuario_tipo']))
     ]);
 } catch (Exception $e) {
     error_log('Erro login facial: ' . $e->getMessage());

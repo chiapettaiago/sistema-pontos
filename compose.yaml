@@ -1,0 +1,22 @@
+services:
+  db:
+    image: docker.io/library/mariadb:11.4
+    command: --sql-mode=NO_ENGINE_SUBSTITUTION
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:?Defina DB_NAME no .env}
+      MARIADB_USER: ${DB_USER:?Defina DB_USER no .env}
+      MARIADB_PASSWORD: ${DB_PASS:?Defina DB_PASS no .env}
+      MARIADB_ROOT_PASSWORD: ${DB_PASS:?Defina DB_PASS no .env}
+    ports:
+      - "${DB_HOST:?Defina DB_HOST no .env}:${DB_PORT:?Defina DB_PORT no .env}:3306"
+    volumes:
+      - ponto_mysql_data:/var/lib/mysql
+      - ./modules/backup/backups/backup_2026-06-12_11-29-43.sql.gz:/docker-entrypoint-initdb.d/01-schema.sql.gz:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  ponto_mysql_data:

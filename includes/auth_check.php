@@ -8,6 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/router.php';
 
 function authCheckUrl($path = '') {
     $base = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
@@ -27,7 +28,7 @@ function forceAuthentication() {
         return true;
     }
 
-    $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'] ?? '/';
+    appRememberIntendedRoute();
     header('Location: ' . authCheckUrl('/login.php'));
     exit;
 }
@@ -50,7 +51,10 @@ function requireAdmin() {
     return true;
 }
 
-function checkModuleAccess($modulo, $acao = 'visualizar') {
+// Nome próprio para este adaptador legado. A autorização principal usa
+// checkModuleAccess() em includes/auth.php; manter o mesmo nome aqui causava
+// erro fatal quando uma página também carregava o header compartilhado.
+function authCheckModuleAccess($modulo, $acao = 'visualizar') {
     forceAuthentication();
 
     $tipo = $_SESSION['usuario_tipo'] ?? ($_SESSION['user_tipo'] ?? '');

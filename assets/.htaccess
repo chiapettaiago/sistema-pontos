@@ -1,7 +1,7 @@
-﻿# Protecao de diretorios
+# Proteção de diretórios
 Options -Indexes
 
-# Proteger arquivos sensiveis (sintaxe Apache 2.4+)
+# Proteger arquivos sensíveis (sintaxe Apache 2.4+)
 <FilesMatch "^(config|auth|csrf|database)\.php$">
     Require all denied
 </FilesMatch>
@@ -11,7 +11,7 @@ Options -Indexes
     Require all denied
 </FilesMatch>
 
-# Redirecionamento HTTPS apenas fora do localhost
+# Redirecionar para HTTPS apenas fora do localhost
 RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:[0-9]+)?$ [NC]

@@ -7,10 +7,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Theme JS (Bootstrap data-bs-theme) -->
-    <script src="/assets/js/theme.js"></script>
+    <script src="<?php echo htmlspecialchars($baseUrl, ENT_QUOTES, 'UTF-8'); ?>/assets/js/theme.js"></script>
 
     <!-- App JS -->
-    <script src="/assets/js/app.js"></script>
+    <script src="<?php echo htmlspecialchars($baseUrl, ENT_QUOTES, 'UTF-8'); ?>/assets/js/app.js"></script>
 
     <script>
     // Sidebar toggle mobile
@@ -34,7 +34,7 @@
             var now  = new Date();
             var dateEl = document.getElementById('pfDate');
             var timeEl = document.getElementById('pfTime');
-            if (dateEl) dateEl.textContent = now.toLocaleDateString('pt-BR', { weekday:'long', day:'2-digit', month:'long' });
+            if (dateEl) dateEl.textContent = now.toLocaleDateString('pt-BR', { weekday:'short', day:'2-digit', month:'short' });
             if (timeEl) timeEl.textContent = now.toLocaleTimeString('pt-BR');
         }
         tick();

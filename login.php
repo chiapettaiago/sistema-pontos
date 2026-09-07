@@ -1,337 +1,69 @@
 <?php
-// login.php - Login unificado do sistema web
 session_start();
-
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/csrf.php';
+require_once __DIR__ . '/includes/router.php';
 
-if (isset($_SESSION['usuario_id'])) {
-    if ($_SESSION['usuario_tipo'] === 'super_admin') {
-        header('Location: ' . BASE_URL . '/modules/admin/dashboard.php');
-    } elseif ($_SESSION['usuario_tipo'] === 'admin_empresa' || $_SESSION['usuario_tipo'] === 'gestor') {
-        header('Location: ' . BASE_URL . '/modules/dashboard_empresa/index.php');
-    } else {
-        header('Location: ' . BASE_URL . '/modules/ponto/ponto.php');
-    }
-    exit;
-}
-
+if (isset($_SESSION['usuario_id'])) appRedirectAfterLogin($_SESSION['usuario_tipo'] ?? 'funcionario');
 $error = '';
-
 $database = new Database();
 $db = $database->getConnection();
 
-function finalizarLoginSistema(array $usuario): void {
+function finalizarLoginSistema(array $u): void {
     session_regenerate_id(true);
-
-    $_SESSION['usuario_id'] = $usuario['id'];
-    $_SESSION['usuario_nome'] = $usuario['nome'];
-    $_SESSION['usuario_email'] = $usuario['email'];
-    $_SESSION['usuario_tipo'] = $usuario['tipo'];
-    $_SESSION['empresa_id'] = $usuario['empresa_id'];
-    $_SESSION['empresa_nome'] = $usuario['empresa_nome'] ?? null;
-    $_SESSION['funcionario_id'] = $usuario['funcionario_id'] ?? null;
-    $_SESSION['tipo_login'] = 'sistema';
-
-    // Compatibilidade com telas novas que usam outro padrao de sessao.
-    $_SESSION['user_id'] = $usuario['id'];
-    $_SESSION['user_nome'] = $usuario['nome'];
-    $_SESSION['user_email'] = $usuario['email'];
-    $_SESSION['user_tipo'] = $usuario['tipo'];
+    foreach (['id'=>'usuario_id','nome'=>'usuario_nome','email'=>'usuario_email','tipo'=>'usuario_tipo','empresa_id'=>'empresa_id'] as $key => $session) $_SESSION[$session] = $u[$key] ?? null;
+    $_SESSION['empresa_nome'] = $u['empresa_nome'] ?? null; $_SESSION['funcionario_id'] = $u['funcionario_id'] ?? null; $_SESSION['tipo_login'] = 'sistema';
+    $_SESSION['user_id'] = $u['id']; $_SESSION['user_nome'] = $u['nome']; $_SESSION['user_email'] = $u['email']; $_SESSION['user_tipo'] = $u['tipo'];
 }
-
-function finalizarLoginFuncionario(array $funcionario): void {
+function finalizarLoginFuncionario(array $f): void {
     session_regenerate_id(true);
-
-    $_SESSION['usuario_id'] = $funcionario['id'];
-    $_SESSION['usuario_nome'] = $funcionario['nome'];
-    $_SESSION['usuario_email'] = $funcionario['email'];
-    $_SESSION['usuario_tipo'] = 'funcionario';
-    $_SESSION['empresa_id'] = $funcionario['empresa_id'];
-    $_SESSION['empresa_nome'] = $funcionario['empresa_nome'] ?? null;
-    $_SESSION['filial_id'] = $funcionario['filial_id'] ?? null;
-    $_SESSION['usuario_filial_id'] = $funcionario['filial_id'] ?? null;
-    $_SESSION['funcionario_id'] = $funcionario['id'];
-    $_SESSION['tipo_login'] = 'funcionario';
-
-    // Compatibilidade com telas novas que usam outro padrao de sessao.
-    $_SESSION['funcionario_nome'] = $funcionario['nome'];
-    $_SESSION['funcionario_email'] = $funcionario['email'];
-    $_SESSION['funcionario_empresa_id'] = $funcionario['empresa_id'];
+    $_SESSION['usuario_id']=$f['id']; $_SESSION['usuario_nome']=$f['nome']; $_SESSION['usuario_email']=$f['email']; $_SESSION['usuario_tipo']=appNormalizeUserType($f['tipo_usuario'] ?? 'funcionario');
+    $_SESSION['empresa_id']=$f['empresa_id']; $_SESSION['empresa_nome']=$f['empresa_nome'] ?? null; $_SESSION['filial_id']=$f['filial_id'] ?? null;
+    $_SESSION['usuario_filial_id']=$f['filial_id'] ?? null; $_SESSION['funcionario_id']=$f['id']; $_SESSION['tipo_login']='funcionario';
+    $_SESSION['funcionario_nome']=$f['nome']; $_SESSION['funcionario_email']=$f['email']; $_SESSION['funcionario_empresa_id']=$f['empresa_id'];
 }
-
-function senhaConfere(string $senhaDigitada, string $senhaSalva): bool {
-    if (password_verify($senhaDigitada, $senhaSalva)) {
-        return true;
-    }
-
-    $senhaSalvaLimpa = trim($senhaSalva);
-
-    if (strlen($senhaSalvaLimpa) === 32 && ctype_xdigit($senhaSalvaLimpa)) {
-        return hash_equals(strtolower($senhaSalvaLimpa), md5($senhaDigitada));
-    }
-
-    return hash_equals($senhaSalvaLimpa, $senhaDigitada);
+function senhaConfere(string $in, string $saved): bool {
+    if (password_verify($in, $saved)) return true;
+    $saved = trim($saved);
+    return strlen($saved) === 32 && ctype_xdigit($saved) ? hash_equals(strtolower($saved), md5($in)) : hash_equals($saved, $in);
 }
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    verifyCSRFToken();
-
-    $email = trim($_POST['email'] ?? '');
-    $senha = $_POST['senha'] ?? '';
-
-    if ($email === '' || $senha === '') {
-        $error = 'Preencha todos os campos';
-    } else {
-        try {
-            $query = "SELECT u.*, e.nome as empresa_nome
-                      FROM usuarios_sistema u
-                      LEFT JOIN empresas e ON u.empresa_id = e.id
-                      WHERE u.email = :email AND u.status = 'ativo'";
-            $stmt = $db->prepare($query);
-            $stmt->execute([':email' => $email]);
-            $usuario = $stmt->fetch();
-
-            if ($usuario && senhaConfere($senha, $usuario['senha'])) {
-                finalizarLoginSistema($usuario);
-
-                $update = $db->prepare("UPDATE usuarios_sistema SET ultimo_acesso = NOW() WHERE id = :id");
-                $update->execute([':id' => $usuario['id']]);
-
-                logAcao($db, 'LOGIN', 'usuarios_sistema', $usuario['id'], "Login realizado: {$usuario['email']}");
-
-                if ($usuario['tipo'] === 'super_admin') {
-                    header('Location: ' . BASE_URL . '/modules/admin/dashboard.php');
-                } elseif ($usuario['tipo'] === 'admin_empresa' || $usuario['tipo'] === 'gestor') {
-                    header('Location: ' . BASE_URL . '/modules/dashboard_empresa/index.php');
-                } else {
-                    header('Location: ' . BASE_URL . '/modules/ponto/ponto.php');
-                }
-                exit;
-            }
-
-            $query = "SELECT f.*,
-                             e.nome_empresa as empresa_nome,
-                             fi.nome_fantasia as filial_nome
-                      FROM funcionarios f
-                      LEFT JOIN empresa e ON f.empresa_id = e.id
-                      LEFT JOIN filiais fi ON f.filial_id = fi.id
-                      WHERE f.email = :email AND f.status = 'ativo'";
-            $stmt = $db->prepare($query);
-            $stmt->execute([':email' => $email]);
-            $funcionario = $stmt->fetch();
-
-            if ($funcionario && senhaConfere($senha, $funcionario['senha'])) {
-                finalizarLoginFuncionario($funcionario);
-                logAcao($db, 'LOGIN', 'funcionarios', $funcionario['id'], "Login funcionario: {$funcionario['email']}");
-
-                header('Location: ' . BASE_URL . '/modules/ponto/ponto.php');
-                exit;
-            }
-
-            $error = 'Email ou senha invalidos';
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-            $error = 'Erro ao fazer login. Tente novamente.';
-        }
-    }
+    verifyCSRFToken(); $email=trim($_POST['email'] ?? ''); $senha=$_POST['senha'] ?? '';
+    if ($email === '' || $senha === '') $error='Informe e-mail e senha.';
+    else try {
+        $stmt=$db->prepare("SELECT u.*, e.nome empresa_nome FROM usuarios_sistema u LEFT JOIN empresas e ON e.id=u.empresa_id WHERE u.email=:email AND u.status='ativo' LIMIT 1"); $stmt->execute([':email'=>$email]); $u=$stmt->fetch();
+        if ($u && senhaConfere($senha,$u['senha'])) { finalizarLoginSistema($u); logAcao($db,'LOGIN','usuarios_sistema',$u['id'],"Login realizado: {$u['email']}"); appRedirectAfterLogin($u['tipo']); }
+        $stmt=$db->prepare("SELECT f.*, e.nome_empresa empresa_nome FROM funcionarios f LEFT JOIN empresa e ON e.id=f.empresa_id WHERE f.email=:email AND f.status='ativo' LIMIT 1"); $stmt->execute([':email'=>$email]); $f=$stmt->fetch();
+        if ($f && senhaConfere($senha,$f['senha'])) { finalizarLoginFuncionario($f); logAcao($db,'LOGIN','funcionarios',$f['id'],"Login funcionario: {$f['email']}"); appRedirectAfterLogin($_SESSION['usuario_tipo']); }
+        $error='E-mail ou senha inválidos.';
+    } catch (Exception $e) { error_log('Erro ao fazer login: '.$e->getMessage()); $error='Não foi possível entrar agora. Tente novamente.'; }
 }
-
-$csrf_token = generateCSRFToken();
+$csrf_token=generateCSRFToken(); $baseUrl=rtrim(BASE_URL,'/');
 ?>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Ponto Facil Empresarial</title>
-
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="/assets/css/style.css">
-
-    <!-- Aplica tema antes de renderizar (evita flash) -->
-    <script>
-        (function(){
-            var t = localStorage.getItem('pf_theme') || 'light';
-            document.documentElement.setAttribute('data-bs-theme', t);
-        })();
-    </script>
-
-    <style>
-        body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #2b3962 0%, #57589B 50%, #876EBA 100%);
-            font-family: var(--bs-font-sans-serif);
-            transition: background .3s ease, color .3s ease;
-            position: relative;
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Entrar · Ponto Fácil</title>
+<link rel="icon" type="image/svg+xml" href="<?= $baseUrl ?>/assets/favicon.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root{--ink:#eaf0ff;--muted:#9eafd1;--card:rgba(12,22,46,.76);--line:rgba(255,255,255,.13);--accent:#7c9cff;--success:#54e0b4}*{box-sizing:border-box}body{min-height:100vh;margin:0;font-family:'DM Sans',sans-serif;color:var(--ink);background:#081125;overflow-x:hidden}body:before,body:after{content:'';position:fixed;width:46vw;height:46vw;border-radius:50%;filter:blur(35px);pointer-events:none;opacity:.45}body:before{background:#435be7;top:-22vw;left:-12vw}body:after{background:#8d3cb8;right:-18vw;bottom:-27vw}.shell{position:relative;z-index:1;width:min(1120px,100%);min-height:100vh;margin:auto;padding:28px;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:72px}.brand{max-width:500px}.brand-mark{display:grid;place-items:center;width:58px;height:58px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.08);font-size:23px}h1{margin:25px 0 12px;font-size:clamp(34px,5vw,56px);letter-spacing:-.055em;line-height:1.03}.brand p{margin:0;max-width:415px;color:var(--muted);font-size:17px;line-height:1.55}.highlights{display:flex;gap:22px;margin-top:36px;color:#c8d4ef;font-size:13px}.highlights i{color:var(--success);margin-right:6px}.card{background:var(--card);border:1px solid var(--line);backdrop-filter:blur(24px);border-radius:28px;padding:28px;box-shadow:0 26px 70px rgba(0,0,0,.28)}.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}.card-head h2{margin:0;font-size:21px;letter-spacing:-.03em}.secure{color:var(--muted);font-size:12px}.secure i{color:var(--success);margin-right:5px}.camera{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:20px;background:#030916;border:1px solid rgba(255,255,255,.12)}video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}.face-guide{position:absolute;width:46%;aspect-ratio:1;top:45%;left:50%;transform:translate(-50%,-50%);border:2px solid rgba(255,255,255,.75);border-radius:48% 48% 44% 44%;box-shadow:0 0 0 999px rgba(0,0,0,.1),0 0 28px rgba(124,156,255,.5);transition:.25s}.camera.detected .face-guide{border-color:var(--success);box-shadow:0 0 0 999px rgba(0,0,0,.1),0 0 30px rgba(84,224,180,.7)}.camera-label{position:absolute;bottom:12px;left:12px;right:12px;padding:10px 12px;border-radius:12px;background:rgba(3,9,22,.62);font-size:13px;text-align:center;backdrop-filter:blur(8px)}.status{display:flex;align-items:center;gap:9px;min-height:43px;margin:14px 0;padding:10px 12px;border-radius:12px;background:rgba(124,156,255,.1);color:#cbd7ff;font-size:13px}.status.success{background:rgba(84,224,180,.11);color:#a8f1d7}.status.error{background:rgba(255,125,139,.12);color:#ffc1c9}.status i{width:16px;text-align:center}button{font:inherit}.primary{width:100%;min-height:52px;border:0;border-radius:14px;color:#071021;background:linear-gradient(135deg,#a8bcff,#6b8cff);font-weight:700;cursor:pointer;transition:transform .2s,filter .2s}.primary:hover{transform:translateY(-1px);filter:brightness(1.07)}.primary:disabled{opacity:.65;cursor:wait;transform:none}.divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;margin:19px 0}.divider:before,.divider:after{content:'';height:1px;flex:1;background:var(--line)}.password-toggle{width:100%;padding:0;border:0;background:transparent;color:#cbd7ff;font-weight:600;cursor:pointer}.password{display:none;margin-top:17px}.password.open{display:block}label{display:block;margin:0 0 7px;color:#cbd7ef;font-size:13px;font-weight:600}.field{position:relative;margin-bottom:14px}.field i{position:absolute;left:14px;top:39px;color:var(--muted);font-size:14px}.field input{width:100%;height:49px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.06);color:#fff;outline:0;padding:0 14px 0 40px;font:inherit}.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,156,255,.13)}.alert{margin-bottom:15px;padding:11px 13px;border-radius:12px;background:rgba(255,125,139,.12);color:#ffc1c9;font-size:13px}.footer{margin:18px 0 0;color:var(--muted);font-size:12px;text-align:center}@media(max-width:800px){.shell{grid-template-columns:1fr;gap:28px;padding:25px 18px;align-content:center}.brand{text-align:center;margin:auto}.brand-mark{margin:auto}h1{font-size:37px;margin-top:18px}.highlights{justify-content:center;margin-top:22px;flex-wrap:wrap}.card{width:min(500px,100%);margin:auto;padding:21px;border-radius:23px}}@media(max-width:380px){.highlights{gap:10px;font-size:11px}.card{padding:16px}}
+html,body{height:100%;overflow:hidden}.shell{height:100dvh;min-height:0}html.password-open,html.password-open body{overflow-y:auto}html.password-open .shell{height:auto;min-height:100dvh;overflow:visible}@media(min-width:801px) and (max-height:700px){.shell{padding:16px 28px;gap:48px}.card{padding:22px}.camera{height:min(40dvh,250px);aspect-ratio:auto}.card-head{margin-bottom:12px}.status{margin:9px 0;min-height:38px}.primary{min-height:46px}.divider{margin:12px 0}.password{margin-top:12px}.footer{margin:9px 0 0}.highlights{margin-top:24px}}@media(max-width:800px){.shell{height:100dvh;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:12px;padding:12px}.brand-mark{width:44px;height:44px;border-radius:14px}.brand h1{font-size:27px;margin:10px 0 0}.brand p,.highlights{display:none}.card{padding:16px;width:min(500px,100%)}.camera{height:min(34dvh,240px);aspect-ratio:auto}.card-head{margin-bottom:12px}.status{margin:9px 0;min-height:38px}.divider{margin:11px 0}.footer{margin:10px 0 0}}@media(max-width:800px) and (max-height:620px){.brand{display:none}.camera{height:min(31dvh,180px)}.footer{display:none}.card{padding:14px}.primary{min-height:46px}}
+</style></head><body>
+<main class="shell"><section class="brand"><div class="brand-mark"><i class="fa-regular fa-clock"></i></div><h1>O ponto começa com um olhar.</h1><p>Entre de forma rápida e segura com o reconhecimento facial. Seus dados e sua jornada, sempre no controle.</p><div class="highlights"><span><i class="fa-solid fa-circle-check"></i>Leitura segura</span><span><i class="fa-solid fa-circle-check"></i>Acesso rápido</span><span><i class="fa-solid fa-circle-check"></i>Pronto para celular</span></div></section>
+<section class="card" aria-labelledby="login-title"><div class="card-head"><h2 id="login-title">Reconhecimento facial</h2><span class="secure"><i class="fa-solid fa-shield-halved"></i>Ambiente seguro</span></div><?php if($error): ?><div class="alert"><i class="fa-solid fa-circle-exclamation"></i> <?= htmlspecialchars($error) ?></div><?php endif; ?><div class="camera" id="camera"><video id="video" autoplay muted playsinline aria-label="Prévia da câmera"></video><div class="face-guide"></div><div class="camera-label" id="cameraLabel">Preparando a câmera…</div></div><div id="status" class="status"><i class="fa-solid fa-spinner fa-spin"></i><span>Carregando reconhecimento facial…</span></div><button class="primary" id="faceButton" type="button" disabled><i class="fa-solid fa-camera"></i> Reconhecer e entrar</button><div class="divider">ou</div><button class="password-toggle" id="passwordToggle" type="button"><i class="fa-solid fa-key"></i> Entrar com e-mail e senha</button><form class="password" id="passwordForm" method="post" novalidate><input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>"><div class="field"><label for="email">E-mail</label><i class="fa-regular fa-envelope"></i><input id="email" name="email" type="email" autocomplete="email" required></div><div class="field"><label for="senha">Senha</label><i class="fa-solid fa-lock"></i><input id="senha" name="senha" type="password" autocomplete="current-password" required></div><button class="primary" type="submit"><i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar com senha</button></form><p class="footer">A câmera requer HTTPS (ou localhost) e sua autorização.</p></section></main>
+<script src="<?= $baseUrl ?>/assets/js/face-api.min.js"></script><script>
+(()=>{const b=<?= json_encode($baseUrl) ?>,v=document.querySelector('#video'),c=document.querySelector('#camera'),l=document.querySelector('#cameraLabel'),s=document.querySelector('#status'),btn=document.querySelector('#faceButton');let ready=false,stream,busy=false,timer,stable=0;const say=(text,type='info')=>{s.className='status '+type;s.innerHTML='<i class="fa-solid '+(type==='error'?'fa-circle-exclamation':type==='success'?'fa-circle-check':'fa-spinner fa-spin')+'"></i><span>'+text+'</span>';l.textContent=text},stop=()=>{if(timer)clearInterval(timer);if(stream)stream.getTracks().forEach(t=>t.stop())};async function models(){await Promise.all([faceapi.nets.tinyFaceDetector.loadFromUri(b+'/assets/models'),faceapi.nets.faceLandmark68Net.loadFromUri(b+'/assets/models'),faceapi.nets.faceRecognitionNet.loadFromUri(b+'/assets/models')]);ready=true}async function find(){if(busy||!ready||!v.videoWidth)return;try{const f=await faceapi.detectSingleFace(v,new faceapi.TinyFaceDetectorOptions({inputSize:224,scoreThreshold:.55})).withFaceLandmarks().withFaceDescriptor();if(f){stable++;c.classList.add('detected');say(stable>=2?'Rosto detectado. Pronto para entrar.':'Rosto detectado. Mantenha-se na marcação.','success')}else{stable=0;c.classList.remove('detected');say('Posicione o rosto dentro da marcação.')}}catch(_){}}async function start(){try{if(!window.isSecureContext&&!['localhost','127.0.0.1','::1'].includes(location.hostname))throw Error('Use HTTPS para liberar a câmera.');await models();stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:540}},audio:false});v.srcObject=stream;await v.play();btn.disabled=false;say('Posicione o rosto dentro da marcação.');timer=setInterval(find,850)}catch(e){say(e.message||'Não foi possível iniciar a câmera. Use e-mail e senha.','error')}}async function login(){if(busy)return;busy=true;btn.disabled=true;say('Validando sua identidade…');try{const f=await faceapi.detectSingleFace(v,new faceapi.TinyFaceDetectorOptions({inputSize:224,scoreThreshold:.55})).withFaceLandmarks().withFaceDescriptor();if(!f)throw Error('Nenhum rosto detectado. Ajuste sua posição e tente novamente.');const r=await fetch(b+'/api/login_face.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({descritor:Array.from(f.descriptor)})}),data=await r.json();if(!r.ok||!data.success)throw Error(data.message||'Rosto não reconhecido.');say('Acesso liberado. Redirecionando…','success');stop();location.assign(data.redirect||b+'/modules/ponto/ponto.php')}catch(e){say(e.message||'Falha ao validar o rosto.','error');busy=false;btn.disabled=false}}btn.onclick=login;document.querySelector('#passwordToggle').onclick=()=>document.querySelector('#passwordForm').classList.toggle('open');addEventListener('beforeunload',stop);start()})();
+</script>
+<script>
+document.querySelector('#passwordToggle').addEventListener('click', function () {
+    const form = document.querySelector('#passwordForm');
+    requestAnimationFrame(function () {
+        const opened = form.classList.contains('open');
+        document.documentElement.classList.toggle('password-open', opened);
+        if (opened) {
+            document.querySelector('#email').focus();
         }
-        [data-bs-theme="dark"] body {
-            background: var(--pf-gradient-dark);
-        }
-        .pf-login-theme-pos {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            z-index: 100;
-        }
-        .pf-login-card {
-            background: #ffffff;
-            border-radius: 1.75rem;
-            padding: 2.25rem;
-            box-shadow: 0 24px 70px rgba(15,23,42,.15);
-            border: 1px solid var(--border-color);
-            width: 100%;
-            max-width: 460px;
-            color: #333333;
-        }
-        [data-bs-theme="dark"] .pf-login-card {
-            box-shadow: 0 24px 70px rgba(0,0,0,.5);
-        }
-        .pf-login-logo-mark {
-            width: 70px; height: 70px;
-            margin: 0 auto 1rem;
-            border-radius: 1.25rem;
-            display: grid;
-            place-items: center;
-            font-size: 2rem;
-            background: linear-gradient(135deg, #1e293b 0%, #6366f1 100%);
-            color: #fff;
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
-        }
-        .pf-login-card .form-control {
-            padding-left: 2.75rem;
-        }
-        .pf-login-card .input-icon {
-            position: absolute;
-            left: .875rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            pointer-events: none;
-        }
-        .pf-login-card .input-group { position: relative; }
-        .btn-login {
-            width: 100%;
-            padding: .875rem;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            font-weight: 700;
-            border: none;
-            background: linear-gradient(135deg, #1e293b 0%, #6366f1 100%);
-            color: #fff;
-            transition: transform .2s, box-shadow .2s;
-        }
-        .btn-login:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 24px rgba(99, 102, 241, 0.40);
-            color: #fff;
-        }
-        
-        .custom-alert {
-            background-color: #f0f7ff;
-            border: 1px solid #dbeafe;
-            color: #1e40af;
-            border-radius: 0.75rem;
-            padding: 0.75rem 1rem;
-            font-size: 0.8125rem;
-            line-height: 1.5;
-            text-align: center;
-        }
-        
-        .form-label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.25rem;
-        }
-        
-        .form-control {
-            border-radius: 0.5rem;
-            border-color: #e5e7eb;
-            padding-top: 0.625rem;
-            padding-bottom: 0.625rem;
-        }
-        @media (max-width: 480px) {
-            body { align-items: stretch; padding: 1rem; }
-            .pf-login-card { border-radius: 1.25rem; padding: 1.5rem; }
-        }
-    </style>
-</head>
-<body>
-
-
-<div class="pf-login-card mx-auto">
-
-    <!-- Logo -->
-    <div class="text-center mb-4">
-        <div class="pf-login-logo-mark">
-            <i class="fas fa-clock"></i>
-        </div>
-        <h1 class="h3 fw-bold mb-1">Ponto Fácil</h1>
-        <p class="text-muted small">Sistema empresarial de ponto</p>
-    </div>
-
-    <!-- Erro -->
-    <?php if ($error): ?>
-    <div class="alert alert-danger d-flex align-items-center gap-2 py-2" role="alert">
-        <i class="fas fa-exclamation-circle"></i>
-        <span><?php echo htmlspecialchars($error); ?></span>
-    </div>
-    <?php endif; ?>
-
-    <!-- Info -->
-    <div class="custom-alert mb-4">
-        <strong>Entrada unificada:</strong> use email e senha ou reconhecimento facial.<br>
-        No celular, prefira HTTPS para liberar a câmera sem bloqueios.
-    </div>
-
-    <!-- Formulário -->
-    <form method="POST" action="" novalidate>
-        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-
-        <div class="mb-3">
-            <label for="email" class="form-label">E-mail</label>
-            <div class="input-group">
-                <i class="fas fa-envelope input-icon"></i>
-                <input type="email" id="email" name="email" class="form-control"
-                       placeholder="seu@email.com" required autocomplete="email" autofocus>
-            </div>
-        </div>
-
-        <div class="mb-4">
-            <label for="senha" class="form-label">Senha</label>
-            <div class="input-group">
-                <i class="fas fa-lock input-icon"></i>
-                <input type="password" id="senha" name="senha" class="form-control"
-                       placeholder="Digite sua senha" required autocomplete="current-password">
-            </div>
-        </div>
-
-        <button type="submit" class="btn-login mb-4">
-            <i class="fas fa-sign-in-alt me-2"></i>Entrar
-        </button>
-    </form>
-
-    <!-- Login facial -->
-    <div class="text-center mb-3">
-        <a href="modules/funcionarios/login_facial.php" class="text-primary fw-semibold text-decoration-none small">
-            <i class="fas fa-camera me-1"></i>Entrar com reconhecimento facial
-        </a>
-    </div>
-
-    <p class="text-center text-muted small mb-0">&copy; <?php echo date('Y'); ?> Ponto Fácil</p>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/assets/js/theme.js"></script>
-</body>
-</html>
-
+    });
+});
+</script>
+</body></html>

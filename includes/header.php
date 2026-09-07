@@ -9,6 +9,17 @@ if (!isset($skipAuth) || !$skipAuth) {
 $_base_dir = str_replace('\\', '/', dirname(__DIR__));
 $_doc_root  = str_replace('\\', '/', rtrim($_SERVER['DOCUMENT_ROOT'], '/\\'));
 $baseUrl    = rtrim(str_replace($_doc_root, '', $_base_dir), '/');
+$topUserName = $_SESSION['usuario_nome'] ?? 'Usuário';
+$topUserType = $_SESSION['usuario_tipo'] ?? 'funcionario';
+$topRoles = [
+    'super_admin' => 'Super Admin',
+    'admin_empresa' => 'Administrador',
+    'gestor' => 'Gestor',
+    'supervisor' => 'Supervisor',
+    'funcionario' => 'Funcionário',
+];
+$topUserRole = $topRoles[$topUserType] ?? ucfirst($topUserType);
+$topFuncionarioId = (int) ($_SESSION['funcionario_id'] ?? 0);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -33,6 +44,7 @@ $baseUrl    = rtrim(str_replace($_doc_root, '', $_base_dir), '/');
 
     <!-- Custom CSS (paleta + sobrescritas) -->
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>/assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>/assets/css/responsive.css">
 
     <!-- Aplica tema antes de renderizar (evita flash) -->
     <script>
@@ -64,8 +76,9 @@ $baseUrl    = rtrim(str_replace($_doc_root, '', $_base_dir), '/');
 
                 <!-- Data/Hora -->
                 <div class="pf-datetime d-none d-md-flex">
-                    <span id="pfDate"></span>
-                    <span id="pfTime" class="fw-semibold"></span>
+                    <i class="far fa-calendar-alt pf-datetime-icon" aria-hidden="true"></i>
+                    <span id="pfDate" class="pf-datetime-date"></span>
+                    <span id="pfTime" class="pf-datetime-time" aria-label="Horário atual"></span>
                 </div>
 
                 <!-- Theme toggle -->
@@ -75,6 +88,32 @@ $baseUrl    = rtrim(str_replace($_doc_root, '', $_base_dir), '/');
                     </div>
                     <div class="pf-theme-opt" data-theme="dark" title="Modo escuro">
                         <i class="fas fa-moon"></i>
+                    </div>
+                </div>
+
+                <div class="dropdown pf-topbar-user">
+                    <button class="pf-topbar-user-trigger" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menu do usuário">
+                        <span class="pf-topbar-avatar"><i class="fas fa-user"></i></span>
+                        <span class="pf-topbar-user-copy d-none d-lg-flex">
+                            <strong><?php echo htmlspecialchars($topUserName); ?></strong>
+                            <small><?php echo htmlspecialchars($topUserRole); ?></small>
+                        </span>
+                        <i class="fas fa-chevron-down pf-topbar-chevron d-none d-lg-inline"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end pf-user-dropdown">
+                        <div class="pf-user-dropdown-head">
+                            <strong><?php echo htmlspecialchars($topUserName); ?></strong>
+                            <span><?php echo htmlspecialchars($topUserRole); ?></span>
+                        </div>
+                        <?php if ($topFuncionarioId > 0): ?>
+                        <a class="dropdown-item" href="<?php echo $baseUrl; ?>/modules/funcionarios/visualizar?id=<?php echo $topFuncionarioId; ?>">
+                            <i class="fas fa-id-card"></i> Meu cadastro
+                        </a>
+                        <?php endif; ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-danger" href="<?php echo $baseUrl; ?>/logout">
+                            <i class="fas fa-right-from-bracket"></i> Sair
+                        </a>
                     </div>
                 </div>
             </header>
