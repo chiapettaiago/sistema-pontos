@@ -135,7 +135,7 @@ if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
                         </a>
                         <?php endif; ?>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-danger" href="<?php echo $baseUrl; ?>/logout">
+                        <a class="dropdown-item text-danger" href="<?php echo $baseUrl; ?>/logout.php">
                             <i class="fas fa-right-from-bracket"></i> Sair
                         </a>
                     </div>

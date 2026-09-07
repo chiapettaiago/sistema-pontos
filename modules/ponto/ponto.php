@@ -394,7 +394,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
         <div class="d-flex justify-content-center gap-2 mt-4">
             <a href="extrato.php" class="pf-nav-btn"><i class="fas fa-calendar-alt me-1"></i> Meu Extrato</a>
             <a href="#" class="pf-nav-btn"><i class="fas fa-clipboard-list me-1"></i> Solicitações</a>
-            <a href="/logout.php" class="pf-nav-btn"><i class="fas fa-sign-out-alt me-1"></i> Sair</a>
+            <a href="<?php echo htmlspecialchars(BASE_URL . '/logout.php'); ?>" class="pf-nav-btn"><i class="fas fa-sign-out-alt me-1"></i> Sair</a>
         </div>
     </div>
 </div>
