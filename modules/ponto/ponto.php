@@ -164,87 +164,15 @@ if (isset($_SESSION['mensagem_ponto'])) {
     unset($_SESSION['tipo_mensagem_ponto']);
 }
 
-// Processar registro de ponto manual
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
-    $tipo = $_POST['acao'];
-    $latitude = $_POST['latitude'] ?? null;
-    $longitude = $_POST['longitude'] ?? null;
-    
-    // Verificar se já registrou
-    if (in_array($tipo, $tiposRegistrados)) {
-        $_SESSION['mensagem_ponto'] = "Você já registrou " . str_replace('_', ' ', $tipo) . " hoje!";
-        $_SESSION['tipo_mensagem_ponto'] = 'error';
-        header('Location: ponto.php');
-        exit;
-    }
-    
-    // Validar sequência
-    if ($tipo == 'saida_almoco' && !in_array('entrada', $tiposRegistrados)) {
-        $_SESSION['mensagem_ponto'] = "Você precisa registrar a entrada primeiro!";
-        $_SESSION['tipo_mensagem_ponto'] = 'error';
-        header('Location: ponto.php');
-        exit;
-    }
-    
-    if ($tipo == 'volta_almoco' && !in_array('saida_almoco', $tiposRegistrados)) {
-        $_SESSION['mensagem_ponto'] = "Você precisa registrar a saída para almoço primeiro!";
-        $_SESSION['tipo_mensagem_ponto'] = 'error';
-        header('Location: ponto.php');
-        exit;
-    }
-    
-    if ($tipo == 'saida' && !in_array('volta_almoco', $tiposRegistrados) && !in_array('entrada', $tiposRegistrados)) {
-        $_SESSION['mensagem_ponto'] = "Você precisa registrar o almoço primeiro ou a entrada!";
-        $_SESSION['tipo_mensagem_ponto'] = 'error';
-        header('Location: ponto.php');
-        exit;
-    }
-    
-    if ($tipo == 'extra_entrada' && !in_array('saida', $tiposRegistrados)) {
-        $_SESSION['mensagem_ponto'] = "Você precisa registrar a saída primeiro!";
-        $_SESSION['tipo_mensagem_ponto'] = 'error';
-        header('Location: ponto.php');
-        exit;
-    }
-    
-    if ($tipo == 'extra_saida' && !in_array('extra_entrada', $tiposRegistrados)) {
-        $_SESSION['mensagem_ponto'] = "Você precisa registrar a entrada extra primeiro!";
-        $_SESSION['tipo_mensagem_ponto'] = 'error';
-        header('Location: ponto.php');
-        exit;
-    }
-    
-    // Registrar ponto
-    try {
-        $stmt = $db->prepare("INSERT INTO pontos (funcionario_id, filial_id, empresa_id, tipo, data_hora, latitude, longitude, origem) 
-                              VALUES (:funcionario_id, :filial_id, :empresa_id, :tipo, NOW(), :latitude, :longitude, 'web')");
-        $stmt->execute([
-            ':funcionario_id' => $funcionario_id,
-            ':filial_id' => $funcionario['filial_id'],
-            ':empresa_id' => $funcionario['empresa_id'],
-            ':tipo' => $tipo,
-            ':latitude' => $latitude,
-            ':longitude' => $longitude
-        ]);
-        
-        $nomes = [
-            'entrada' => 'Entrada',
-            'saida_almoco' => 'Saída para Almoço',
-            'volta_almoco' => 'Volta do Almoço',
-            'saida' => 'Saída',
-            'extra_entrada' => 'Entrada Extra',
-            'extra_saida' => 'Saída Extra'
-        ];
-        
-        $_SESSION['mensagem_ponto'] = "✅ " . $nomes[$tipo] . " registrada com sucesso!";
-        $_SESSION['tipo_mensagem_ponto'] = 'success';
-        
-    } catch (Exception $e) {
-        $_SESSION['mensagem_ponto'] = 'Erro ao registrar ponto: ' . $e->getMessage();
-        $_SESSION['tipo_mensagem_ponto'] = 'error';
-    }
-    
-    header('Location: ponto.php');
+// Esta tela é somente de consulta. Registros exigem validação biométrica.
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    header('Allow: GET');
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'success' => false,
+        'error' => 'Registro manual desativado. Use o reconhecimento facial.'
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 ?>
@@ -314,6 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             text-align: center;
         }
         .btn-facial {
+            display: block;
             background: #1e293b;
             color: white;
             border-radius: 12px;
@@ -323,8 +252,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             border: none;
             margin-bottom: 12px;
             transition: transform 0.2s;
+            text-align: center;
+            text-decoration: none;
         }
         .btn-facial:hover { transform: translateY(-2px); color: white; }
+        .pf-biometric-hint {
+            color: #64748b;
+            font-size: 12px;
+            margin: 2px 0 14px;
+            text-align: center;
+        }
         .btn-manual {
             background: linear-gradient(135deg, #7c6df7 0%, #664fbe 100%);
             color: white;
@@ -427,26 +364,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         </div>
 
         <!-- Action Buttons -->
-        <form method="POST" id="formPonto">
-            <input type="hidden" name="acao" value="<?php echo htmlspecialchars($proximo_tipo); ?>">
-            <input type="hidden" name="latitude" id="lat_val" value="">
-            <input type="hidden" name="longitude" id="lon_val" value="">
-            
-            <button type="button" class="btn-facial" onclick="alert('Funcionalidade de reconhecimento facial em desenvolvimento.');">
-                <i class="fas fa-camera text-info me-2"></i> 
-                <i class="fas fa-lock text-warning me-2"></i> Registrar Entrada com Facial
-            </button>
-            
+        <div id="formPonto">
             <?php if ($proximo_tipo !== 'finalizado'): ?>
-            <button type="submit" class="btn-manual">
-                <i class="fas <?php echo $icones_botao[$proximo_tipo] ?? 'fa-sign-in-alt'; ?> me-2"></i> <?php echo $nomes_botao[$proximo_tipo] ?? 'Registrar'; ?> (Manual)
-            </button>
+            <a class="btn-facial" href="<?php echo htmlspecialchars(BASE_URL . '/modules/ponto/biometrico'); ?>">
+                <i class="fas fa-camera me-2"></i>
+                <?php echo htmlspecialchars($nomes_botao[$proximo_tipo] ?? 'Registrar ponto'); ?> com reconhecimento facial
+            </a>
+            <div class="pf-biometric-hint">
+                <i class="fas fa-shield-alt me-1"></i> Por segurança, o registro manual está desativado.
+            </div>
             <?php else: ?>
             <button type="button" class="btn-manual" disabled style="opacity: 0.6; cursor: not-allowed; box-shadow: none;">
                 <i class="fas fa-check-circle me-2"></i> Dia Finalizado!
             </button>
             <?php endif; ?>
-        </form>
+        </div>
 
         <!-- Footer Info -->
         <div class="pf-footer-info">

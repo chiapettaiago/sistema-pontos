@@ -9,11 +9,6 @@ require_once '../../config/config.php';
 $database = new Database();
 $db = $database->getConnection();
 
-// Buscar configurações
-$query = "SELECT valor FROM configuracoes WHERE chave = 'biometrico_tipo'";
-$stmt = $db->query($query);
-$biometrico_tipo = $stmt->fetch()['valor'] ?? 'ambos';
-
 $mensagem = '';
 $tipo_mensagem = '';
 ?>
@@ -256,37 +251,23 @@ video {
         </div>
         <div class="biometrico-title">Registro Biométrico</div>
         <div class="biometrico-subtitle">
-            Escolha a forma de identificação para registrar o ponto
+            Confirme sua identidade pelo reconhecimento facial para registrar o ponto
         </div>
 
         <div class="biometrico-note">
-            <strong>Pronto para produção:</strong> a tela tenta usar a webcam local primeiro e, se necessário, faz fallback para a CDN.
-            Se a câmera ou a rede falharem, você ainda pode usar a opção digital simulada para testar o fluxo.
+            <strong>Registro protegido:</strong> não é permitido registrar o ponto manualmente. A marcação só será gravada após a validação da face cadastrada.
         </div>
         <div class="biometrico-note">
             <strong>Uso no celular:</strong> se a câmera não abrir, use HTTPS ou abra a tela em <code>localhost</code>. Quando o rosto ficar estável, o sistema tenta registrar sozinho.
         </div>
         
-        <div class="biometrico-note" id="offlineStatusBox">
-            <strong>PendÃªncias offline:</strong> <span id="offlineQueueCount">0</span> registro(s) aguardando sincronizaÃ§Ã£o.
-            <button type="button" id="syncOfflineBtn" class="back-action" style="margin-top:10px;">Sincronizar agora</button>
-        </div>
-
         <?php if ($mensagem): ?>
             <div class="alert alert-<?php echo $tipo_mensagem; ?>"><?php echo $mensagem; ?></div>
         <?php endif; ?>
         
-        <?php if ($biometrico_tipo == 'digital' || $biometrico_tipo == 'ambos'): ?>
-        <button type="button" class="btn-biometrico btn-digital" id="btnDigital" data-tipo="<?php echo htmlspecialchars($proximo_tipo); ?>">
-            <i class="fas fa-fingerprint"></i> Registrar com Digital
-        </button>
-        <?php endif; ?>
-        
-        <?php if ($biometrico_tipo == 'facial' || $biometrico_tipo == 'ambos'): ?>
         <button type="button" class="btn-biometrico btn-facial" id="btnFacial">
             <i class="fas fa-face-smile"></i> Registrar com Reconhecimento Facial
         </button>
-        <?php endif; ?>
     </div>
 </div>
 
@@ -308,7 +289,7 @@ video {
         <div id="facialStatus" class="facial-status info">
             <i class="fas fa-info-circle"></i> Aguardando detecção...
         </div>
-        <a href="../../login.php" class="back-action"><i class="fas fa-arrow-left"></i> Voltar ao login</a>
+        <a href="<?php echo htmlspecialchars(BASE_URL . '/modules/ponto/ponto'); ?>" class="back-action"><i class="fas fa-arrow-left"></i> Voltar</a>
         
         <div class="modal-buttons">
             <button id="capturarFace" class="btn-confirmar">
@@ -321,7 +302,7 @@ video {
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script src="<?php echo htmlspecialchars(BASE_URL . '/assets/js/face-api.min.js'); ?>"></script>
 <script>
 // ============================================
 // VARIÁVEIS
@@ -333,18 +314,15 @@ let detectionInterval = null;
 let currentDetection = null;
 let stableDetections = 0;
 let autoRegistering = false;
-const OFFLINE_QUEUE_KEY = 'ponto_empresarial_offline_queue';
+const appBaseUrl = <?php echo json_encode(BASE_URL, JSON_UNESCAPED_SLASHES); ?>;
 
 // Elementos DOM
 const facialModal = document.getElementById('facialModal');
 const btnFacial = document.getElementById('btnFacial');
-const btnDigital = document.getElementById('btnDigital');
 const fecharFacial = document.getElementById('fecharFacial');
 const capturarFace = document.getElementById('capturarFace');
 const facialStatus = document.getElementById('facialStatus');
 const facialStatusMsg = document.getElementById('facialStatusMsg');
-const offlineQueueCount = document.getElementById('offlineQueueCount');
-const syncOfflineBtn = document.getElementById('syncOfflineBtn');
 
 // ============================================
 // FUNÇÕES DE UI
@@ -354,71 +332,10 @@ function updateFacialStatus(message, type = 'info') {
     facialStatus.className = `facial-status ${type}`;
 }
 
-function getOfflineQueue() {
-    try {
-        return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]');
-    } catch (e) {
-        return [];
-    }
-}
-
-function saveOfflineQueue(queue) {
-    localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queue));
-}
-
-function refreshOfflineCounter() {
-    const queue = getOfflineQueue();
-    if (offlineQueueCount) {
-        offlineQueueCount.textContent = queue.length;
-    }
-    if (syncOfflineBtn) {
-        syncOfflineBtn.disabled = queue.length === 0;
-        syncOfflineBtn.textContent = queue.length === 0 ? 'Sem pendências' : 'Sincronizar agora';
-    }
-}
-
-function addOfflinePoint(ponto) {
-    const queue = getOfflineQueue();
-    queue.push({
-        offline_id: 'offline_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
-        ...ponto
-    });
-    saveOfflineQueue(queue);
-    refreshOfflineCounter();
-}
-
-async function syncOfflinePoints() {
-    const queue = getOfflineQueue();
-    if (!queue.length) return;
-
-    try {
-        const response = await fetch('/api/sincronizar.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ pontos: queue })
-        });
-
-        const result = await response.json();
-        if (result.success) {
-            saveOfflineQueue([]);
-            refreshOfflineCounter();
-            updateFacialStatus(`✅ ${result.processados} ponto(s) offline sincronizado(s).`, 'success');
-        }
-    } catch (err) {
-        console.warn('Sincronizacao offline ainda nao disponivel:', err);
-    }
-}
-
-if (syncOfflineBtn) {
-    syncOfflineBtn.addEventListener('click', syncOfflinePoints);
-}
-
 function getFaceModelSources() {
     const sources = [];
     const localCandidates = [
-        '/assets/models',
-        '../../assets/models'
+        appBaseUrl + '/assets/models'
     ];
 
     localCandidates.forEach((source) => {
@@ -455,7 +372,7 @@ async function loadFaceModels() {
     }
 
     updateFacialStatus(
-        '⚠️ Não foi possível carregar o reconhecimento facial agora. Você pode tentar novamente ou usar a digital simulada.',
+        '⚠️ Não foi possível carregar o reconhecimento facial agora. Tente novamente em instantes.',
         'error'
     );
     console.error('Erro ao carregar modelos:', lastError);
@@ -495,8 +412,6 @@ async function startWebcam() {
         
         updateFacialStatus('✅ Câmera ativada! Aguardando detecção facial...', 'success');
         startDetection();
-        syncOfflinePoints();
-        
     } catch (err) {
         let errorMsg = '';
         if (err.name === 'NotAllowedError') {
@@ -509,7 +424,7 @@ async function startWebcam() {
             errorMsg = err.message;
         }
         updateFacialStatus(
-            '❌ ' + errorMsg + ' Se preferir, feche esta janela e use a opção digital simulada.',
+            '❌ ' + errorMsg,
             'error'
         );
         console.error('Erro ao acessar câmera:', err);
@@ -592,7 +507,7 @@ async function registrarPontoPorFace(auto = false) {
     capturarFace.innerHTML = '<span class="loading"></span> Processando...';
     
     try {
-        const response = await fetch('/api/biometrico.php', {
+        const response = await fetch(appBaseUrl + '/api/biometrico.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -615,19 +530,6 @@ async function registrarPontoPorFace(auto = false) {
                 window.location.reload();
             }, 1500);
         } else {
-            if (!navigator.onLine || /NETWORK|Failed to fetch|fetch/i.test(result.error || '')) {
-                addOfflinePoint({
-                    tipo: tipoPonto,
-                    data_hora: new Date().toISOString(),
-                    origem: 'offline_facial'
-                });
-                updateFacialStatus('⚠️ Sem internet no momento. O ponto foi salvo e será sincronizado depois.', 'info');
-                setTimeout(() => {
-                    closeFacialModal();
-                    window.location.reload();
-                }, 1500);
-                return;
-            }
             updateFacialStatus('❌ ' + (result.error || 'Erro ao registrar ponto'), 'error');
             capturarFace.disabled = false;
             capturarFace.innerHTML = '<i class="fas fa-camera"></i> Capturar e Registrar';
@@ -635,68 +537,10 @@ async function registrarPontoPorFace(auto = false) {
         }
     } catch (error) {
         console.error('Erro:', error);
-        addOfflinePoint({
-            tipo: tipoPonto,
-            data_hora: new Date().toISOString(),
-            origem: 'offline_facial'
-        });
-        updateFacialStatus('⚠️ Sem conexão. O ponto foi guardado offline e será enviado quando a internet voltar.', 'info');
-        setTimeout(() => {
-            closeFacialModal();
-            window.location.reload();
-        }, 1500);
+        updateFacialStatus('❌ Não foi possível validar sua face. Verifique a conexão e tente novamente.', 'error');
+        capturarFace.disabled = false;
+        capturarFace.innerHTML = '<i class="fas fa-camera"></i> Capturar e Registrar';
         autoRegistering = false;
-    }
-}
-
-// ============================================
-// REGISTRAR PONTO POR DIGITAL (SIMULADO)
-// ============================================
-async function registrarPontoPorDigital() {
-    if (!confirm('Prepare o leitor biométrico e posicione o dedo para registrar o ponto. Clique OK para continuar.')) {
-        return;
-    }
-    
-    const btn = document.getElementById('btnDigital');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<span class="loading"></span> Aguardando digital...';
-    btn.disabled = true;
-    
-    try {
-        const response = await fetch('/api/biometrico.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ acao: 'registrar_ponto_digital' })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            alert('✅ Ponto registrado com sucesso!\n\nFuncionário: ' + (result.funcionario || 'Desconhecido'));
-            window.location.reload();
-        } else {
-            if (!navigator.onLine || /NETWORK|Failed to fetch|fetch/i.test(result.error || '')) {
-                addOfflinePoint({
-                    tipo: btn.dataset.tipo || 'entrada',
-                    data_hora: new Date().toISOString(),
-                    origem: 'offline_digital'
-                });
-                alert('Sem internet no momento. O ponto digital foi salvo offline e será sincronizado depois.');
-                window.location.reload();
-                return;
-            }
-            alert('❌ ' + (result.error || 'Erro ao registrar ponto'));
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }
-    } catch (error) {
-        addOfflinePoint({
-            tipo: btn.dataset.tipo || 'entrada',
-            data_hora: new Date().toISOString(),
-            origem: 'offline_digital'
-        });
-        alert('Sem conexão. O ponto digital foi guardado offline e será sincronizado depois.');
-        window.location.reload();
     }
 }
 
@@ -727,10 +571,6 @@ if (btnFacial) {
     btnFacial.addEventListener('click', openFacialModal);
 }
 
-if (btnDigital) {
-    btnDigital.addEventListener('click', registrarPontoPorDigital);
-}
-
 if (fecharFacial) {
     fecharFacial.addEventListener('click', closeFacialModal);
 }
@@ -742,9 +582,6 @@ if (capturarFace) {
 if (facialStatusMsg) {
     facialStatusMsg.innerHTML = 'Posicione o rosto no círculo';
 }
-refreshOfflineCounter();
-
-window.addEventListener('online', syncOfflinePoints);
 
 // Fechar modal ao clicar fora
 window.onclick = function(event) {
@@ -755,4 +592,3 @@ window.onclick = function(event) {
 </script>
 
 <?php require_once '../../includes/footer.php'; ?>
-
