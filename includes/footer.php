@@ -35,7 +35,10 @@
             var dateEl = document.getElementById('pfDate');
             var timeEl = document.getElementById('pfTime');
             if (dateEl) dateEl.textContent = now.toLocaleDateString('pt-BR', { weekday:'short', day:'2-digit', month:'short' });
-            if (timeEl) timeEl.textContent = now.toLocaleTimeString('pt-BR');
+            if (timeEl) timeEl.textContent = now.toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
         }
         tick();
         setInterval(tick, 1000);
@@ -46,6 +49,44 @@
         var tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         tooltips.forEach(function (el) { new bootstrap.Tooltip(el); });
     });
+
+    // Evita repetir no conteúdo o mesmo título que já aparece na navbar.
+    (function () {
+        var navbarTitle = document.querySelector('.pf-topbar-title');
+        var content = document.querySelector('.pf-content');
+        if (!navbarTitle || !content) return;
+
+        function normalizeTitle(value) {
+            return (value || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .replace(/\b(da|das|de|do|dos)\b/g, ' ')
+                .replace(/[^a-z0-9]+/g, ' ')
+                .trim()
+                .replace(/\s+/g, ' ');
+        }
+
+        var expected = normalizeTitle(navbarTitle.textContent);
+        var candidates = content.querySelectorAll([
+            '.pf-page-header h1',
+            '.pf-page-header h2',
+            '.module-header .module-title > h1',
+            '.module-header .module-title > h2',
+            '.module-header > h1',
+            '.module-header > h2',
+            '.dashboard-header h1',
+            '.dashboard-header h2'
+        ].join(','));
+
+        candidates.forEach(function (title) {
+            var isStandardPageHeader = title.closest('.pf-page-header') !== null;
+            if (isStandardPageHeader || normalizeTitle(title.textContent) === expected) {
+                title.classList.add('pf-redundant-page-title');
+                title.setAttribute('aria-hidden', 'true');
+            }
+        });
+    })();
     </script>
 </body>
 </html>

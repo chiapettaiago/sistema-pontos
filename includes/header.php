@@ -20,6 +20,24 @@ $topRoles = [
 ];
 $topUserRole = $topRoles[$topUserType] ?? ucfirst($topUserType);
 $topFuncionarioId = (int) ($_SESSION['funcionario_id'] ?? 0);
+$topUserPhotoUrl = null;
+
+if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
+    try {
+        $photoStmt = $db->prepare('SELECT foto FROM funcionarios WHERE id = :id LIMIT 1');
+        $photoStmt->execute([':id' => $topFuncionarioId]);
+        $photoPath = ltrim((string) $photoStmt->fetchColumn(), '/');
+        $photoRoot = realpath(__DIR__ . '/../uploads/funcionarios');
+        $photoFile = $photoPath !== '' ? realpath(__DIR__ . '/../' . $photoPath) : false;
+
+        if ($photoRoot && $photoFile && str_starts_with($photoFile, $photoRoot . DIRECTORY_SEPARATOR)) {
+            $encodedPhotoPath = implode('/', array_map('rawurlencode', explode('/', $photoPath)));
+            $topUserPhotoUrl = $baseUrl . '/' . $encodedPhotoPath;
+        }
+    } catch (Throwable $e) {
+        error_log('Não foi possível carregar a foto da navbar: ' . $e->getMessage());
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -93,7 +111,13 @@ $topFuncionarioId = (int) ($_SESSION['funcionario_id'] ?? 0);
 
                 <div class="dropdown pf-topbar-user">
                     <button class="pf-topbar-user-trigger" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Abrir menu do usuário">
-                        <span class="pf-topbar-avatar"><i class="fas fa-user"></i></span>
+                        <span class="pf-topbar-avatar">
+                            <?php if ($topUserPhotoUrl): ?>
+                            <img src="<?php echo htmlspecialchars($topUserPhotoUrl, ENT_QUOTES, 'UTF-8'); ?>" alt="Foto de <?php echo htmlspecialchars($topUserName, ENT_QUOTES, 'UTF-8'); ?>">
+                            <?php else: ?>
+                            <i class="fas fa-user" aria-hidden="true"></i>
+                            <?php endif; ?>
+                        </span>
                         <span class="pf-topbar-user-copy d-none d-lg-flex">
                             <strong><?php echo htmlspecialchars($topUserName); ?></strong>
                             <small><?php echo htmlspecialchars($topUserRole); ?></small>

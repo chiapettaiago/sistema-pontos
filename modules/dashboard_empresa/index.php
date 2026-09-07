@@ -124,13 +124,7 @@ if ($assinatura && $assinatura['data_fim']) {
     }
 }
 ?>
-<!-- PAGE HEADER -->
-<div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
-    <div>
-        <h1><i class="fas fa-chart-line me-2 text-primary"></i>Dashboard da Empresa</h1>
-        <p class="text-muted">Visão geral das atividades de <?php echo htmlspecialchars($empresa['nome'] ?? ''); ?></p>
-    </div>
-</div>
+<p class="text-muted mb-3">Visão geral das atividades de <?php echo htmlspecialchars($empresa['nome'] ?? ''); ?></p>
 
 <!-- STAT CARDS -->
 <div class="row g-3 mb-4">
@@ -376,4 +370,3 @@ if (ctxTipo) {
 </script>
 
 <?php require_once '../../includes/footer.php'; ?>
-

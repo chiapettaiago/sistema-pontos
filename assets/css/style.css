@@ -496,6 +496,15 @@ small.text-muted,
     background: var(--pf-gradient);
     color: #fff;
     flex: 0 0 auto;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--pf-primary) 55%, transparent);
+}
+.pf-topbar-avatar img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
 }
 .pf-topbar-user-copy {
     flex-direction: column;
@@ -574,6 +583,15 @@ small.text-muted,
 }
 
 .pf-page-header { margin-bottom: 1.5rem; }
+.pf-redundant-page-title {
+    display: none !important;
+}
+
+.pf-page-header:has(> .pf-redundant-page-title):not(:has(p)):not(:has(a)):not(:has(button)),
+.module-title:has(> .pf-redundant-page-title):not(:has(p)),
+.dashboard-header > div:has(> .pf-redundant-page-title):not(:has(.empresa-nome)):not(:has(p)) {
+    display: none !important;
+}
 .pf-page-header h1 {
     font-size: 1.5rem;
     font-weight: 700;
