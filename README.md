@@ -13,7 +13,7 @@ Aplicação web em PHP para controle de ponto, gestão de funcionários, relató
 
 ## Requisitos
 
-- Apache com `mod_rewrite` habilitado.
+- Apache com `mod_rewrite` ou Nginx com PHP-FPM.
 - PHP 8.1+ com PDO MySQL.
 - MySQL/MariaDB 10.6+.
 - Navegador recente com acesso à câmera para o reconhecimento facial.
@@ -97,7 +97,33 @@ Para a câmera funcionar, use `localhost` durante o desenvolvimento ou HTTPS em 
 | `/modules/funcionarios/cadastro_facial?id={id}` | Cadastro da biometria facial. |
 | `/logout` | Encerra a sessão. |
 
-URLs antigas com `.php` são redirecionadas para a rota correspondente sem extensão quando acessadas pelo navegador.
+As URLs com e sem `.php` são aceitas. A navegação interna usa `.php` como
+fallback confiável, inclusive quando as regras de URL amigável não estão
+habilitadas no servidor.
+
+## Nginx
+
+O arquivo [`deploy/nginx.conf.example`](deploy/nginx.conf.example) contém a
+configuração completa para executar a aplicação na raiz de um domínio. Ele:
+
+- resolve uma rota como `/modules/usuarios` somente quando o arquivo
+  `/modules/usuarios.php` existe;
+- aceita simultaneamente URLs com `.php` e rotas amigáveis sem extensão;
+- preserva requisições `POST` diretamente no script PHP;
+- impede a execução de PHP em `uploads` e bloqueia arquivos ocultos e backups
+  SQL.
+
+Copie o bloco `server` para o arquivo do site. Ajuste `server_name`, `root` e `fastcgi_pass`,
+então valide e recarregue:
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Se a aplicação estiver em uma subpasta, prefira definir o `root` desse
+`server` diretamente para a pasta do projeto e publicar a aplicação em um
+subdomínio. Isso mantém as rotas e os caminhos de arquivos consistentes.
 
 ## Estrutura resumida
 
@@ -119,7 +145,8 @@ uploads/    Fotos de funcionários e capturas
 | Erro 500 | Consulte o log do PHP-FPM/Apache e confirme se o Apache lê o `.env`. |
 | Foto não salva | Verifique permissão de escrita do Apache em `uploads/funcionarios`. |
 | Tela facial não inicia | Confirme acesso à câmera, arquivos em `assets/models` e use `Ctrl+F5`. |
-| Rota retorna 404 | Acesse pela URL com o prefixo `/sistema-pontos`. |
+| Rota retorna 404 no Apache | Confirme `AllowOverride All` e `mod_rewrite`; URLs `.php` continuam disponíveis como fallback. |
+| Rota retorna 404 no Nginx | Instale `deploy/nginx.conf.example`, confira `root` e valide com `nginx -t`. |
 
 ## Segurança
 

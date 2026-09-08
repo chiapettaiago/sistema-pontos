@@ -362,7 +362,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($abrir_facial_pos_salvar && !empty($foto_path)) {
                 $_SESSION['mensagem_biometria'] = 'Foto atualizada com sucesso. Agora vamos cadastrar/atualizar a biometria facial.';
-                $redirectAfterSave = rtrim(BASE_URL, '/') . '/modules/funcionarios/cadastro_facial?id=' . $id;
+                $redirectAfterSave = rtrim(BASE_URL, '/') . '/modules/funcionarios/cadastro_facial.php?id=' . $id;
             }
             
             $success = 'Funcionário atualizado com sucesso!';

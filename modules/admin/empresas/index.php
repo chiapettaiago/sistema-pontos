@@ -263,7 +263,7 @@ $empresas = $stmt->fetchAll();
         </div>
         <div class="empresa-detalhe">
             <span class="empresa-detalhe-label">Domínio</span>
-            <span class="empresa-detalhe-valor"><?php echo htmlspecialchars($empresa['dominio']); ?>.pontofacil.com</span>
+            <span class="empresa-detalhe-valor"><?php echo htmlspecialchars((string) ($empresa['dominio'] ?? '')); ?>.pontofacil.com</span>
         </div>
     </div>
 </div>
@@ -301,4 +301,3 @@ document.addEventListener('click', function(event) {
 </script>
 
 <?php require_once '../../../includes/footer.php'; ?>
-

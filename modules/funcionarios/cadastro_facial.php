@@ -28,7 +28,7 @@ require_once __DIR__ . '/../../includes/facial_recognition.php';
 
 // A aplicação pode estar instalada em um subdiretório (ex.: /sistema-pontos).
 // Nunca use uma URL iniciada em / aqui, pois ela descartaria esse prefixo.
-$urlVisualizacao = rtrim(BASE_URL, '/') . '/modules/funcionarios/visualizar?id=' . $funcionario_id;
+$urlVisualizacao = rtrim(BASE_URL, '/') . '/modules/funcionarios/visualizar.php?id=' . $funcionario_id;
 
 if ($funcionario_id <= 0) {
     $_SESSION['error'] = 'ID do funcionário inválido.';

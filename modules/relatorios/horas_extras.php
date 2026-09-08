@@ -327,7 +327,7 @@ function formatarHorasExtras($horas) {
             <p><?php echo $titulo_periodo; ?></p>
         </div>
         <div class="module-actions">
-            <a href="exportar_horas_extras.php?periodo=<?php echo $periodo; ?>&data_referencia=<?php echo $data_referencia; ?>&funcionario_id=<?php echo $funcionario_id; ?>&ano=<?php echo $ano; ?>&mes=<?php echo $mes; ?>&semana=<?php echo $semana; ?>" class="btn-exportar btn-excel">
+            <a href="#" onclick="exportarTabelasCsv('relatorio_horas_extras.csv'); return false;" class="btn-exportar btn-excel">
                 <i class="fas fa-file-excel"></i> Exportar Excel
             </a>
         </div>
@@ -468,6 +468,24 @@ function formatarHorasExtras($horas) {
 </div>
 
 <script>
+function exportarTabelasCsv(nomeArquivo) {
+    const linhas = [];
+    document.querySelectorAll('.data-table').forEach(function (tabela, indice) {
+        if (indice > 0) linhas.push([]);
+        tabela.querySelectorAll('tr').forEach(function (linha) {
+            linhas.push(Array.from(linha.querySelectorAll('th,td')).map(function (celula) {
+                return '"' + celula.innerText.trim().replace(/"/g, '""') + '"';
+            }));
+        });
+    });
+    const blob = new Blob(['\uFEFF' + linhas.map(linha => linha.join(';')).join('\n')], {type: 'text/csv;charset=utf-8'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = nomeArquivo;
+    link.click();
+    URL.revokeObjectURL(link.href);
+}
+
 document.getElementById('periodo')?.addEventListener('change', function() {
     document.getElementById('grupo_data_diario').style.display = 'none';
     document.getElementById('grupo_data_semanal').style.display = 'none';

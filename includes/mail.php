@@ -73,7 +73,7 @@ function enviarAprovacaoSolicitacao($funcionario_email, $funcionario_nome, $soli
                 " . ($observacao ? "<p><strong>Observação do gestor:</strong> {$observacao}</p>" : "") . "
                 <p>Você pode acompanhar o status da sua solicitação acessando o sistema.</p>
                 <br>
-                <a href='http://localhost/' class='button'>Acessar Sistema</a>
+                <a href='" . (defined('SITE_URL') ? SITE_URL : '/') . "' class='button'>Acessar Sistema</a>
             </div>
             <div class='footer'>
                 <p>Este é um e-mail automático, por favor não responda.</p>
@@ -119,7 +119,7 @@ function enviarRejeicaoSolicitacao($funcionario_email, $funcionario_nome, $solic
                 </div>
                 <p>Entre em contato com seu gestor para mais informações.</p>
                 <br>
-                <a href='http://localhost/' class='button'>Acessar Sistema</a>
+                <a href='" . (defined('SITE_URL') ? SITE_URL : '/') . "' class='button'>Acessar Sistema</a>
             </div>
             <div class='footer'>
                 <p>Este é um e-mail automático, por favor não responda.</p>
@@ -164,7 +164,7 @@ function enviarLembretePonto($funcionario_email, $funcionario_nome, $horario) {
                 </div>
                 <p>Registre sua entrada ou saída para manter sua frequência em dia.</p>
                 <br>
-                <a href='http://localhost/modules/ponto/registrar.php' class='button'>Registrar Ponto Agora</a>
+                <a href='" . (defined('SITE_URL') ? SITE_URL : '') . "/modules/ponto/ponto.php' class='button'>Registrar Ponto Agora</a>
             </div>
             <div class='footer'>
                 <p>Este é um e-mail automático, por favor não responda.</p>
@@ -212,7 +212,7 @@ function enviarAlertaAtraso($funcionario_email, $funcionario_nome, $data, $horar
                 </div>
                 <p>Lembre-se de justificar o atraso no sistema.</p>
                 <br>
-                <a href='http://localhost/modules/ponto/justificar.php' class='button'>Justificar Atraso</a>
+                <a href='" . (defined('SITE_URL') ? SITE_URL : '') . "/modules/solicitacoes/nova.php' class='button'>Justificar Atraso</a>
             </div>
             <div class='footer'>
                 <p>Este é um e-mail automático, por favor não responda.</p>

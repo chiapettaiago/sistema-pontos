@@ -206,7 +206,7 @@ $assinaturas_vencer = $stmt->fetchAll();
                             </span>
                         </td>
                         <td class="text-end">
-                            <a href="assinaturas/renovar.php?id=<?php echo $a['id']; ?>" class="btn btn-sm btn-warning">
+                            <a href="assinaturas/index.php?renovar=<?php echo $a['id']; ?>" class="btn btn-sm btn-warning">
                                 <i class="fas fa-sync-alt"></i> Renovar
                             </a>
                         </td>
@@ -280,4 +280,3 @@ new Chart(ctx, {
 </script>
 
 <?php require_once '../../includes/footer.php'; ?>
-

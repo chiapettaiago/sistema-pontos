@@ -219,7 +219,7 @@ if ($is_admin) {
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-send"></i> Enviar Solicitação
                             </button>
-                            <a href="/dashboard.php" class="btn btn-secondary">
+                    <a href="../../index.php" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Voltar
                             </a>
                         </div>

@@ -6,9 +6,7 @@ if (!isset($skipAuth) || !$skipAuth) {
     redirectIfNotLoggedIn();
 }
 
-$_base_dir = str_replace('\\', '/', dirname(__DIR__));
-$_doc_root  = str_replace('\\', '/', rtrim($_SERVER['DOCUMENT_ROOT'], '/\\'));
-$baseUrl    = rtrim(str_replace($_doc_root, '', $_base_dir), '/');
+$baseUrl = rtrim(defined('BASE_URL') ? BASE_URL : appBasePath(), '/');
 $topUserName = $_SESSION['usuario_nome'] ?? 'Usuário';
 $topUserType = $_SESSION['usuario_tipo'] ?? 'funcionario';
 $topRoles = [

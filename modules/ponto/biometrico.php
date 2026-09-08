@@ -343,7 +343,7 @@ video {
         <div id="facialStatus" class="facial-status info">
             <i class="fas fa-info-circle"></i> Aguardando detecção...
         </div>
-        <a href="<?php echo htmlspecialchars(BASE_URL . '/modules/ponto/ponto'); ?>" class="back-action"><i class="fas fa-arrow-left"></i> Voltar</a>
+        <a href="<?php echo htmlspecialchars(BASE_URL . '/modules/ponto/ponto.php'); ?>" class="back-action"><i class="fas fa-arrow-left"></i> Voltar</a>
         
         <div class="modal-buttons">
             <button id="capturarFace" class="btn-confirmar">

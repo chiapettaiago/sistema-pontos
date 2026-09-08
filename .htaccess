@@ -1,15 +1,8 @@
 Options -Indexes -MultiViews
 RewriteEngine On
-RewriteBase /sistema-pontos/
 
 # Compatibilidade com navegadores que solicitam favicon.ico automaticamente.
 RewriteRule ^favicon\.ico$ assets/favicon.svg [END]
-
-# URLs PHP antigas acessadas pelo navegador passam a usar a rota sem extensão.
-# POSTs não são redirecionados para preservar formulários e endpoints de API.
-RewriteCond %{REQUEST_METHOD} ^(?:GET|HEAD)$ [NC]
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.php(?:[?\s]) [NC]
-RewriteRule ^(.+)\.php$ $1 [R=302,L,NE]
 
 # Página inicial.
 RewriteRule ^$ index.php [END]

@@ -44,9 +44,7 @@ define('TIMEZONE', 'America/Sao_Paulo');
 // BASE_URL: caminho da aplicacao a partir da raiz do servidor web.
 // Calculado automaticamente — funciona em localhost/subpasta e em producao.
 if (!defined('BASE_URL')) {
-    $_cfg_dir = str_replace('\\', '/', dirname(__DIR__));
-    $_cfg_root = str_replace('\\', '/', rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/\\'));
-    define('BASE_URL', rtrim(str_replace($_cfg_root, '', $_cfg_dir), '/'));
+    define('BASE_URL', appBasePath());
 }
 
 define('SESSION_TIMEOUT', 7200);

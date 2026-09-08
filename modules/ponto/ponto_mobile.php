@@ -283,7 +283,7 @@ session_start();
             }
             
             try {
-                const response = await fetch('api_ponto_mobile.php', {
+                const response = await fetch('api_ponto_mobileA.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

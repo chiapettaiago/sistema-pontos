@@ -368,9 +368,6 @@ $stats = $stmt->fetchAll();
                                     <a href="editar.php?id=<?php echo $escala['id']; ?>" class="btn btn-edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="excluir.php?id=<?php echo $escala['id']; ?>" class="btn btn-delete" onclick="return confirm('Tem certeza?')">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
                                     <a href="calendario.php?funcionario=<?php echo $escala['funcionario_id']; ?>" class="btn btn-secondary">
                                         <i class="fas fa-calendar"></i>
                                     </a>

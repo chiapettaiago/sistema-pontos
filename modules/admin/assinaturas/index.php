@@ -285,10 +285,15 @@ function abrirModalRenovar(id) {
     document.getElementById('modalRenovar').style.display = 'flex';
 }
 
+<?php if (isset($_GET['renovar']) && ctype_digit((string) $_GET['renovar'])): ?>
+document.addEventListener('DOMContentLoaded', function () {
+    abrirModalRenovar(<?php echo (int) $_GET['renovar']; ?>);
+});
+<?php endif; ?>
+
 function fecharModal() {
     document.getElementById('modalRenovar').style.display = 'none';
 }
 </script>
 
 <?php require_once '../../../includes/footer.php'; ?>
-

@@ -11,6 +11,28 @@ function appNormalizeUserType(string $tipo): string
     return $tipo === 'admin' ? 'admin_empresa' : $tipo;
 }
 
+function appBasePath(): string
+{
+    $configured = defined('BASE_URL') ? (string) BASE_URL : '';
+    if ($configured !== '') {
+        $path = parse_url($configured, PHP_URL_PATH);
+        return rtrim(is_string($path) ? $path : $configured, '/');
+    }
+
+    $projectRoot = str_replace('\\', '/', dirname(__DIR__));
+    $scriptFile = str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME'] ?? '');
+    $scriptName = parse_url($_SERVER['SCRIPT_NAME'] ?? '', PHP_URL_PATH) ?: '';
+
+    if ($scriptFile !== '' && str_starts_with($scriptFile, $projectRoot)) {
+        $relativeScript = substr($scriptFile, strlen($projectRoot));
+        if ($relativeScript !== '' && str_ends_with($scriptName, $relativeScript)) {
+            return rtrim(substr($scriptName, 0, -strlen($relativeScript)), '/');
+        }
+    }
+
+    return '';
+}
+
 function appHomeRouteFor(string $tipo): string
 {
     $tipo = appNormalizeUserType($tipo);
@@ -67,10 +89,10 @@ function appDestinationAfterLogin(string $tipo): string
 
 function appUrl(string $route): string
 {
-    $cleanRoute = preg_replace('#/index\.php$#', '/', $route);
-    $cleanRoute = preg_replace('#\.php$#', '', $cleanRoute);
-
-    return rtrim(defined('BASE_URL') ? BASE_URL : '', '/') . $cleanRoute;
+    // As URLs com extensao funcionam mesmo quando mod_rewrite/AllowOverride
+    // nao esta habilitado no servidor. Quando o rewrite estiver disponivel,
+    // o .htaccess continua podendo canoniza-las para URLs amigaveis.
+    return appBasePath() . '/' . ltrim($route, '/');
 }
 
 function appRedirectAfterLogin(string $tipo): void
@@ -81,10 +103,7 @@ function appRedirectAfterLogin(string $tipo): void
 
 function appRequestBasePath(): string
 {
-    $projectRoot = str_replace('\\', '/', dirname(__DIR__));
-    $documentRoot = str_replace('\\', '/', rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/\\'));
-
-    return rtrim(str_replace($documentRoot, '', $projectRoot), '/');
+    return appBasePath();
 }
 
 function appCurrentRoute(): string
@@ -126,16 +145,19 @@ function appRouteAllows(string $route, string $userType): bool
 
     $policies = [
         '/modules/admin/' => ['super_admin'],
-        '/modules/usuarios/' => ['super_admin', 'admin_empresa'],
-        '/modules/filiais/' => ['super_admin', 'admin_empresa'],
+        '/modules/dashboard_empresa/' => ['admin_empresa', 'gestor'],
+        '/modules/usuarios/' => ['admin_empresa'],
+        '/modules/filiais/' => ['admin_empresa'],
         '/modules/backup/' => ['super_admin', 'admin_empresa'],
-        '/modules/configuracoes/' => ['super_admin', 'admin_empresa'],
+        '/modules/configuracoes/' => ['admin_empresa'],
         '/modules/auditoria/' => ['super_admin', 'admin_empresa'],
         '/modules/notificacoes/' => ['super_admin', 'admin_empresa'],
-        '/modules/relatorios/' => ['super_admin', 'admin_empresa', 'gestor', 'supervisor'],
-        '/modules/funcionarios/' => ['super_admin', 'admin_empresa', 'gestor', 'supervisor'],
-        '/modules/biometrico/' => ['super_admin', 'admin_empresa', 'gestor'],
-        '/modules/escala/' => ['super_admin', 'admin_empresa', 'gestor'],
+        '/modules/relatorios/' => ['admin_empresa', 'gestor', 'supervisor'],
+        '/modules/funcionarios/' => ['admin_empresa', 'gestor', 'supervisor'],
+        '/modules/biometrico/' => ['admin_empresa', 'gestor', 'supervisor'],
+        '/modules/escala/' => ['admin_empresa', 'gestor'],
+        '/modules/ponto/' => ['admin_empresa', 'gestor', 'supervisor', 'funcionario'],
+        '/modules/solicitacoes/' => ['admin_empresa', 'gestor', 'supervisor', 'funcionario'],
     ];
 
     foreach ($policies as $prefix => $allowedTypes) {
@@ -167,7 +189,7 @@ function appProtectCurrentRoute(): void
 
     if (!$isAuthenticated) {
         appRememberIntendedRoute();
-        header('Location: ' . appRequestBasePath() . '/login');
+        header('Location: ' . appUrl('/login.php'));
         exit;
     }
 

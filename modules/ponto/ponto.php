@@ -366,7 +366,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
         <!-- Action Buttons -->
         <div id="formPonto">
             <?php if ($proximo_tipo !== 'finalizado'): ?>
-            <a class="btn-facial" href="<?php echo htmlspecialchars(BASE_URL . '/modules/ponto/biometrico'); ?>">
+            <a class="btn-facial" href="<?php echo htmlspecialchars(BASE_URL . '/modules/ponto/biometrico.php'); ?>">
                 <i class="fas fa-camera me-2"></i>
                 <?php echo htmlspecialchars($nomes_botao[$proximo_tipo] ?? 'Registrar ponto'); ?> com reconhecimento facial
             </a>

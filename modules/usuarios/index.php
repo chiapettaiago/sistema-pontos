@@ -1,10 +1,16 @@
-<?php
+<?php
 // modules/usuarios/index.php - Gerenciar Usuários do Sistema (CORRIGIDO)
 require_once '../../includes/config.php';
 
-// Verificar se é super admin
-if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_tipo'] ?? '') !== 'super_admin') {
+// Super admin gerencia todos; admin da empresa gerencia apenas sua empresa.
+$usuarioTipoAtual = $_SESSION['usuario_tipo'] ?? '';
+if (!isset($_SESSION['usuario_id']) || !in_array($usuarioTipoAtual, ['super_admin', 'admin_empresa'], true)) {
     header('Location: ' . BASE_URL . '/login.php');
+    exit;
+}
+$empresaAtualId = $_SESSION['empresa_id'] ?? null;
+if ($usuarioTipoAtual === 'admin_empresa' && !$empresaAtualId) {
+    header('Location: ' . appUrl(appHomeRouteFor($usuarioTipoAtual)));
     exit;
 }
 
@@ -27,6 +33,11 @@ $query = "SELECT u.*, e.nome as empresa_nome
 
 $params = [];
 
+if ($usuarioTipoAtual === 'admin_empresa') {
+    $query .= " AND u.empresa_id = :empresa_atual_id";
+    $params[':empresa_atual_id'] = $empresaAtualId;
+}
+
 if ($search) {
     $query .= " AND (u.nome LIKE :search OR u.email LIKE :search)";
     $params[':search'] = "%$search%";
@@ -44,7 +55,13 @@ $stmt->execute($params);
 $usuarios = $stmt->fetchAll();
 
 // Buscar empresas para o select
-$empresas = $db->query("SELECT id, nome FROM empresas ORDER BY nome")->fetchAll();
+if ($usuarioTipoAtual === 'super_admin') {
+    $empresas = $db->query("SELECT id, nome FROM empresas ORDER BY nome")->fetchAll();
+} else {
+    $stmtEmpresas = $db->prepare("SELECT id, nome FROM empresas WHERE id = :id");
+    $stmtEmpresas->execute([':id' => $empresaAtualId]);
+    $empresas = $stmtEmpresas->fetchAll();
+}
 ?>
 <div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
     <div>

@@ -291,6 +291,7 @@ $total_atrasos = array_sum(array_column($funcionarios, 'total_atrasos'));
                         $status = 'Atenção';
                         $status_class = 'atencao';
                     }
+                    ?>
                     <tr>
                         <td><?php echo htmlspecialchars($func['nome']); ?></td>
                         <td><?php echo htmlspecialchars($func['matricula']); ?></td>

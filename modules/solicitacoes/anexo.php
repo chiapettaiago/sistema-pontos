@@ -29,14 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['anexo'])) {
     if (!in_array($extensao, $extensoes_permitidas)) {
         $_SESSION['mensagem'] = 'Tipo de arquivo não permitido';
         $_SESSION['tipo_mensagem'] = 'error';
-        header("Location: visualizar.php?id=$solicitacao_id");
+        header('Location: index.php');
         exit;
     }
     
     if ($file['size'] > 5 * 1024 * 1024) {
         $_SESSION['mensagem'] = 'Arquivo muito grande. Máximo 5MB';
         $_SESSION['tipo_mensagem'] = 'error';
-        header("Location: visualizar.php?id=$solicitacao_id");
+        header('Location: index.php');
         exit;
     }
     
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['anexo'])) {
         $_SESSION['tipo_mensagem'] = 'error';
     }
     
-    header("Location: visualizar.php?id=$solicitacao_id");
+    header('Location: index.php');
     exit;
 }
 ?>
@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['anexo'])) {
             </div>
             <button type="submit" class="btn-upload">Enviar Anexo</button>
         </form>
-        <a href="visualizar.php?id=<?php echo $solicitacao_id; ?>" class="btn-voltar">Voltar</a>
+        <a href="index.php" class="btn-voltar">Voltar</a>
     </div>
     
     <script>

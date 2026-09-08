@@ -401,7 +401,7 @@ if ($assinatura && $assinatura['data_fim']) {
 <div class="table-card">
     <div class="table-header">
         <h3><i class="fas fa-clipboard-list"></i> Últimas Solicitações</h3>
-        <a href="../solicitacoes/admin.php" class="btn btn-sm btn-secondary">Ver todas</a>
+<a href="../../solicitacoes/admin.php" class="btn btn-sm btn-secondary">Ver todas</a>
     </div>
     <div class="table-responsive">
         <table class="data-table">
@@ -493,7 +493,6 @@ if (ctxTipo) {
 </script>
 
 <?php require_once '../../includes/footer.php'; ?>
-
 
 
 

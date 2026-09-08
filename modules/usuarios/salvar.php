@@ -1,11 +1,11 @@
 <?php
 // modules/usuarios/salvar.php - Salvar Usuário (CORRIGIDO)
+require_once '../../includes/config.php';
 require_once '../../config/database.php';
-require_once '../../includes/auth.php';
 
-session_start();
-if ($_SESSION['usuario_tipo'] !== 'super_admin') {
-    header('Location: ' . BASE_URL . '/index.php');
+$usuarioTipoAtual = $_SESSION['usuario_tipo'] ?? '';
+if (!in_array($usuarioTipoAtual, ['super_admin', 'admin_empresa'], true)) {
+    header('Location: ' . appUrl(appHomeRouteFor($usuarioTipoAtual)));
     exit;
 }
 
@@ -17,8 +17,15 @@ $nome = $_POST['nome'] ?? '';
 $email = $_POST['email'] ?? '';
 $senha = $_POST['senha'] ?? '';
 $tipo = $_POST['tipo'] ?? 'gestor';
-$empresa_id = $_POST['empresa_id'] ?? null;
+$empresa_id = $usuarioTipoAtual === 'admin_empresa'
+    ? ($_SESSION['empresa_id'] ?? null)
+    : ($_POST['empresa_id'] ?? null);
 $status = $_POST['status'] ?? 'ativo';
+
+if (!$empresa_id || !in_array($tipo, ['admin_empresa', 'gestor', 'supervisor'], true)) {
+    header('Location: index.php?error=' . urlencode('Empresa ou tipo de usuário inválido'));
+    exit;
+}
 
 if (empty($nome) || empty($email)) {
     header('Location: index.php?error=Campos obrigatórios');
@@ -31,6 +38,15 @@ $check->execute([':email' => $email, ':id' => $id]);
 if ($check->fetch()) {
     header('Location: index.php?error=E-mail já cadastrado');
     exit;
+}
+
+if ($id && $usuarioTipoAtual === 'admin_empresa') {
+    $checkScope = $db->prepare('SELECT id FROM usuarios_sistema WHERE id = :id AND empresa_id = :empresa_id');
+    $checkScope->execute([':id' => $id, ':empresa_id' => $empresa_id]);
+    if (!$checkScope->fetch()) {
+        header('Location: index.php?error=' . urlencode('Usuário não pertence à sua empresa'));
+        exit;
+    }
 }
 
 try {
@@ -101,4 +117,3 @@ try {
 }
 exit;
 ?>
-

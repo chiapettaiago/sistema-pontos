@@ -14,6 +14,28 @@ require_once __DIR__ . '/router.php';
 $database = new Database();
 $db = $database->getConnection();
 
+// Completa sessoes de usuarios administrativos que tambem possuem vinculo
+// funcional. Isso permite usar ponto e solicitacoes sem um segundo login.
+if (isset($_SESSION['usuario_id']) && empty($_SESSION['funcionario_id'])) {
+    try {
+        $stmtVinculo = $db->prepare(
+            "SELECT id, filial_id, empresa_id FROM funcionarios
+             WHERE usuario_sistema_id = :usuario_id AND status = 'ativo'
+             LIMIT 1"
+        );
+        $stmtVinculo->execute([':usuario_id' => $_SESSION['usuario_id']]);
+        $vinculo = $stmtVinculo->fetch();
+        if ($vinculo) {
+            $_SESSION['funcionario_id'] = (int) $vinculo['id'];
+            $_SESSION['filial_id'] = (int) $vinculo['filial_id'];
+            $_SESSION['usuario_filial_id'] = (int) $vinculo['filial_id'];
+            $_SESSION['empresa_id'] = (int) $vinculo['empresa_id'];
+        }
+    } catch (Throwable $e) {
+        error_log('Falha ao carregar vinculo funcional da sessao: ' . $e->getMessage());
+    }
+}
+
 // ============================================
 // FUNÇÕES DE SESSÃO E AUTENTICAÇÃO
 // ============================================

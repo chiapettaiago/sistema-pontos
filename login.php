@@ -13,7 +13,7 @@ $db = $database->getConnection();
 function finalizarLoginSistema(array $u): void {
     session_regenerate_id(true);
     foreach (['id'=>'usuario_id','nome'=>'usuario_nome','email'=>'usuario_email','tipo'=>'usuario_tipo','empresa_id'=>'empresa_id'] as $key => $session) $_SESSION[$session] = $u[$key] ?? null;
-    $_SESSION['empresa_nome'] = $u['empresa_nome'] ?? null; $_SESSION['funcionario_id'] = $u['funcionario_id'] ?? null; $_SESSION['tipo_login'] = 'sistema';
+    $_SESSION['empresa_nome'] = $u['empresa_nome'] ?? null; $_SESSION['funcionario_id'] = $u['funcionario_id'] ?? null; $_SESSION['filial_id'] = $u['funcionario_filial_id'] ?? null; $_SESSION['usuario_filial_id'] = $u['funcionario_filial_id'] ?? null; $_SESSION['tipo_login'] = 'sistema';
     $_SESSION['user_id'] = $u['id']; $_SESSION['user_nome'] = $u['nome']; $_SESSION['user_email'] = $u['email']; $_SESSION['user_tipo'] = $u['tipo'];
 }
 function finalizarLoginFuncionario(array $f): void {
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verifyCSRFToken(); $email=trim($_POST['email'] ?? ''); $senha=$_POST['senha'] ?? '';
     if ($email === '' || $senha === '') $error='Informe e-mail e senha.';
     else try {
-        $stmt=$db->prepare("SELECT u.*, e.nome empresa_nome FROM usuarios_sistema u LEFT JOIN empresas e ON e.id=u.empresa_id WHERE u.email=:email AND u.status='ativo' LIMIT 1"); $stmt->execute([':email'=>$email]); $u=$stmt->fetch();
+        $stmt=$db->prepare("SELECT u.*, e.nome empresa_nome, f.id funcionario_id, f.filial_id funcionario_filial_id FROM usuarios_sistema u LEFT JOIN empresas e ON e.id=u.empresa_id LEFT JOIN funcionarios f ON f.usuario_sistema_id=u.id AND f.status='ativo' WHERE u.email=:email AND u.status='ativo' LIMIT 1"); $stmt->execute([':email'=>$email]); $u=$stmt->fetch();
         if ($u && senhaConfere($senha,$u['senha'])) { finalizarLoginSistema($u); logAcao($db,'LOGIN','usuarios_sistema',$u['id'],"Login realizado: {$u['email']}"); appRedirectAfterLogin($u['tipo']); }
         $stmt=$db->prepare("SELECT f.*, e.nome_empresa empresa_nome FROM funcionarios f LEFT JOIN empresa e ON e.id=f.empresa_id WHERE f.email=:email AND f.status='ativo' LIMIT 1"); $stmt->execute([':email'=>$email]); $f=$stmt->fetch();
         if ($f && senhaConfere($senha,$f['senha'])) { finalizarLoginFuncionario($f); logAcao($db,'LOGIN','funcionarios',$f['id'],"Login funcionario: {$f['email']}"); appRedirectAfterLogin($_SESSION['usuario_tipo']); }

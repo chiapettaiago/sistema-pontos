@@ -6,9 +6,7 @@ $usuario_tipo = $_SESSION['usuario_tipo'] ?? 'funcionario';
 // $baseUrl e calculado no header.php antes de incluir este arquivo
 // Fallback para garantir que nunca sera undefined
 if (!isset($baseUrl)) {
-    $_bd  = str_replace('\\', '/', dirname(__DIR__));
-    $_dr  = str_replace('\\', '/', rtrim($_SERVER['DOCUMENT_ROOT'], '/\\'));
-    $baseUrl = rtrim(str_replace($_dr, '', $_bd), '/');
+    $baseUrl = function_exists('appBasePath') ? appBasePath() : '';
 }
 
 function pfNav(string $href, string $icon, string $label, bool $active, string $badge = ''): string {
@@ -16,12 +14,16 @@ function pfNav(string $href, string $icon, string $label, bool $active, string $
     $bdg    = $badge !== '' ? "<span class=\"pf-nav-badge\">$badge</span>" : '';
     return "<a href=\"$href\" class=\"pf-nav-item$cls\" aria-label=\"$label\" title=\"$label\"><i class=\"fas $icon\"></i><span>$label</span>$bdg</a>";
 }
+
+$homeUrl = function_exists('appUrl')
+    ? appUrl(appHomeRouteFor($usuario_tipo))
+    : $baseUrl . '/index.php';
 ?>
 
 <aside class="pf-sidebar" id="pfSidebar">
     <!-- Logo -->
     <div class="pf-sidebar-header">
-        <a href="<?php echo $baseUrl; ?>/" class="pf-sidebar-logo">
+        <a href="<?php echo htmlspecialchars($homeUrl); ?>" class="pf-sidebar-logo">
             <div class="logo-icon"><i class="fas fa-clock"></i></div>
             <span>PontoFácil</span>
         </a>
@@ -32,7 +34,7 @@ function pfNav(string $href, string $icon, string $label, bool $active, string $
 
         <!-- DASHBOARD (todos exceto funcionario comum) -->
         <?php if ($usuario_tipo !== 'funcionario'): ?>
-        <?php echo pfNav($baseUrl.'/index.php', 'fa-tachometer-alt', 'Dashboard', $activePage === 'dashboard'); ?>
+        <?php echo pfNav($homeUrl, 'fa-tachometer-alt', 'Dashboard', in_array($activePage, ['dashboard', 'admin_dashboard'], true)); ?>
         <?php endif; ?>
 
         <!-- SUPER ADMIN -->
@@ -52,43 +54,44 @@ function pfNav(string $href, string $icon, string $label, bool $active, string $
         <?php endif; ?>
 
         <!-- EMPRESA -->
-        <?php if ($usuario_tipo !== 'funcionario'): ?>
+        <?php if ($usuario_tipo !== 'funcionario' && $usuario_tipo !== 'super_admin'): ?>
         <div class="pf-nav-divider"></div>
         <div class="pf-nav-section"><i class="fas fa-building"></i><span>Empresa</span></div>
         <?php endif; ?>
 
-        <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
+        <?php if ($usuario_tipo === 'admin_empresa'): ?>
         <?php echo pfNav($baseUrl.'/modules/usuarios/index.php', 'fa-user-shield', 'Usuários', $activePage === 'usuarios'); ?>
         <?php endif; ?>
 
-        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor'])): ?>
+        <?php if (in_array($usuario_tipo, ['admin_empresa','gestor'])): ?>
         <?php echo pfNav($baseUrl.'/modules/funcionarios/index.php', 'fa-users', 'Funcionários', $activePage === 'funcionarios'); ?>
         <?php endif; ?>
 
-        <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
+        <?php if ($usuario_tipo === 'admin_empresa'): ?>
         <?php echo pfNav($baseUrl.'/modules/filiais/index.php', 'fa-store', 'Filiais', $activePage === 'filiais'); ?>
         <?php endif; ?>
 
         <!-- PONTO -->
+        <?php if ($usuario_tipo !== 'super_admin'): ?>
         <div class="pf-nav-divider"></div>
         <div class="pf-nav-section"><i class="fas fa-fingerprint"></i><span>Ponto</span></div>
         <?php echo pfNav($baseUrl.'/modules/ponto/ponto.php', 'fa-clock', 'Registrar Ponto', $activePage === 'ponto'); ?>
         <?php echo pfNav($baseUrl.'/modules/ponto/extrato.php', 'fa-list-alt', 'Meu Extrato', $activePage === 'extrato'); ?>
 
-        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor','supervisor'])): ?>
+        <?php if (in_array($usuario_tipo, ['admin_empresa','gestor','supervisor'])): ?>
         <?php echo pfNav($baseUrl.'/modules/ponto/autorizar_gerente.php', 'fa-user-check', 'Autorizar Ponto', $activePage === 'autorizar'); ?>
+        <?php endif; ?>
         <?php endif; ?>
 
         <!-- BIOMETRIA -->
-        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor','supervisor'])): ?>
+        <?php if (in_array($usuario_tipo, ['admin_empresa','gestor','supervisor'])): ?>
         <div class="pf-nav-divider"></div>
         <div class="pf-nav-section"><i class="fas fa-fingerprint"></i><span>Biometria</span></div>
-        <?php echo pfNav($baseUrl.'/modules/funcionarios/cadastro_facial.php', 'fa-camera', 'Cad. Facial', $activePage === 'cadastro_facial'); ?>
         <?php echo pfNav($baseUrl.'/modules/biometrico/index.php', 'fa-id-card', 'Biométrico', $activePage === 'biometrico'); ?>
         <?php endif; ?>
 
         <!-- ESCALAS -->
-        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor'])): ?>
+        <?php if (in_array($usuario_tipo, ['admin_empresa','gestor'])): ?>
         <div class="pf-nav-divider"></div>
         <div class="pf-nav-section"><i class="fas fa-calendar-alt"></i><span>Escalas</span></div>
         <?php echo pfNav($baseUrl.'/modules/escala/index.php', 'fa-calendar-week', 'Escalas', $activePage === 'escala'); ?>
@@ -96,17 +99,20 @@ function pfNav(string $href, string $icon, string $label, bool $active, string $
         <?php endif; ?>
 
         <!-- SOLICITAÇÕES -->
+        <?php if (!empty($_SESSION['funcionario_id'])): ?>
         <div class="pf-nav-divider"></div>
         <div class="pf-nav-section"><i class="fas fa-paper-plane"></i><span>Solicitações</span></div>
         <?php echo pfNav($baseUrl.'/modules/solicitacoes/index.php', 'fa-envelope-open-text', 'Minhas Solicitações', $activePage === 'solicitacoes'); ?>
         <?php echo pfNav($baseUrl.'/modules/solicitacoes/nova.php', 'fa-plus-circle', 'Nova Solicitação', $activePage === 'nova_solicitacao'); ?>
+        <?php endif; ?>
 
-        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor','supervisor'])): ?>
+        <?php if (in_array($usuario_tipo, ['admin_empresa','gestor'], true)): ?>
+        <?php if (empty($_SESSION['funcionario_id'])): ?><div class="pf-nav-divider"></div><?php endif; ?>
         <?php echo pfNav($baseUrl.'/modules/solicitacoes/admin.php', 'fa-clipboard-check', 'Gerenciar Solicitações', $activePage === 'solicitacoes_admin'); ?>
         <?php endif; ?>
 
         <!-- RELATÓRIOS -->
-        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor'])): ?>
+        <?php if (in_array($usuario_tipo, ['admin_empresa','gestor'])): ?>
         <div class="pf-nav-divider"></div>
         <div class="pf-nav-section"><i class="fas fa-chart-bar"></i><span>Relatórios</span></div>
         <?php echo pfNav($baseUrl.'/modules/relatorios/index.php', 'fa-file-alt', 'Relatórios', $activePage === 'relatorios'); ?>

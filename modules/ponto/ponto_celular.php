@@ -516,7 +516,7 @@ session_start();
             loading.style.display = 'block';
             
             try {
-                const response = await fetch('api_registrar_ponto_celular.php', {
+                const response = await fetch('registrar_ponto_celular.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -586,7 +586,7 @@ session_start();
         // Verificar autorização do gerente
         async function verificarAutorizacao(token) {
             const checkInterval = setInterval(async () => {
-                const response = await fetch('verificar_autorizacao.php?token=' + token);
+                const response = await fetch('api_verificar_autorizacao.php?token=' + encodeURIComponent(token));
                 const result = await response.json();
                 
                 if (result.autorizado) {
