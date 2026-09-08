@@ -1,12 +1,14 @@
 <?php
-// modules/biometrico/cadastrar.php - Cadastro Biométrico
-$pageTitle = 'Cadastro Biométrico';
-$activePage = 'biometrico_cadastro';
+// modules/biometrico/cadastrar.php - Seleção de funcionário para cadastro biométrico
+$tipoCadastro = ($_GET['tipo'] ?? 'facial') === 'digital' ? 'digital' : 'facial';
+$pageTitle = $tipoCadastro === 'digital' ? 'Cadastrar digital' : 'Cadastrar facial';
+$activePage = $tipoCadastro === 'digital' ? 'biometrico_digital' : 'biometrico_facial';
+require_once '../../includes/auth_check.php';
 require_once '../../includes/header.php';
 require_once '../../config/database.php';
 require_once '../../config/multi_empresa.php';
 
-checkModuleAccess('funcionarios');
+requireAdmin();
 
 $database = new Database();
 $db = $database->getConnection();
@@ -131,8 +133,8 @@ $funcionarios = $stmt->fetchAll();
 
 <div class="module-header">
     <div class="module-title">
-        <h2><i class="fas fa-fingerprint"></i> Cadastro Biométrico</h2>
-        <p>Registre a face dos funcionários para reconhecimento facial</p>
+        <h2><i class="fas <?= $tipoCadastro === 'digital' ? 'fa-fingerprint' : 'fa-face-smile' ?>"></i> <?= $tipoCadastro === 'digital' ? 'Cadastrar digital' : 'Cadastrar facial' ?></h2>
+        <p>Escolha o funcionário que terá a <?= $tipoCadastro === 'digital' ? 'digital' : 'face' ?> cadastrada</p>
     </div>
     <div class="module-actions">
         <a href="index.php" class="btn btn-secondary">
@@ -143,13 +145,17 @@ $funcionarios = $stmt->fetchAll();
 
 <div class="alert-info">
     <i class="fas fa-info-circle"></i>
-    <strong>Instruções para cadastro facial:</strong>
+    <strong><?= $tipoCadastro === 'digital' ? 'Cadastro de digital' : 'Cadastro facial' ?>:</strong>
     <ul style="margin-top: 8px; margin-left: 20px;">
-        <li><strong>Cadastro Facial:</strong> Posicione o rosto do funcionário em frente à webcam.</li>
-        <li>Serão capturadas <strong>5 amostras</strong> do rosto para maior precisão.</li>
+        <?php if ($tipoCadastro === 'digital'): ?>
+        <li>Escolha abaixo o funcionário que terá a digital cadastrada ou atualizada.</li>
+        <li>Confirme a presença e a identidade do funcionário antes de continuar.</li>
+        <?php else: ?>
+        <li>Posicione o rosto do funcionário em frente à câmera.</li>
+        <li>A tela orientará o enquadramento e fará uma captura segura.</li>
+        <?php endif; ?>
         <li>O funcionário deve estar presente durante o cadastro.</li>
-        <li>Após o cadastro, o funcionário poderá registrar o ponto usando o reconhecimento facial.</li>
-        <li>Se já existir um cadastro facial, o novo cadastro substitui o anterior.</li>
+        <li>Um novo cadastro substitui o anterior.</li>
     </ul>
 </div>
 
@@ -173,15 +179,15 @@ $funcionarios = $stmt->fetchAll();
         </div>
         
         <div class="biometrico-buttons">
-            <?php if ($func['tem_facial'] > 0): ?>
+            <?php $temCadastro = $tipoCadastro === 'digital' ? $func['tem_digital'] > 0 : $func['tem_facial'] > 0; ?>
+            <?php if ($temCadastro): ?>
                 <span class="status-badge status-cadastrado">
-                    <i class="fas fa-check-circle"></i> Facial Cadastrado
+                    <i class="fas fa-check-circle"></i> <?= $tipoCadastro === 'digital' ? 'Digital cadastrada' : 'Facial cadastrada' ?>
                 </span>
-            <?php else: ?>
-                <a href="facial.php?id=<?php echo $func['id']; ?>" class="btn-biometrico btn-facial">
-                    <i class="fas fa-camera"></i> Cadastrar/Atualizar Rosto
-                </a>
             <?php endif; ?>
+            <a href="<?= $tipoCadastro === 'digital' ? 'digital.php' : '../funcionarios/cadastro_facial.php' ?>?id=<?php echo $func['id']; ?>" class="btn-biometrico <?= $tipoCadastro === 'digital' ? 'btn-digital' : 'btn-facial' ?>">
+                <i class="fas <?= $tipoCadastro === 'digital' ? 'fa-fingerprint' : 'fa-camera' ?>"></i> <?= $temCadastro ? 'Atualizar' : 'Cadastrar' ?>
+            </a>
         </div>
     </div>
     <?php endforeach; ?>
@@ -198,6 +204,5 @@ $funcionarios = $stmt->fetchAll();
 </div>
 
 <?php require_once '../../includes/footer.php'; ?>
-
 
 

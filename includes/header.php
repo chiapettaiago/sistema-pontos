@@ -131,7 +131,15 @@ if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
                         <a class="dropdown-item" href="<?php echo $baseUrl; ?>/modules/funcionarios/visualizar?id=<?php echo $topFuncionarioId; ?>">
                             <i class="fas fa-id-card"></i> Meu cadastro
                         </a>
+                        <?php if (in_array($topUserType, ['super_admin', 'admin_empresa'], true)): ?>
+                        <a class="dropdown-item" href="<?php echo $baseUrl; ?>/modules/funcionarios/cadastro_facial.php?id=<?php echo $topFuncionarioId; ?>">
+                            <i class="fas fa-face-smile"></i> Minha biometria facial
+                        </a>
                         <?php endif; ?>
+                        <?php endif; ?>
+                        <a class="dropdown-item" href="<?php echo $baseUrl; ?>/modules/perfil/alterar_senha.php">
+                            <i class="fas fa-key"></i> Alterar minha senha
+                        </a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item text-danger" href="<?php echo $baseUrl; ?>/logout.php">
                             <i class="fas fa-right-from-bracket"></i> Sair

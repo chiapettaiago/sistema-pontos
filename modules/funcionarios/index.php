@@ -278,6 +278,11 @@ $stats = $statsStmt->fetch();
                                 <a href="visualizar.php?id=<?php echo $func['id']; ?>" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Visualizar">
                                     <i class="fas fa-eye"></i>
                                 </a>
+                                <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa'], true)): ?>
+                                <a href="cadastro_facial.php?id=<?php echo $func['id']; ?>" class="btn btn-outline-success" data-bs-toggle="tooltip" title="Cadastrar biometria facial">
+                                    <i class="fas fa-face-smile"></i>
+                                </a>
+                                <?php endif; ?>
                                 <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor'])): ?>
                                 <a href="editar.php?id=<?php echo $func['id']; ?>" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Editar">
                                     <i class="fas fa-edit"></i>
@@ -303,4 +308,3 @@ $stats = $statsStmt->fetch();
 </div>
 
 <?php require_once '../../includes/footer.php'; ?>
-

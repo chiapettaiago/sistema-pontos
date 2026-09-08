@@ -381,7 +381,9 @@ $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
     Se a foto estiver correta, cadastre ou atualize a biometria facial para liberar login e ponto.
     <div class="biometria-actions-quick">
         <a href="editar.php?id=<?php echo $id; ?>"><i class="fas fa-camera"></i> Atualizar foto</a>
-        <a href="../biometrico/facial.php?id=<?php echo $id; ?>"><i class="fas fa-user-plus"></i> Facial</a>
+        <?php if (in_array($_SESSION['usuario_tipo'] ?? '', ['super_admin', 'admin_empresa'], true)): ?>
+        <a href="cadastro_facial.php?id=<?php echo $id; ?>"><i class="fas fa-user-plus"></i> Facial</a>
+        <?php endif; ?>
         <a href="../biometrico/digital.php?id=<?php echo $id; ?>"><i class="fas fa-fingerprint"></i> Digital</a>
     </div>
 </div>
@@ -412,7 +414,11 @@ $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
                 <p style="margin-top:10px;font-size:13px;color:var(--text-secondary);">Crie o cadastro facial após atualizar a foto.</p>
             <?php endif; ?>
             <div class="biometria-links">
-                <a href="../biometrico/facial.php?id=<?php echo $id; ?>"><i class="fas fa-user-plus"></i> Cadastrar/atualizar facial</a>
+                <?php if (in_array($_SESSION['usuario_tipo'] ?? '', ['super_admin', 'admin_empresa'], true)): ?>
+                <a href="cadastro_facial.php?id=<?php echo $id; ?>"><i class="fas fa-user-plus"></i> Cadastrar/atualizar facial</a>
+                <?php else: ?>
+                <span><i class="fas fa-lock"></i> Cadastro restrito a administradores</span>
+                <?php endif; ?>
             </div>
         </div>
         <div class="biometria-card">

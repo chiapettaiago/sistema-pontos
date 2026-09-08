@@ -84,10 +84,12 @@ $homeUrl = function_exists('appUrl')
         <?php endif; ?>
 
         <!-- BIOMETRIA -->
-        <?php if (in_array($usuario_tipo, ['admin_empresa','gestor','supervisor'])): ?>
+        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa'], true)): ?>
         <div class="pf-nav-divider"></div>
         <div class="pf-nav-section"><i class="fas fa-fingerprint"></i><span>Biometria</span></div>
-        <?php echo pfNav($baseUrl.'/modules/biometrico/index.php', 'fa-id-card', 'Biométrico', $activePage === 'biometrico'); ?>
+        <?php echo pfNav($baseUrl.'/modules/biometrico/index.php', 'fa-id-card', 'Visão geral', $activePage === 'biometrico'); ?>
+        <?php echo pfNav($baseUrl.'/modules/biometrico/cadastrar.php?tipo=digital', 'fa-fingerprint', 'Cadastrar digital', $activePage === 'biometrico_digital'); ?>
+        <?php echo pfNav($baseUrl.'/modules/biometrico/cadastrar.php?tipo=facial', 'fa-face-smile', 'Cadastrar facial', $activePage === 'biometrico_facial'); ?>
         <?php endif; ?>
 
         <!-- ESCALAS -->

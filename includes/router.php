@@ -140,7 +140,7 @@ function appRouteAllows(string $route, string $userType): bool
         '/modules/funcionarios/cadastro_facial',
         '/modules/funcionarios/cadastro_facial.php',
     ], true)) {
-        return true;
+        return in_array($userType, ['super_admin', 'admin_empresa'], true);
     }
 
     $policies = [
