@@ -4,6 +4,7 @@ session_start();
 header('Content-Type: application/json; charset=UTF-8');
 
 require_once '../../config/database.php';
+require_once '../../includes/facial_recognition.php';
 
 function responderFacial($success, $message, $status = 200, $extra = []) {
     http_response_code($status);
@@ -14,31 +15,8 @@ function responderFacial($success, $message, $status = 200, $extra = []) {
     exit;
 }
 
-function similaridadeCosseno($vecA, $vecB) {
-    if (!is_array($vecA) || !is_array($vecB) || count($vecA) !== count($vecB)) {
-        return 0;
-    }
-
-    $dot = 0;
-    $normA = 0;
-    $normB = 0;
-    for ($i = 0; $i < count($vecA); $i++) {
-        $a = (float) $vecA[$i];
-        $b = (float) $vecB[$i];
-        $dot += $a * $b;
-        $normA += $a * $a;
-        $normB += $b * $b;
-    }
-
-    if ($normA <= 0 || $normB <= 0) {
-        return 0;
-    }
-
-    return $dot / (sqrt($normA) * sqrt($normB));
-}
-
 function verificarDescritorFacial(PDO $db, $funcionario_id, $descritor_atual) {
-    if (empty($descritor_atual) || !is_array($descritor_atual)) {
+    if (facialNormalizeDescriptor($descritor_atual) === null) {
         return ['ok' => false, 'message' => 'Nenhum rosto foi detectado para validacao'];
     }
 
@@ -60,18 +38,15 @@ function verificarDescritorFacial(PDO $db, $funcionario_id, $descritor_atual) {
         return ['ok' => false, 'message' => 'Cadastro facial invalido. Refaca o cadastro'];
     }
 
-    $melhorScore = 0;
-    foreach ($descritores_salvos as $amostra) {
-        $score = similaridadeCosseno($descritor_atual, $amostra);
-        if ($score > $melhorScore) {
-            $melhorScore = $score;
-        }
-    }
+    $match = facialBestMatch($descritor_atual, [['descritores' => $registro['descritores']]]);
+    $menorDistancia = $match['distance'] ?? null;
+    $valido = $match['matched'];
 
     return [
-        'ok' => $melhorScore >= 0.60,
-        'score' => $melhorScore,
-        'message' => $melhorScore >= 0.60 ? 'Face validada' : 'Rosto nao reconhecido para este funcionario'
+        'ok' => $valido,
+        'score' => $menorDistancia !== null ? max(0, 1 - $menorDistancia) : 0,
+        'distance' => $menorDistancia,
+        'message' => $valido ? 'Face validada' : 'Rosto nao reconhecido para este funcionario'
     ];
 }
 

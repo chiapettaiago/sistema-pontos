@@ -1,6 +1,7 @@
 <?php
 // api/biometrico.php - Cadastro facial e registro de ponto por reconhecimento facial
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/../includes/facial_recognition.php';
 
 $db = getDB();
 $input = json_decode(file_get_contents('php://input'), true);
@@ -36,29 +37,6 @@ function currentApiOrSessionUser() {
     }
 
     jsonError('Nao autorizado', 'UNAUTHORIZED', 401);
-}
-
-function cosineSimilarity($vecA, $vecB) {
-    if (!is_array($vecA) || !is_array($vecB) || count($vecA) !== count($vecB)) {
-        return 0;
-    }
-
-    $dot = 0;
-    $normA = 0;
-    $normB = 0;
-    for ($i = 0; $i < count($vecA); $i++) {
-        $a = (float) $vecA[$i];
-        $b = (float) $vecB[$i];
-        $dot += $a * $b;
-        $normA += $a * $a;
-        $normB += $b * $b;
-    }
-
-    if ($normA <= 0 || $normB <= 0) {
-        return 0;
-    }
-
-    return $dot / (sqrt($normA) * sqrt($normB));
 }
 
 function nextPointType(PDO $db, $funcionario_id) {
@@ -106,6 +84,12 @@ if ($acao === 'salvar_facial') {
 
     if (!$funcionario_id || empty($descritores) || !is_array($descritores)) {
         jsonError('Dados biometricos incompletos', 'INVALID_DATA', 400);
+    }
+
+    foreach ($descritores as $descritor) {
+        if (facialNormalizeDescriptor($descritor) === null) {
+            jsonError('Uma ou mais amostras faciais sao invalidas', 'INVALID_DESCRIPTOR', 400);
+        }
     }
 
     try {
@@ -159,8 +143,8 @@ if ($acao === 'salvar_facial') {
 if ($acao === 'registrar_ponto_facial' || $acao === 'registrar_ponto') {
     $descritor_atual = $input['descritor'] ?? [];
 
-    if (empty($descritor_atual) || !is_array($descritor_atual)) {
-        jsonError('Nenhum descritor facial recebido', 'MISSING_DESCRIPTOR', 400);
+    if (facialNormalizeDescriptor($descritor_atual) === null) {
+        jsonError('Descritor facial invalido', 'INVALID_DESCRIPTOR', 400);
     }
 
     try {
@@ -182,28 +166,14 @@ if ($acao === 'registrar_ponto_facial' || $acao === 'registrar_ponto') {
         $stmt->execute($params);
         $faces = $stmt->fetchAll();
 
-        $melhor = null;
-        $melhorScore = 0;
-        $limiar = 0.60;
-
-        foreach ($faces as $face) {
-            $descritores_salvos = json_decode($face['descritores'], true);
-            if (!is_array($descritores_salvos)) {
-                continue;
-            }
-
-            foreach ($descritores_salvos as $amostra) {
-                $score = cosineSimilarity($descritor_atual, $amostra);
-                if ($score > $melhorScore) {
-                    $melhorScore = $score;
-                    $melhor = $face;
-                }
-            }
+        $match = facialBestMatch($descritor_atual, $faces);
+        if (!$match['matched']) {
+            $message = ($match['reason'] ?? '') === 'ambiguous'
+                ? 'Reconhecimento inconclusivo. Tente novamente em melhor iluminacao'
+                : 'Rosto nao reconhecido';
+            jsonError($message, 'FACE_NOT_RECOGNIZED', 401);
         }
-
-        if (!$melhor || $melhorScore < $limiar) {
-            jsonError('Rosto nao reconhecido', 'FACE_NOT_RECOGNIZED', 401);
-        }
+        $melhor = $match['face'];
 
         if ($user['tipo_usuario'] === 'funcionario' && !empty($user['funcionario_id']) && (int) $user['funcionario_id'] !== (int) $melhor['funcionario_id']) {
             jsonError('Este rosto nao pertence ao funcionario logado', 'FACE_MISMATCH', 403);
@@ -235,7 +205,8 @@ if ($acao === 'registrar_ponto_facial' || $acao === 'registrar_ponto') {
             'funcionario_id' => (int) $melhor['funcionario_id'],
             'tipo' => $tipo,
             'tipo_nome' => $nomes[$tipo] ?? $tipo,
-            'score' => round($melhorScore, 4),
+            'score' => round(max(0, 1 - $match['distance']), 4),
+            'distance' => round($match['distance'], 4),
             'foto' => resolveFuncionarioFotoPath($melhor)
         ], ($nomes[$tipo] ?? 'Ponto') . ' registrada com sucesso');
     } catch (Exception $e) {

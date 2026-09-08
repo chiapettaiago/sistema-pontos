@@ -24,6 +24,7 @@ if ($funcionarioLogadoId !== $funcionario_id) {
 // Carregar configurações
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/csrf.php';
+require_once __DIR__ . '/../../includes/facial_recognition.php';
 
 // A aplicação pode estar instalada em um subdiretório (ex.: /sistema-pontos).
 // Nunca use uma URL iniciada em / aqui, pois ela descartaria esse prefixo.
@@ -64,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $imagem_base64 = $_POST['imagem_base64'] ?? '';
     $amostraFacial = json_decode($descritor, true);
     
-    if (!is_array($amostraFacial) || count($amostraFacial) !== 128) {
+    if (facialNormalizeDescriptor($amostraFacial) === null) {
         $erro = 'Nenhum dado facial capturado. Tente novamente.';
     } else {
         try {

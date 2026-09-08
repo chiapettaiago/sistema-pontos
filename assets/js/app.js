@@ -220,3 +220,71 @@ skeletonStyles.textContent = `
     }
 `;
 document.head.appendChild(skeletonStyles);
+
+// ============================================
+// FORMULARIOS DE DADOS EM MODAIS
+// ============================================
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof bootstrap === 'undefined' || !bootstrap.Modal) return;
+
+    const content = document.querySelector('.pf-content');
+    if (!content) return;
+
+    const forms = Array.from(content.querySelectorAll('form')).filter(function (form) {
+        const method = (form.getAttribute('method') || 'get').toLowerCase();
+        const style = (form.getAttribute('style') || '').replace(/\s/g, '').toLowerCase();
+        const quickAction = form.matches('.inline-form, .d-inline, .filters-form, .row') ||
+            form.closest('.modal, table, .table, .dropdown-menu, .btn-group');
+        const disabled = form.dataset.pfModal === 'false' || form.hidden || style.includes('display:none');
+        if (method !== 'post' || quickAction || disabled) return false;
+
+        const fields = form.querySelectorAll('input:not([type="hidden"]), select, textarea').length;
+        return fields >= 2 || Boolean(form.closest('.form-card, .form-container'));
+    });
+
+    if (!forms.length) return;
+
+    const entries = forms.map(function (form, index) {
+        const id = 'pfFormModal' + index;
+        const shell = form.closest('.form-card');
+        const movable = shell && shell.querySelectorAll('form').length === 1 ? shell : form;
+        const heading = movable.querySelector('.form-header h1, .form-header h2, .form-header h3, h1, h2, h3') ||
+            content.querySelector('.pf-topbar-title, .pf-page-header h1, .dashboard-header h1');
+        const title = (heading && heading.textContent.trim()) || form.getAttribute('aria-label') || 'Preencher dados';
+        const launcher = document.createElement('div');
+        launcher.className = 'pf-form-modal-launcher';
+        launcher.innerHTML = '<div><span class="pf-form-modal-kicker">Formulário</span><strong></strong></div>' +
+            '<button type="button" class="btn btn-primary"><i class="fas fa-pen-to-square"></i> Abrir formulário</button>';
+        launcher.querySelector('strong').textContent = title;
+
+        const modal = document.createElement('div');
+        modal.className = 'modal fade pf-form-modal';
+        modal.id = id;
+        modal.tabIndex = -1;
+        modal.setAttribute('aria-hidden', 'true');
+        modal.innerHTML = '<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">' +
+            '<div class="modal-content"><div class="modal-header">' +
+            '<div><span class="pf-form-modal-kicker">Formulário</span><h2 class="modal-title fs-5"></h2></div>' +
+            '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>' +
+            '</div><div class="modal-body"></div></div></div>';
+        modal.querySelector('.modal-title').textContent = title;
+
+        movable.parentNode.insertBefore(launcher, movable);
+        modal.querySelector('.modal-body').appendChild(movable);
+        document.body.appendChild(modal);
+
+        const instance = bootstrap.Modal.getOrCreateInstance(modal, {
+            backdrop: 'static',
+            keyboard: true
+        });
+        launcher.querySelector('button').addEventListener('click', function () { instance.show(); });
+        form.addEventListener('submit', function () {
+            modal.classList.add('pf-form-modal--submitting');
+        });
+
+        return { modal: modal, instance: instance };
+    });
+
+    // Páginas exclusivamente de cadastro/edição já apresentam o formulário aberto.
+    if (entries.length === 1) entries[0].instance.show();
+});

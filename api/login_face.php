@@ -4,6 +4,7 @@ header('Content-Type: application/json; charset=UTF-8');
 
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/../includes/router.php';
+require_once __DIR__ . '/../includes/facial_recognition.php';
 
 function jsonOut($success, $message, $status = 200, $extra = []) {
     http_response_code($status);
@@ -14,37 +15,14 @@ function jsonOut($success, $message, $status = 200, $extra = []) {
     exit;
 }
 
-function cosineSimilarity($vecA, $vecB) {
-    if (!is_array($vecA) || !is_array($vecB) || count($vecA) !== count($vecB)) {
-        return 0;
-    }
-
-    $dot = 0;
-    $normA = 0;
-    $normB = 0;
-    for ($i = 0; $i < count($vecA); $i++) {
-        $a = (float) $vecA[$i];
-        $b = (float) $vecB[$i];
-        $dot += $a * $b;
-        $normA += $a * $a;
-        $normB += $b * $b;
-    }
-
-    if ($normA <= 0 || $normB <= 0) {
-        return 0;
-    }
-
-    return $dot / (sqrt($normA) * sqrt($normB));
-}
-
 $input = json_decode(file_get_contents('php://input'), true);
 if (!is_array($input)) {
     jsonOut(false, 'JSON invalido', 400);
 }
 
 $descritor = $input['descritor'] ?? [];
-if (empty($descritor) || !is_array($descritor)) {
-    jsonOut(false, 'Nenhum descritor facial recebido', 400);
+if (facialNormalizeDescriptor($descritor) === null) {
+    jsonOut(false, 'Descritor facial invalido', 400);
 }
 
 $db = getDB();
@@ -62,28 +40,16 @@ try {
     $stmt->execute();
     $faces = $stmt->fetchAll();
 
-    $melhor = null;
-    $melhorScore = 0;
-    $limiar = 0.60;
-
-    foreach ($faces as $face) {
-        $descritoresSalvos = json_decode($face['descritores'], true);
-        if (!is_array($descritoresSalvos)) {
-            continue;
-        }
-
-        foreach ($descritoresSalvos as $amostra) {
-            $score = cosineSimilarity($descritor, $amostra);
-            if ($score > $melhorScore) {
-                $melhorScore = $score;
-                $melhor = $face;
-            }
-        }
+    $match = facialBestMatch($descritor, $faces);
+    if (!$match['matched']) {
+        $message = ($match['reason'] ?? '') === 'ambiguous'
+            ? 'Reconhecimento inconclusivo. Tente novamente em melhor iluminacao'
+            : 'Rosto nao reconhecido';
+        jsonOut(false, $message, 401, [
+            'distance' => isset($match['distance']) ? round($match['distance'], 4) : null,
+        ]);
     }
-
-    if (!$melhor || $melhorScore < $limiar) {
-        jsonOut(false, 'Rosto nao reconhecido', 401, ['score' => round($melhorScore, 4)]);
-    }
+    $melhor = $match['face'];
 
     session_regenerate_id(true);
     $_SESSION['usuario_id'] = $melhor['funcionario_id'];
@@ -97,7 +63,8 @@ try {
     $_SESSION['tipo_login'] = 'facial';
 
     jsonOut(true, 'Login facial realizado com sucesso', 200, [
-        'score' => round($melhorScore, 4),
+        'score' => round(max(0, 1 - $match['distance']), 4),
+        'distance' => round($match['distance'], 4),
         'usuario' => [
             'id' => (int) $melhor['funcionario_id'],
             'nome' => $melhor['nome'],
