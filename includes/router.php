@@ -131,6 +131,10 @@ function appRouteIsPublic(string $route): bool
         '/logout.php',
         '/modules/funcionarios/login_facial',
         '/modules/funcionarios/login_facial.php',
+        '/modules/ponto/ponto_publico',
+        '/modules/ponto/ponto_publico.php',
+        '/ponto-publico',
+        '/ponto-publico/',
     ], true);
 }
 

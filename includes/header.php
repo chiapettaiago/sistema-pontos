@@ -19,6 +19,13 @@ $topRoles = [
 $topUserRole = $topRoles[$topUserType] ?? ucfirst($topUserType);
 $topFuncionarioId = (int) ($_SESSION['funcionario_id'] ?? 0);
 $topUserPhotoUrl = null;
+$topPontosHoje = [];
+$topTiposPonto = [
+    'entrada' => ['label' => 'Entrada', 'icon' => 'fa-sign-in-alt'],
+    'saida_almoco' => ['label' => 'Saída almoço', 'icon' => 'fa-utensils'],
+    'volta_almoco' => ['label' => 'Volta almoço', 'icon' => 'fa-rotate-left'],
+    'saida' => ['label' => 'Saída', 'icon' => 'fa-sign-out-alt'],
+];
 
 if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
     try {
@@ -34,6 +41,21 @@ if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
         }
     } catch (Throwable $e) {
         error_log('Não foi possível carregar a foto da navbar: ' . $e->getMessage());
+    }
+}
+
+if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
+    try {
+        $pontosStmt = $db->prepare(
+            "SELECT tipo, DATE_FORMAT(data_hora, '%H:%i') AS hora
+             FROM pontos
+             WHERE funcionario_id = :funcionario_id AND DATE(data_hora) = CURDATE()
+             ORDER BY data_hora ASC"
+        );
+        $pontosStmt->execute([':funcionario_id' => $topFuncionarioId]);
+        $topPontosHoje = $pontosStmt->fetchAll();
+    } catch (Throwable $e) {
+        error_log('Não foi possível carregar os pontos de hoje: ' . $e->getMessage());
     }
 }
 ?>
@@ -62,6 +84,19 @@ if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>/assets/css/style.css">
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>/assets/css/responsive.css">
 
+    <style>
+        .pf-today-points { margin-left: auto; }
+        .pf-today-points > .dropdown-toggle { border: 1px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+        .pf-today-points > .dropdown-toggle:hover { border-color: var(--pf-primary); color: var(--pf-primary); }
+        .pf-today-points .dropdown-menu { min-width: 250px; padding: 10px; border: 1px solid var(--border-color); background: var(--bg-primary); box-shadow: var(--shadow-lg, 0 12px 30px rgba(15,23,42,.15)); }
+        .pf-point-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 9px 10px; border-radius: 8px; color: var(--text-primary); font-size: 13px; }
+        .pf-point-row + .pf-point-row { margin-top: 2px; }
+        .pf-point-row i { width: 18px; color: var(--pf-primary); }
+        .pf-point-row time { font-weight: 800; color: var(--text-primary); }
+        .pf-point-empty { padding: 12px 10px; color: var(--text-muted); font-size: 13px; }
+        @media (max-width: 575.98px) { .pf-today-points { margin-left: auto; margin-right: 6px; } .pf-today-points .today-label { display: none; } .pf-today-points > .dropdown-toggle { padding: 8px 10px; } }
+    </style>
+
     <!-- Aplica tema antes de renderizar (evita flash) -->
     <script>
         (function(){
@@ -89,6 +124,24 @@ if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
                 </button>
 
                 <span class="pf-topbar-title"><?php echo htmlspecialchars($pageTitle ?? 'Dashboard'); ?></span>
+
+                <div class="dropdown pf-today-points">
+                    <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Ver batidas de ponto de hoje">
+                        <i class="fas fa-clock me-1"></i><span class="today-label">Pontos de hoje</span>
+                        <?php if ($topPontosHoje): ?><span class="badge rounded-pill text-bg-primary ms-1"><?php echo count($topPontosHoje); ?></span><?php endif; ?>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <div class="px-2 pb-2 border-bottom"><strong>Batidas de hoje</strong><small class="d-block text-body-secondary"><?php echo date('d/m/Y'); ?></small></div>
+                        <?php if ($topFuncionarioId <= 0): ?>
+                            <div class="pf-point-empty">Usuário sem vínculo de funcionário.</div>
+                        <?php elseif (!$topPontosHoje): ?>
+                            <div class="pf-point-empty"><i class="fas fa-info-circle me-1"></i>Nenhuma batida registrada hoje.</div>
+                        <?php else: foreach ($topPontosHoje as $ponto): $pontoTipo = $topTiposPonto[$ponto['tipo']] ?? ['label' => ucfirst(str_replace('_', ' ', $ponto['tipo'])), 'icon' => 'fa-clock']; ?>
+                            <div class="pf-point-row"><span><i class="fas <?php echo htmlspecialchars($pontoTipo['icon']); ?>"></i><?php echo htmlspecialchars($pontoTipo['label']); ?></span><time><?php echo htmlspecialchars($ponto['hora']); ?></time></div>
+                        <?php endforeach; endif; ?>
+                        <?php if ($topFuncionarioId > 0): ?><a class="dropdown-item text-center border-top mt-2 pt-2" href="<?php echo $baseUrl; ?>/modules/ponto/ponto.php">Abrir registro de ponto</a><?php endif; ?>
+                    </div>
+                </div>
 
                 <!-- Data/Hora -->
                 <div class="pf-datetime d-none d-md-flex">

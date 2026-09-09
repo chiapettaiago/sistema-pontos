@@ -24,6 +24,11 @@ server {
         try_files $uri $uri/ $uri.php =404;
     }
 
+    # Rota pública do quiosque, sem expor a extensão do script PHP.
+    location = /ponto-publico {
+        rewrite ^ /modules/ponto/ponto_publico.php last;
+    }
+
     # Nunca execute PHP enviado para a pasta publica de uploads.
     location ~* ^/uploads/.*\.php$ {
         deny all;

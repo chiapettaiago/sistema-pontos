@@ -77,6 +77,9 @@ $homeUrl = function_exists('appUrl')
         <div class="pf-nav-section"><i class="fas fa-fingerprint"></i><span>Ponto</span></div>
         <?php echo pfNav($baseUrl.'/modules/ponto/ponto.php', 'fa-clock', 'Registrar Ponto', $activePage === 'ponto'); ?>
         <?php echo pfNav($baseUrl.'/modules/ponto/extrato.php', 'fa-list-alt', 'Meu Extrato', $activePage === 'extrato'); ?>
+        <?php if ($usuario_tipo === 'admin_empresa'): ?>
+        <?php echo pfNav($baseUrl.'/modules/ponto/link_publico.php', 'fa-link', 'Link público', $activePage === 'link_publico'); ?>
+        <?php endif; ?>
 
         <?php if (in_array($usuario_tipo, ['admin_empresa','gestor','supervisor'])): ?>
         <?php echo pfNav($baseUrl.'/modules/ponto/autorizar_gerente.php', 'fa-user-check', 'Autorizar Ponto', $activePage === 'autorizar'); ?>

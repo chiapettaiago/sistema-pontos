@@ -7,7 +7,7 @@ $db = getDB();
 $input = json_decode(file_get_contents('php://input'), true);
 $acao = $input['acao'] ?? ($_GET['acao'] ?? '');
 
-function currentApiOrSessionUser() {
+function currentApiOrSessionUser(bool $allowPublic = false, array $input = []) {
     $headers = function_exists('getallheaders') ? getallheaders() : [];
     $auth = $headers['Authorization'] ?? $headers['authorization'] ?? ($_SERVER['HTTP_AUTHORIZATION'] ?? '');
     $token = trim(str_replace('Bearer ', '', $auth));
@@ -18,6 +18,18 @@ function currentApiOrSessionUser() {
             return $user;
         }
         jsonError($user['error'], 'INVALID_TOKEN', (int) ($user['code'] ?? 401));
+    }
+
+    // O link assinado define a empresa do quiosque e tem precedência sobre
+    // uma eventual sessão aberta no mesmo navegador.
+    if ($allowPublic) {
+        $empresaId = (int) ($input['empresa_id'] ?? 0);
+        $signature = (string) ($input['chave'] ?? '');
+        $expected = $empresaId > 0 ? hash_hmac('sha256', (string) $empresaId, DB_PASS . '|ponto-publico') : '';
+        if ($empresaId > 0 && $signature !== '' && hash_equals($expected, $signature)) {
+            return ['id' => null, 'nome' => 'Ponto público', 'email' => '', 'tipo' => 'publico', 'tipo_usuario' => 'publico', 'empresa_id' => $empresaId, 'funcionario_id' => null];
+        }
+        jsonError('Link público inválido ou expirado', 'INVALID_PUBLIC_LINK', 401);
     }
 
     if (session_status() === PHP_SESSION_NONE) {
@@ -64,6 +76,62 @@ function ensureBiometricTable(PDO $db) {
     return (bool) $stmt->fetch();
 }
 
+function pontoRegras(PDO $db, int $empresaId): array {
+    try {
+        $stmt = $db->prepare('SELECT ponto_apenas_empresa, intervalo_minimo_batidas FROM config_horarios WHERE empresa_id = :empresa_id LIMIT 1');
+        $stmt->execute([':empresa_id' => $empresaId]);
+        $config = $stmt->fetch() ?: [];
+        return [
+            'apenas_empresa' => array_key_exists('ponto_apenas_empresa', $config) ? (int) $config['ponto_apenas_empresa'] === 1 : true,
+            'intervalo' => max(120, (int) ($config['intervalo_minimo_batidas'] ?? 120)),
+        ];
+    } catch (Throwable $e) {
+        return ['apenas_empresa' => true, 'intervalo' => 120];
+    }
+}
+
+function validarLocalEIntervalo(PDO $db, array $funcionario, array $input): ?array {
+    $regras = pontoRegras($db, (int) $funcionario['empresa_id']);
+    $latitude = $input['latitude'] ?? null;
+    $longitude = $input['longitude'] ?? null;
+
+    if ($regras['apenas_empresa']) {
+        if ($funcionario['filial_latitude'] === null || $funcionario['filial_longitude'] === null) {
+            return ['warning' => 'A localização da filial ainda não está cadastrada; este ponto foi permitido sem validação de distância.'];
+        }
+        if (!is_numeric($latitude) || !is_numeric($longitude)) {
+            return ['message' => 'Permita o acesso à localização para registrar o ponto.', 'code' => 'LOCATION_REQUIRED', 'status' => 422];
+        }
+
+        $lat = (float) $latitude;
+        $lon = (float) $longitude;
+        if ($lat < -90 || $lat > 90 || $lon < -180 || $lon > 180) {
+            return ['message' => 'Localização inválida.', 'code' => 'INVALID_LOCATION', 'status' => 422];
+        }
+
+        $earthRadius = 6371000;
+        $dLat = deg2rad($lat - (float) $funcionario['filial_latitude']);
+        $dLon = deg2rad($lon - (float) $funcionario['filial_longitude']);
+        $a = sin($dLat / 2) ** 2 + cos(deg2rad($lat)) * cos(deg2rad((float) $funcionario['filial_latitude'])) * sin($dLon / 2) ** 2;
+        $distance = $earthRadius * 2 * atan2(sqrt($a), sqrt(1 - $a));
+        $radius = max(1, (float) ($funcionario['filial_raio'] ?? 100));
+        if ($distance > $radius) {
+            return ['message' => 'Ponto bloqueado: você está fora do raio permitido da empresa (' . round($distance) . ' m de distância).', 'code' => 'OUTSIDE_COMPANY', 'status' => 403];
+        }
+    }
+
+    $stmt = $db->prepare('SELECT data_hora FROM pontos WHERE funcionario_id = :id ORDER BY data_hora DESC LIMIT 1');
+    $stmt->execute([':id' => $funcionario['funcionario_id']]);
+    $last = $stmt->fetchColumn();
+    if ($last) {
+        $remaining = ($regras['intervalo'] * 60) - (time() - strtotime($last));
+        if ($remaining > 0) {
+            return ['message' => 'Aguarde mais ' . ceil($remaining / 60) . ' minutos para registrar outra batida.', 'code' => 'MINIMUM_INTERVAL', 'status' => 429];
+        }
+    }
+    return null;
+}
+
 function resolveFuncionarioFotoPath(array $funcionario) {
     if (!empty($funcionario['foto'])) {
         return '/' . ltrim($funcionario['foto'], '/');
@@ -72,7 +140,10 @@ function resolveFuncionarioFotoPath(array $funcionario) {
     return null;
 }
 
-$user = currentApiOrSessionUser();
+$user = currentApiOrSessionUser(
+    in_array($acao, ['registrar_ponto_facial_publico', 'registrar_ponto_publico'], true),
+    is_array($input) ? $input : []
+);
 
 if ($acao === 'salvar_facial') {
     if (!in_array($user['tipo'], ['super_admin', 'admin_empresa', 'gestor'], true)) {
@@ -110,14 +181,20 @@ if ($acao === 'salvar_facial') {
         $check->execute([':funcionario_id' => $funcionario_id]);
         $temUpdatedAt = apiColumnExists($db, 'biometricos_faciais', 'updated_at');
 
+        $temAmostras = apiColumnExists($db, 'biometricos_faciais', 'amostras');
         if ($check->fetch()) {
             $query = "UPDATE biometricos_faciais
-                      SET descritores = :descritores, amostras = :amostras, ativo = 1"
+                      SET descritores = :descritores, ativo = 1"
+                      . ($temAmostras ? ", amostras = :amostras" : "")
                       . ($temUpdatedAt ? ", updated_at = NOW()" : "") . "
                       WHERE funcionario_id = :funcionario_id";
         } else {
-            $columns = "funcionario_id, descritores, amostras, ativo";
-            $values = ":funcionario_id, :descritores, :amostras, 1";
+            $columns = "funcionario_id, descritores, ativo";
+            $values = ":funcionario_id, :descritores, 1";
+            if ($temAmostras) {
+                $columns .= ", amostras";
+                $values .= ", :amostras";
+            }
             if ($temUpdatedAt) {
                 $columns .= ", updated_at";
                 $values .= ", NOW()";
@@ -140,7 +217,7 @@ if ($acao === 'salvar_facial') {
     }
 }
 
-if ($acao === 'registrar_ponto_facial' || $acao === 'registrar_ponto') {
+if (in_array($acao, ['registrar_ponto_facial', 'registrar_ponto', 'registrar_ponto_facial_publico', 'registrar_ponto_publico'], true)) {
     $descritor_atual = $input['descritor'] ?? [];
 
     if (facialNormalizeDescriptor($descritor_atual) === null) {
@@ -159,9 +236,11 @@ if ($acao === 'registrar_ponto_facial' || $acao === 'registrar_ponto') {
             $params[':empresa_id'] = $user['empresa_id'];
         }
 
-        $stmt = $db->prepare("SELECT bf.funcionario_id, bf.descritores, f.nome, f.matricula, f.filial_id, f.empresa_id, f.foto
+        $stmt = $db->prepare("SELECT bf.funcionario_id, bf.descritores, f.nome, f.matricula, f.filial_id, f.empresa_id, f.foto,
+                                     fi.latitude AS filial_latitude, fi.longitude AS filial_longitude, fi.raio_permitido AS filial_raio
                               FROM biometricos_faciais bf
                               JOIN funcionarios f ON bf.funcionario_id = f.id
+                              LEFT JOIN filiais fi ON fi.id = f.filial_id
                               WHERE bf.ativo = 1 AND f.status = 'ativo' {$empresaWhere}");
         $stmt->execute($params);
         $faces = $stmt->fetchAll();
@@ -178,6 +257,18 @@ if ($acao === 'registrar_ponto_facial' || $acao === 'registrar_ponto') {
         if ($user['tipo_usuario'] === 'funcionario' && !empty($user['funcionario_id']) && (int) $user['funcionario_id'] !== (int) $melhor['funcionario_id']) {
             jsonError('Este rosto nao pertence ao funcionario logado', 'FACE_MISMATCH', 403);
         }
+
+        $regraResultado = validarLocalEIntervalo($db, [
+            'funcionario_id' => $melhor['funcionario_id'],
+            'empresa_id' => $melhor['empresa_id'],
+            'filial_latitude' => $melhor['filial_latitude'],
+            'filial_longitude' => $melhor['filial_longitude'],
+            'filial_raio' => $melhor['filial_raio'],
+        ], is_array($input) ? $input : []);
+        if (!empty($regraResultado['message'])) {
+            jsonError($regraResultado['message'], $regraResultado['code'], $regraResultado['status']);
+        }
+        $avisoLocalizacao = $regraResultado['warning'] ?? null;
 
         $tipo = nextPointType($db, $melhor['funcionario_id']);
         if (!$tipo) {
@@ -200,6 +291,8 @@ if ($acao === 'registrar_ponto_facial' || $acao === 'registrar_ponto') {
             'saida' => 'Saida'
         ];
 
+        $mensagemSucesso = ($nomes[$tipo] ?? 'Ponto') . ' registrada com sucesso';
+        if ($avisoLocalizacao) $mensagemSucesso .= '. Aviso: ' . $avisoLocalizacao;
         jsonSuccess([
             'funcionario' => $melhor['nome'],
             'funcionario_id' => (int) $melhor['funcionario_id'],
@@ -207,8 +300,9 @@ if ($acao === 'registrar_ponto_facial' || $acao === 'registrar_ponto') {
             'tipo_nome' => $nomes[$tipo] ?? $tipo,
             'score' => round(max(0, 1 - $match['distance']), 4),
             'distance' => round($match['distance'], 4),
-            'foto' => resolveFuncionarioFotoPath($melhor)
-        ], ($nomes[$tipo] ?? 'Ponto') . ' registrada com sucesso');
+            'foto' => resolveFuncionarioFotoPath($melhor),
+            'aviso_localizacao' => $avisoLocalizacao
+        ], $mensagemSucesso);
     } catch (Exception $e) {
         error_log('Erro no ponto facial: ' . $e->getMessage());
         jsonError('Erro ao registrar ponto facial', 'SERVER_ERROR', 500);

@@ -37,6 +37,8 @@ try {
         'bloquear_ponto_fora_horario' => "ALTER TABLE config_horarios ADD COLUMN bloquear_ponto_fora_horario BIT(1) DEFAULT 0",
         'permitir_ponto_remoto' => "ALTER TABLE config_horarios ADD COLUMN permitir_ponto_remoto BIT(1) DEFAULT 1",
         'validar_gps' => "ALTER TABLE config_horarios ADD COLUMN validar_gps BIT(1) DEFAULT 0",
+        'ponto_apenas_empresa' => "ALTER TABLE config_horarios ADD COLUMN ponto_apenas_empresa BIT(1) DEFAULT 1",
+        'intervalo_minimo_batidas' => "ALTER TABLE config_horarios ADD COLUMN intervalo_minimo_batidas INT DEFAULT 120",
         'facial_obrigatorio' => "ALTER TABLE config_horarios ADD COLUMN facial_obrigatorio BIT(1) DEFAULT 0",
         'intervalo_minimo_almoco' => "ALTER TABLE config_horarios ADD COLUMN intervalo_minimo_almoco INT DEFAULT 60",
         'intervalo_maximo_almoco' => "ALTER TABLE config_horarios ADD COLUMN intervalo_maximo_almoco INT DEFAULT 120",
@@ -84,6 +86,8 @@ $defaults = [
     'bloquear_ponto_fora_horario' => 0,
     'permitir_ponto_remoto' => 1,
     'validar_gps' => 0,
+    'ponto_apenas_empresa' => 1,
+    'intervalo_minimo_batidas' => 120,
     'facial_obrigatorio' => 0,
     'intervalo_minimo_almoco' => 60,
     'intervalo_maximo_almoco' => 120,
@@ -108,6 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bloquear_ponto_fora_horario = isset($_POST['bloquear_ponto_fora_horario']) ? 1 : 0;
     $permitir_ponto_remoto = isset($_POST['permitir_ponto_remoto']) ? 1 : 0;
     $validar_gps = isset($_POST['validar_gps']) ? 1 : 0;
+    $ponto_apenas_empresa = isset($_POST['ponto_apenas_empresa']) ? 1 : 0;
+    $intervalo_minimo_batidas = max(120, (int)($_POST['intervalo_minimo_batidas'] ?? 120));
     $facial_obrigatorio = isset($_POST['facial_obrigatorio']) ? 1 : 0;
     $intervalo_minimo_almoco = (int)($_POST['intervalo_minimo_almoco'] ?? 60);
     $intervalo_maximo_almoco = (int)($_POST['intervalo_maximo_almoco'] ?? 120);
@@ -131,6 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             bloquear_ponto_fora_horario = :bloquear_ponto_fora_horario,
             permitir_ponto_remoto = :permitir_ponto_remoto,
             validar_gps = :validar_gps,
+            ponto_apenas_empresa = :ponto_apenas_empresa,
+            intervalo_minimo_batidas = :intervalo_minimo_batidas,
             facial_obrigatorio = :facial_obrigatorio,
             intervalo_minimo_almoco = :intervalo_minimo_almoco,
             intervalo_maximo_almoco = :intervalo_maximo_almoco,
@@ -147,6 +155,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':bloquear_ponto_fora_horario' => $bloquear_ponto_fora_horario,
             ':permitir_ponto_remoto' => $permitir_ponto_remoto,
             ':validar_gps' => $validar_gps,
+            ':ponto_apenas_empresa' => $ponto_apenas_empresa,
+            ':intervalo_minimo_batidas' => $intervalo_minimo_batidas,
             ':facial_obrigatorio' => $facial_obrigatorio,
             ':intervalo_minimo_almoco' => $intervalo_minimo_almoco,
             ':intervalo_maximo_almoco' => $intervalo_maximo_almoco,
@@ -164,6 +174,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['bloquear_ponto_fora_horario'] = $bloquear_ponto_fora_horario;
         $config['permitir_ponto_remoto'] = $permitir_ponto_remoto;
         $config['validar_gps'] = $validar_gps;
+        $config['ponto_apenas_empresa'] = $ponto_apenas_empresa;
+        $config['intervalo_minimo_batidas'] = $intervalo_minimo_batidas;
         $config['facial_obrigatorio'] = $facial_obrigatorio;
         $config['intervalo_minimo_almoco'] = $intervalo_minimo_almoco;
         $config['intervalo_maximo_almoco'] = $intervalo_maximo_almoco;
@@ -601,6 +613,16 @@ input:checked + .slider:before {
                         <span class="slider"></span>
                     </label>
                 </div>
+
+                <div class="switch-group">
+                    <div class="switch-label">
+                        Permitir ponto somente na empresa
+                        <small>Bloquear o registro quando o colaborador estiver fora do raio da filial.</small>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" name="ponto_apenas_empresa" value="1" <?php echo $config['ponto_apenas_empresa'] ? 'checked' : ''; ?>><span class="slider"></span>
+                    </label>
+                </div>
                 
                 <div class="switch-group">
                     <div class="switch-label">
@@ -640,6 +662,11 @@ input:checked + .slider:before {
                         <label><i class="fas fa-sign-in-alt"></i> Tempo Mínimo entre Registros</label>
                         <input type="number" name="tempo_minimo_entrada" value="<?php echo $config['tempo_minimo_entrada']; ?>" min="15" max="120" step="5">
                         <small>Tempo mínimo entre registros consecutivos (minutos)</small>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-stopwatch"></i> Intervalo mínimo entre batidas</label>
+                        <input type="number" name="intervalo_minimo_batidas" value="<?php echo $config['intervalo_minimo_batidas']; ?>" min="120" max="1440" step="30">
+                        <small>Bloqueia novas batidas antes desse intervalo (mínimo: 120 minutos).</small>
                     </div>
                 </div>
             </div>

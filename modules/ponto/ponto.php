@@ -52,6 +52,17 @@ if (!$funcionario) {
     exit;
 }
 
+// O botão de marcação usa o quiosque público assinado da empresa. Isso
+// permite abrir a câmera sem criar uma segunda sessão de login.
+$empresaPontoId = (int) ($funcionario['empresa_id'] ?? ($_SESSION['empresa_id'] ?? 0));
+$chavePontoPublico = $empresaPontoId > 0
+    ? hash_hmac('sha256', (string) $empresaPontoId, DB_PASS . '|ponto-publico')
+    : '';
+$basePontoPublico = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http')
+    . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . rtrim(BASE_URL, '/');
+$urlPontoPublico = $basePontoPublico
+    . '/ponto-publico/?empresa=' . $empresaPontoId . '&chave=' . $chavePontoPublico;
+
 // Buscar pontos de hoje - IGNORANDO horários inválidos
 $stmt = $db->prepare("SELECT tipo, data_hora FROM pontos 
                       WHERE funcionario_id = :id 
@@ -366,7 +377,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
         <!-- Action Buttons -->
         <div id="formPonto">
             <?php if ($proximo_tipo !== 'finalizado'): ?>
-            <a class="btn-facial" href="<?php echo htmlspecialchars(BASE_URL . '/modules/ponto/biometrico.php'); ?>">
+            <a class="btn-facial" href="<?php echo htmlspecialchars($urlPontoPublico); ?>">
                 <i class="fas fa-camera me-2"></i>
                 <?php echo htmlspecialchars($nomes_botao[$proximo_tipo] ?? 'Registrar ponto'); ?> com reconhecimento facial
             </a>
