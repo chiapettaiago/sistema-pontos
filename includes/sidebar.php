@@ -121,6 +121,7 @@ $homeUrl = function_exists('appUrl')
         <div class="pf-nav-divider"></div>
         <div class="pf-nav-section"><i class="fas fa-chart-bar"></i><span>Relatórios</span></div>
         <?php echo pfNav($baseUrl.'/modules/relatorios/index.php', 'fa-file-alt', 'Relatórios', $activePage === 'relatorios'); ?>
+        <?php echo pfNav($baseUrl.'/modules/ponto/gerenciar_batidas.php', 'fa-pen-to-square', 'Gerenciar Batidas', $activePage === 'gerenciar_batidas'); ?>
         <?php echo pfNav($baseUrl.'/modules/relatorios/horas_trabalhadas.php', 'fa-hourglass-half', 'Horas Trabalhadas', $activePage === 'rel_horas'); ?>
         <?php echo pfNav($baseUrl.'/modules/relatorios/banco_horas.php', 'fa-piggy-bank', 'Banco de Horas', $activePage === 'rel_banco'); ?>
         <?php echo pfNav($baseUrl.'/modules/relatorios/atrasos_faltas.php', 'fa-exclamation-triangle', 'Atrasos e Faltas', $activePage === 'rel_atrasos'); ?>

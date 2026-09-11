@@ -187,6 +187,12 @@ $total_geral_extras = 0;
 $total_geral_compensar = 0;
 
 foreach ($registros as $reg) {
+    // O LEFT JOIN retorna uma linha com data NULL para funcionários sem ponto
+    // no período. Essa linha não representa um dia e não deve ser exibida.
+    if (!$reg['data']) {
+        continue;
+    }
+
     $id = $reg['funcionario_id'];
     if (!isset($funcionarios_dados[$id])) {
         $funcionarios_dados[$id] = [

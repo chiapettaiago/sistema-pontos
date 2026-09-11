@@ -254,6 +254,25 @@ if (in_array($acao, ['registrar_ponto_facial', 'registrar_ponto', 'registrar_pon
         }
         $melhor = $match['face'];
 
+        $latitude = $input['latitude'] ?? null;
+        $longitude = $input['longitude'] ?? null;
+        $precisao = $input['precisao'] ?? null;
+        $isQuiosque = in_array($acao, ['registrar_ponto_facial_publico', 'registrar_ponto_publico'], true);
+        if ($isQuiosque) {
+            if (!is_numeric($latitude) || !is_numeric($longitude)) {
+                jsonError('Permita o acesso à localização para registrar o ponto.', 'LOCATION_REQUIRED', 422);
+            }
+            $latitude = (float) $latitude;
+            $longitude = (float) $longitude;
+            if ($latitude < -90 || $latitude > 90 || $longitude < -180 || $longitude > 180) {
+                jsonError('Localização inválida.', 'INVALID_LOCATION', 422);
+            }
+            // Alguns navegadores antigos não enviam a margem de precisão, embora
+            // forneçam coordenadas válidas. A precisão é informativa e não deve
+            // impedir o reconhecimento facial nem a batida.
+            $precisao = is_numeric($precisao) ? round((float) $precisao, 2) : null;
+        }
+
         if ($user['tipo_usuario'] === 'funcionario' && !empty($user['funcionario_id']) && (int) $user['funcionario_id'] !== (int) $melhor['funcionario_id']) {
             jsonError('Este rosto nao pertence ao funcionario logado', 'FACE_MISMATCH', 403);
         }
@@ -275,13 +294,17 @@ if (in_array($acao, ['registrar_ponto_facial', 'registrar_ponto', 'registrar_pon
             jsonError('Dia ja finalizado', 'DAY_DONE', 400);
         }
 
-        $stmt = $db->prepare("INSERT INTO pontos (funcionario_id, filial_id, empresa_id, tipo, data_hora, origem)
-                              VALUES (:funcionario_id, :filial_id, :empresa_id, :tipo, NOW(), 'biometrico_facial')");
+        $origem = $isQuiosque ? 'totem' : 'web';
+        $stmt = $db->prepare("INSERT INTO pontos (funcionario_id, filial_id, empresa_id, tipo, data_hora, latitude, longitude, origem)
+                              VALUES (:funcionario_id, :filial_id, :empresa_id, :tipo, NOW(), :latitude, :longitude, :origem)");
         $stmt->execute([
             ':funcionario_id' => $melhor['funcionario_id'],
             ':filial_id' => $melhor['filial_id'],
             ':empresa_id' => $melhor['empresa_id'],
-            ':tipo' => $tipo
+            ':tipo' => $tipo,
+            ':latitude' => $latitude,
+            ':longitude' => $longitude,
+            ':origem' => $origem
         ]);
 
         $nomes = [
@@ -301,6 +324,9 @@ if (in_array($acao, ['registrar_ponto_facial', 'registrar_ponto', 'registrar_pon
             'score' => round(max(0, 1 - $match['distance']), 4),
             'distance' => round($match['distance'], 4),
             'foto' => resolveFuncionarioFotoPath($melhor),
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'precisao' => $precisao,
             'aviso_localizacao' => $avisoLocalizacao
         ], $mensagemSucesso);
     } catch (Exception $e) {

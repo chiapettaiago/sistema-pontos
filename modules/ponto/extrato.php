@@ -52,173 +52,27 @@ if (!$funcionario) {
     exit;
 }
 
-// Parâmetros de filtro
-$mes = $_GET['mes'] ?? date('Y-m');
-$ano = substr($mes, 0, 4);
-$mes_num = substr($mes, 5, 2);
+// Parâmetros de filtro. O formulário envia mês e ano em campos separados.
+$mes_atual = filter_input(INPUT_GET, 'mes', FILTER_VALIDATE_INT);
+$ano_atual = filter_input(INPUT_GET, 'ano', FILTER_VALIDATE_INT);
+$mes_atual = ($mes_atual >= 1 && $mes_atual <= 12) ? $mes_atual : (int) date('m');
+$ano_atual = ($ano_atual >= 2000 && $ano_atual <= (int) date('Y') + 1) ? $ano_atual : (int) date('Y');
 
-// Buscar pontos do mês
-$query = "SELECT 
-            DATE(data_hora) as data,
-            MAX(CASE WHEN tipo = 'entrada' THEN TIME(data_hora) END) as entrada,
-            MAX(CASE WHEN tipo = 'saida_almoco' THEN TIME(data_hora) END) as saida_almoco,
-            MAX(CASE WHEN tipo = 'volta_almoco' THEN TIME(data_hora) END) as volta_almoco,
-            MAX(CASE WHEN tipo = 'saida' THEN TIME(data_hora) END) as saida
-          FROM pontos 
-          WHERE funcionario_id = :id 
-            AND MONTH(data_hora) = :mes 
+// Buscar cada batida individualmente para exibir horário, origem e localização.
+$query = "SELECT id, tipo, data_hora, latitude, longitude, origem
+          FROM pontos
+          WHERE funcionario_id = :id
+            AND MONTH(data_hora) = :mes
             AND YEAR(data_hora) = :ano
-            AND TIME(data_hora) >= '06:00:00'
-          GROUP BY DATE(data_hora)
-          ORDER BY data DESC";
+          ORDER BY data_hora DESC";
 
 $stmt = $db->prepare($query);
 $stmt->execute([
     ':id' => $funcionario_id,
-    ':mes' => $mes_num,
-    ':ano' => $ano
+    ':mes' => $mes_atual,
+    ':ano' => $ano_atual
 ]);
-$registros = $stmt->fetchAll();
-
-// Função dia da semana
-function retornarDiaSemana($numero) {
-    $dias = [
-        0 => 'Domingo',
-        1 => 'Segunda-feira',
-        2 => 'Terça-feira',
-        3 => 'Quarta-feira',
-        4 => 'Quinta-feira',
-        5 => 'Sexta-feira',
-        6 => 'Sábado'
-    ];
-    return $dias[$numero] ?? '';
-}
-
-$extrato = [];
-$hoje = date('Y-m-d');
-
-foreach ($registros as $reg) {
-    $data = $reg['data'];
-    $eh_dia_atual = ($data == $hoje);
-    
-    // Formatar horários
-    $entrada = !empty($reg['entrada']) ? substr($reg['entrada'], 0, 5) : null;
-    $saida_almoco = !empty($reg['saida_almoco']) ? substr($reg['saida_almoco'], 0, 5) : null;
-    $volta_almoco = !empty($reg['volta_almoco']) ? substr($reg['volta_almoco'], 0, 5) : null;
-    $saida = !empty($reg['saida']) ? substr($reg['saida'], 0, 5) : null;
-    
-    // Calcular horas trabalhadas
-    $horas_formatado = '--:--';
-    if ($entrada && $saida) {
-        $entrada_ts = strtotime($entrada . ':00');
-        $saida_ts = strtotime($saida . ':00');
-        $total_segundos = $saida_ts - $entrada_ts;
-        
-        if ($saida_almoco && $volta_almoco) {
-            $almoco_ts = strtotime($saida_almoco . ':00');
-            $volta_ts = strtotime($volta_almoco . ':00');
-            $total_segundos -= ($volta_ts - $almoco_ts);
-        }
-        
-        if ($total_segundos > 0) {
-            $horas = floor($total_segundos / 3600);
-            $minutos = floor(($total_segundos % 3600) / 60);
-            $horas_formatado = sprintf("%02d:%02d", $horas, $minutos);
-        }
-    }
-    
-    // ============================================
-    // STATUS CORRIGIDO
-    // ============================================
-    if ($entrada && $saida && $saida_almoco && $volta_almoco) {
-        // Dia completo (todos os 4 pontos)
-        $status_texto = '✅ Completo';
-        $status_cor = 'complete';
-    } 
-    elseif ($entrada && $saida) {
-        // Tem entrada e saída, mas sem almoço completo
-        $status_texto = '⚠️ Sem almoço';
-        $status_cor = 'incomplete';
-    }
-    elseif ($entrada && !$saida) {
-        // Apenas entrada registrada
-        if ($eh_dia_atual) {
-            $status_texto = '⏳ Em andamento';
-            $status_cor = 'inprogress';
-        } else {
-            // Dia passado com apenas entrada = incompleto
-            $status_texto = '❌ Incompleto';
-            $status_cor = 'incomplete';
-        }
-    }
-    elseif (!$entrada && ($saida_almoco || $volta_almoco || $saida)) {
-        // Pontos sem entrada (anomalia)
-        $status_texto = '⚠️ Anômalo';
-        $status_cor = 'incomplete';
-    }
-    else {
-        // Nenhum ponto
-        if ($eh_dia_atual) {
-            $status_texto = '⏳ Aguardando';
-            $status_cor = 'pending';
-        } else {
-            $status_texto = '⚪ Falta';
-            $status_cor = 'pending';
-        }
-    }
-    
-    $extrato[] = [
-        'data' => $data,
-        'data_formatada' => date('d/m/Y', strtotime($data)),
-        'dia_semana' => retornarDiaSemana(date('w', strtotime($data))),
-        'entrada' => $entrada ?: '--:--',
-        'saida_almoco' => $saida_almoco ?: '--:--',
-        'volta_almoco' => $volta_almoco ?: '--:--',
-        'saida' => $saida ?: '--:--',
-        'horas' => $horas_formatado,
-        'status_texto' => $status_texto,
-        'status_cor' => $status_cor
-    ];
-}
-
-// Calcular estatísticas
-$stats = [
-    'dias_trabalhados' => 0,
-    'total_horas' => 0,
-    'total_minutos' => 0,
-    'media_diaria' => 0,
-    'dias_completos' => 0
-];
-
-foreach ($extrato as $dia) {
-    if ($dia['horas'] != '--:--') {
-        $stats['dias_trabalhados']++;
-        
-        $partes = explode(':', $dia['horas']);
-        if (count($partes) == 2) {
-            $stats['total_horas'] += (int)$partes[0];
-            $stats['total_minutos'] += (int)$partes[1];
-        }
-        
-        if ($dia['status_cor'] == 'complete') {
-            $stats['dias_completos']++;
-        }
-    }
-}
-
-$stats['total_horas'] += floor($stats['total_minutos'] / 60);
-$stats['total_minutos'] = $stats['total_minutos'] % 60;
-$stats['media_diaria'] = $stats['dias_trabalhados'] > 0 
-    ? round(($stats['total_horas'] * 60 + $stats['total_minutos']) / $stats['dias_trabalhados'] / 60, 2) 
-    : 0;
-
-// Nome do mês
-$nomes_meses = [
-    '01' => 'Janeiro', '02' => 'Fevereiro', '03' => 'Março', '04' => 'Abril',
-    '05' => 'Maio', '06' => 'Junho', '07' => 'Julho', '08' => 'Agosto',
-    '09' => 'Setembro', '10' => 'Outubro', '11' => 'Novembro', '12' => 'Dezembro'
-];
-$nome_mes = $nomes_meses[$mes_num] . ' de ' . $ano;
+$pontos = $stmt->fetchAll();
 
 require_once '../../includes/header.php';
 ?>
@@ -268,6 +122,7 @@ require_once '../../includes/header.php';
                         <th>Tipo</th>
                         <th>Horário</th>
                         <th class="d-none d-md-table-cell">Origem</th>
+                        <th>Endereço da batida</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -282,11 +137,26 @@ require_once '../../includes/header.php';
                             <span class="badge bg-<?php echo $t[1]; ?>"><?php echo $t[0]; ?></span>
                         </td>
                         <td class="fw-semibold"><?php echo date('H:i', strtotime($ponto['data_hora'])); ?></td>
-                        <td class="d-none d-md-table-cell text-muted"><?php echo htmlspecialchars($ponto['origem'] ?? 'web'); ?></td>
+                        <td class="d-none d-md-table-cell text-muted"><?php echo htmlspecialchars(($ponto['origem'] ?? 'web') === 'totem' ? 'Quiosque' : ($ponto['origem'] ?? 'web')); ?></td>
+                        <td>
+                            <?php if (is_numeric($ponto['latitude']) && is_numeric($ponto['longitude'])): ?>
+                                <?php $coordenadas = $ponto['latitude'] . ',' . $ponto['longitude']; ?>
+                                <div class="endereco-batida"
+                                     data-latitude="<?php echo htmlspecialchars((string) $ponto['latitude'], ENT_QUOTES, 'UTF-8'); ?>"
+                                     data-longitude="<?php echo htmlspecialchars((string) $ponto['longitude'], ENT_QUOTES, 'UTF-8'); ?>">
+                                    <button type="button" class="btn btn-sm btn-outline-primary consultar-endereco">
+                                        <i class="fas fa-map-marker-alt me-1"></i>Consultar endereço
+                                    </button>
+                                    <a class="d-block small mt-1" href="https://www.google.com/maps?q=<?php echo rawurlencode($coordenadas); ?>" target="_blank" rel="noopener noreferrer">Ver no mapa</a>
+                                </div>
+                            <?php else: ?>
+                                <span class="text-muted">Não informada</span>
+                            <?php endif; ?>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                     <?php if (empty($pontos)): ?>
-                    <tr><td colspan="4" class="text-center text-muted py-4">
+                    <tr><td colspan="5" class="text-center text-muted py-4">
                         <i class="fas fa-clock fa-2x d-block mb-2 opacity-25"></i>Nenhum registro neste período
                     </td></tr>
                     <?php endif; ?>
@@ -295,5 +165,32 @@ require_once '../../includes/header.php';
         </div>
     </div>
 </div>
+
+<script>
+document.querySelectorAll('.consultar-endereco').forEach(button => {
+    button.addEventListener('click', async () => {
+        const container = button.closest('.endereco-batida');
+        const latitude = container.dataset.latitude;
+        const longitude = container.dataset.longitude;
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Localizando';
+
+        try {
+            const url = new URL('https://nominatim.openstreetmap.org/reverse');
+            url.search = new URLSearchParams({format: 'jsonv2', lat: latitude, lon: longitude, zoom: '18', addressdetails: '1'});
+            const response = await fetch(url, {headers: {'Accept-Language': 'pt-BR,pt'}});
+            if (!response.ok) throw new Error('Falha ao consultar endereço');
+            const result = await response.json();
+            if (!result.display_name) throw new Error('Endereço não encontrado');
+
+            button.replaceWith(document.createTextNode(result.display_name));
+        } catch (error) {
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-rotate-right me-1"></i>Tentar novamente';
+            button.title = error.message;
+        }
+    });
+});
+</script>
 
 <?php require_once '../../includes/footer.php'; ?>

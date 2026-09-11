@@ -193,6 +193,9 @@ if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
                         <a class="dropdown-item" href="<?php echo $baseUrl; ?>/modules/perfil/alterar_senha.php">
                             <i class="fas fa-key"></i> Alterar minha senha
                         </a>
+                        <a class="dropdown-item" href="<?php echo $baseUrl; ?>/modules/perfil/passkey.php">
+                            <i class="fas fa-fingerprint"></i> Biometria do dispositivo
+                        </a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item text-danger" href="<?php echo $baseUrl; ?>/logout.php">
                             <i class="fas fa-right-from-bracket"></i> Sair

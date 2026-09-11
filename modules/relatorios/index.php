@@ -42,6 +42,14 @@ $solicitacoes_pendentes = $stmt->fetch()['total'];
 </div>
 
 <div class="row g-4">
+    <?php if (in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'], true)): ?>
+    <div class="col-md-6 col-xl-4">
+        <a href="../ponto/gerenciar_batidas.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+            <div class="d-flex align-items-center gap-3 mb-3"><div class="pf-stat-icon" style="background:linear-gradient(135deg,#6366f1,#4f46e5);"><i class="fas fa-pen-to-square text-white"></i></div><h5 class="mb-0 fw-semibold">Gerenciar Batidas</h5></div>
+            <p class="text-muted small mb-0">Corrija data, horário e tipo das batidas da equipe</p>
+        </a>
+    </div>
+    <?php endif; ?>
     <div class="col-md-6 col-xl-4">
         <a href="horas_trabalhadas.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
             <div class="d-flex align-items-center gap-3 mb-3">
