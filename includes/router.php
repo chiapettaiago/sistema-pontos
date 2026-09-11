@@ -4,6 +4,28 @@
  * Mantem a regra de acesso em um unico lugar e nunca redireciona para URLs externas.
  */
 
+// Polyfill para servidores com PHP < 8.0 (str_starts_with/str_ends_with sao usadas em appBasePath()).
+if (!function_exists('str_starts_with')) {
+    function str_starts_with(string $haystack, string $needle): bool
+    {
+        return $needle === '' || strncmp($haystack, $needle, strlen($needle)) === 0;
+    }
+}
+
+if (!function_exists('str_ends_with')) {
+    function str_ends_with(string $haystack, string $needle): bool
+    {
+        return $needle === '' || substr($haystack, -strlen($needle)) === $needle;
+    }
+}
+
+if (!function_exists('str_contains')) {
+    function str_contains(string $haystack, string $needle): bool
+    {
+        return $needle === '' || strpos($haystack, $needle) !== false;
+    }
+}
+
 function appNormalizeUserType(string $tipo): string
 {
     // O esquema legado de funcionarios usa "admin"; as regras atuais usam

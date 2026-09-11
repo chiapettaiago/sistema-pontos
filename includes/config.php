@@ -82,6 +82,13 @@ try {
 } catch (PDOException $e) {
     error_log('Falha na conexao MySQL: ' . $e->getMessage());
     http_response_code(503);
+    $wantsJson = str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json')
+        || (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest')
+        || str_contains($_SERVER['REQUEST_URI'] ?? '', '/api/');
+    if ($wantsJson) {
+        header('Content-Type: application/json');
+        exit(json_encode(['sucesso' => false, 'erro' => 'Serviço de banco de dados temporariamente indisponível.']));
+    }
     exit('Serviço de banco de dados temporariamente indisponível.');
 }
 
