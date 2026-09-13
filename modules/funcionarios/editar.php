@@ -733,7 +733,7 @@ small {
 <div class="form-container">
     <div class="form-card">
         <div class="form-header">
-            <h3><i class="fas fa-edit"></i> Editar Funcionário: <?php echo htmlspecialchars($funcionario['nome']); ?></h3>
+            <h3><i class="fas fa-pen-to-square"></i> Editar Funcionário: <?php echo htmlspecialchars($funcionario['nome']); ?></h3>
             <p>Edite os dados e atualize a foto do rosto para reconhecimento facial</p>
         </div>
         
@@ -768,7 +768,7 @@ small {
                         </label>
                         <?php if ($funcionario['foto']): ?>
                             <button type="button" class="btn-foto btn-remover" id="removerFotoBtn">
-                                <i class="fas fa-trash-alt"></i> Remover Foto
+                                <i class="fas fa-trash"></i> Remover Foto
                             </button>
                         <?php endif; ?>
                     </div>
@@ -778,7 +778,7 @@ small {
                     </label>
                     <input type="hidden" name="foto_base64" id="foto_base64">
                     <input type="hidden" name="remover_foto" id="remover_foto_input" value="0">
-                    <small><i class="fas fa-info-circle"></i> Centralize o rosto no círculo. O sistema focará nos olhos para melhor reconhecimento.</small>
+                    <small><i class="fas fa-circle-info"></i> Centralize o rosto no círculo. O sistema focará nos olhos para melhor reconhecimento.</small>
                 </div>
             </div>
             
@@ -849,14 +849,14 @@ small {
             
             <!-- Endereço -->
             <div class="form-section">
-                <h4><i class="fas fa-map-marker-alt"></i> Endereço</h4>
+                <h4><i class="fas fa-location-dot"></i> Endereço</h4>
                 <div class="form-row">
                     <div class="form-group">
                         <label>CEP</label>
                         <div class="cep-row">
                             <input type="text" name="cep" id="cep" value="<?php echo htmlspecialchars($funcionario['cep'] ?? ''); ?>">
                             <button type="button" id="buscarCep" class="btn btn-secondary">
-                                <i class="fas fa-search"></i> Buscar
+                                <i class="fas fa-magnifying-glass"></i> Buscar
                             </button>
                         </div>
                     </div>
@@ -1018,16 +1018,16 @@ small {
             </div>
             
             <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i>
+                <i class="fas fa-circle-info"></i>
                 <strong>Atenção:</strong> A foto identifica o perfil; para entrar por reconhecimento facial, conclua a captura na tela de cadastro facial.
             </div>
             
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Salvar Alterações
+                    <i class="fas fa-floppy-disk"></i> Salvar Alterações
                 </button>
                 <a href="visualizar?id=<?php echo $id; ?>" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancelar
+                    <i class="fas fa-xmark"></i> Cancelar
                 </a>
             </div>
         </form>

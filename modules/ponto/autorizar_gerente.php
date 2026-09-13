@@ -333,7 +333,7 @@ video {
                     <i class="fas fa-check"></i> Autorizar Ponto
                 </button>
                 <button type="submit" name="acao" value="negar" class="btn-danger">
-                    <i class="fas fa-times"></i> Negar
+                    <i class="fas fa-xmark"></i> Negar
                 </button>
             </form>
             

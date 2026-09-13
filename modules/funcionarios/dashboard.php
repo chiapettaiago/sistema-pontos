@@ -60,7 +60,7 @@ foreach ($pontosHoje as $ponto) {
 $tipos = ['entrada', 'saida_almoco', 'volta_almoco', 'saida'];
 $proximo_tipo = 'entrada';
 $proximo_texto = 'Registrar Entrada';
-$proximo_icone = 'fa-sign-in-alt';
+$proximo_icone = 'fa-right-to-bracket';
 
 if (count($pontosHoje) > 0) {
     $ultimo = $pontosHoje[count($pontosHoje) - 1]['tipo'];
@@ -74,15 +74,15 @@ if (count($pontosHoje) > 0) {
             'saida' => 'Registrar Saída'
         ][$proximo_tipo];
         $proximo_icone = [
-            'entrada' => 'fa-sign-in-alt',
+            'entrada' => 'fa-right-to-bracket',
             'saida_almoco' => 'fa-utensils',
-            'volta_almoco' => 'fa-undo-alt',
-            'saida' => 'fa-sign-out-alt'
+            'volta_almoco' => 'fa-rotate-left',
+            'saida' => 'fa-right-from-bracket'
         ][$proximo_tipo];
     } else {
         $proximo_tipo = 'finalizado';
         $proximo_texto = 'Dia Finalizado';
-        $proximo_icone = 'fa-check-circle';
+        $proximo_icone = 'fa-circle-check';
     }
 }
 
@@ -574,7 +574,7 @@ $total_pontos_mes = $stats_mes['total_pontos'] ?? 0;
                 <?php echo strtoupper(substr($funcionario['nome'], 0, 1)); ?>
             </div>
             <a href="../../logout" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i>
+                <i class="fas fa-right-from-bracket"></i>
                 <span>Sair</span>
             </a>
         </div>
@@ -587,7 +587,7 @@ $total_pontos_mes = $stats_mes['total_pontos'] ?? 0;
             <p>Matrícula: <?php echo htmlspecialchars($funcionario['matricula']); ?> | 
                Filial: <?php echo htmlspecialchars($funcionario['filial_nome']); ?></p>
             <div class="date">
-                <i class="fas fa-calendar-alt"></i> <?php echo date('l, d \\d\\e F \\d\\e Y'); ?>
+                <i class="fas fa-calendar"></i> <?php echo date('l, d \\d\\e F \\d\\e Y'); ?>
                 <i class="fas fa-clock" style="margin-left: 12px;"></i> <span id="relogio"><?php echo date('H:i:s'); ?></span>
             </div>
         </div>
@@ -641,14 +641,14 @@ $total_pontos_mes = $stats_mes['total_pontos'] ?? 0;
                     </button>
                     <?php else: ?>
                     <button type="button" class="btn-ponto" disabled>
-                        <i class="fas fa-check-circle"></i> <?php echo $proximo_texto; ?>
+                        <i class="fas fa-circle-check"></i> <?php echo $proximo_texto; ?>
                     </button>
                     <?php endif; ?>
                 </form>
                 
                 <div class="horarios-grid">
                     <div class="horario-item <?php echo $horarios['entrada'] ? 'completed' : 'pending'; ?>">
-                        <i class="fas fa-sign-in-alt icon"></i>
+                        <i class="fas fa-right-to-bracket icon"></i>
                         <span class="label">Entrada</span>
                         <span class="time"><?php echo $horarios['entrada'] ?? '--:--'; ?></span>
                     </div>
@@ -658,12 +658,12 @@ $total_pontos_mes = $stats_mes['total_pontos'] ?? 0;
                         <span class="time"><?php echo $horarios['saida_almoco'] ?? '--:--'; ?></span>
                     </div>
                     <div class="horario-item <?php echo $horarios['volta_almoco'] ? 'completed' : 'pending'; ?>">
-                        <i class="fas fa-undo-alt icon"></i>
+                        <i class="fas fa-rotate-left icon"></i>
                         <span class="label">Volta Almoço</span>
                         <span class="time"><?php echo $horarios['volta_almoco'] ?? '--:--'; ?></span>
                     </div>
                     <div class="horario-item <?php echo $horarios['saida'] ? 'completed' : 'pending'; ?>">
-                        <i class="fas fa-sign-out-alt icon"></i>
+                        <i class="fas fa-right-from-bracket icon"></i>
                         <span class="label">Saída</span>
                         <span class="time"><?php echo $horarios['saida'] ?? '--:--'; ?></span>
                     </div>
@@ -675,7 +675,7 @@ $total_pontos_mes = $stats_mes['total_pontos'] ?? 0;
                 <h3><i class="fas fa-bell"></i> Notificações</h3>
                 <div class="notification-item">
                     <div class="notification-icon">
-                        <i class="fas fa-info-circle"></i>
+                        <i class="fas fa-circle-info"></i>
                     </div>
                     <div class="notification-text">
                         <div class="notification-title">Horário de funcionamento</div>
@@ -696,7 +696,7 @@ $total_pontos_mes = $stats_mes['total_pontos'] ?? 0;
                 <?php if ($proximo_tipo === 'finalizado'): ?>
                 <div class="notification-item">
                     <div class="notification-icon" style="background: #fee2e2; color: #dc2626;">
-                        <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-circle-check"></i>
                     </div>
                     <div class="notification-text">
                         <div class="notification-title">Dia finalizado</div>
@@ -712,7 +712,7 @@ $total_pontos_mes = $stats_mes['total_pontos'] ?? 0;
             <h3><i class="fas fa-th-large"></i> Ações Rápidas</h3>
             <div class="actions-grid">
                 <a href="../ponto/extrato" class="action-btn">
-                    <i class="fas fa-calendar-alt"></i>
+                    <i class="fas fa-calendar"></i>
                     <span>Meu Extrato</span>
                 </a>
                 <a href="../solicitacoes/index" class="action-btn">

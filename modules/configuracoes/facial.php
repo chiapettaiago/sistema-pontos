@@ -462,7 +462,7 @@ input:checked + .slider:before {
     <!-- Nível de Segurança -->
     <div class="config-card">
         <div class="config-header">
-            <i class="fas fa-shield-alt"></i>
+            <i class="fas fa-shield-halved"></i>
             <h3>Nível de Segurança</h3>
         </div>
         <div class="config-body">
@@ -478,7 +478,7 @@ input:checked + .slider:before {
         <!-- Configurações Gerais -->
         <div class="config-card">
             <div class="config-header">
-                <i class="fas fa-sliders-h"></i>
+                <i class="fas fa-sliders"></i>
                 <h3>Configurações Gerais</h3>
             </div>
             <div class="config-body">
@@ -502,7 +502,7 @@ input:checked + .slider:before {
                 </div>
 
                 <div class="form-group">
-                    <label><i class="fas fa-redo-alt"></i> Tentativas Máximas</label>
+                    <label><i class="fas fa-arrow-rotate-right"></i> Tentativas Máximas</label>
                     <input type="number" name="tentativas_maximas" value="<?php echo $config['tentativas_maximas']; ?>" min="1" max="10">
                     <small>Número de tentativas permitidas antes de bloquear o registro</small>
                 </div>
@@ -598,7 +598,7 @@ input:checked + .slider:before {
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Salvar Configurações
+                <i class="fas fa-floppy-disk"></i> Salvar Configurações
             </button>
             <a href="index" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Voltar

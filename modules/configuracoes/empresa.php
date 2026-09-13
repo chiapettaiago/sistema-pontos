@@ -466,7 +466,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Salvar Alterações
+                    <i class="fas fa-floppy-disk"></i> Salvar Alterações
                 </button>
                 <a href="index" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Voltar

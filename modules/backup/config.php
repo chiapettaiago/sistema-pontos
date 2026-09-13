@@ -319,7 +319,7 @@ input:checked + .slider:before {
 <div class="config-container">
     <div class="form-card">
         <div class="form-header">
-            <h3><i class="fas fa-cog"></i> Configurações de Backup</h3>
+            <h3><i class="fas fa-gear"></i> Configurações de Backup</h3>
         </div>
         
         <div class="form-body">
@@ -347,7 +347,7 @@ input:checked + .slider:before {
                 
                 <!-- Frequência -->
                 <div class="form-group">
-                    <label><i class="fas fa-calendar-alt"></i> Frequência</label>
+                    <label><i class="fas fa-calendar"></i> Frequência</label>
                     <select name="frequencia">
                         <option value="diario" <?php echo $config['frequencia'] == 'diario' ? 'selected' : ''; ?>>Diário</option>
                         <option value="semanal" <?php echo $config['frequencia'] == 'semanal' ? 'selected' : ''; ?>>Semanal</option>
@@ -401,7 +401,7 @@ input:checked + .slider:before {
                 </div>
                 
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Salvar Configurações
+                    <i class="fas fa-floppy-disk"></i> Salvar Configurações
                 </button>
             </form>
         </div>
@@ -422,7 +422,7 @@ input:checked + .slider:before {
                 <code>0 * * * * wget -q -O - "<?php echo 'http://' . $_SERVER['HTTP_HOST'] . '/modules/backup/agendador?token=' . $cron_token; ?>"</code>
             </div>
             <div class="alert alert-info" style="margin-top: 16px;">
-                <i class="fas fa-info-circle"></i>
+                <i class="fas fa-circle-info"></i>
                 Token para execução via web: <strong><?php echo $cron_token; ?></strong>
             </div>
         </div>

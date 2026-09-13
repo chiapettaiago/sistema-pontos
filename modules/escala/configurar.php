@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: 1678/login');
+    header('Location: ../../login');
     exit;
 }
 
@@ -325,7 +325,7 @@ if ($edit_id) {
 <div class="config-container">
     <div class="module-header">
         <div class="module-title">
-            <h2><i class="fas fa-cog"></i> Configurar Tipos de Escala</h2>
+            <h2><i class="fas fa-gear"></i> Configurar Tipos de Escala</h2>
             <p>Defina os tipos de escala disponíveis na empresa</p>
         </div>
     </div>
@@ -341,7 +341,7 @@ if ($edit_id) {
     <!-- Formulário para adicionar/editar tipo -->
     <div class="form-card">
         <div class="form-header">
-            <h3><i class="fas <?php echo $edit_tipo ? 'fa-edit' : 'fa-plus'; ?>"></i> 
+            <h3><i class="fas <?php echo $edit_tipo ? 'fa-pen-to-square' : 'fa-plus'; ?>"></i> 
                 <?php echo $edit_tipo ? 'Editar Tipo de Escala' : 'Novo Tipo de Escala'; ?>
             </h3>
         </div>
@@ -417,11 +417,11 @@ if ($edit_id) {
                 
                 <div style="display: flex; gap: 12px; margin-top: 20px;">
                     <button type="submit" name="<?php echo $edit_tipo ? 'editar' : 'adicionar'; ?>" class="btn btn-primary">
-                        <i class="fas fa-save"></i> <?php echo $edit_tipo ? 'Salvar Alterações' : 'Adicionar Tipo'; ?>
+                        <i class="fas fa-floppy-disk"></i> <?php echo $edit_tipo ? 'Salvar Alterações' : 'Adicionar Tipo'; ?>
                     </button>
                     <?php if ($edit_tipo): ?>
                         <a href="configurar" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Cancelar
+                            <i class="fas fa-xmark"></i> Cancelar
                         </a>
                     <?php endif; ?>
                 </div>
@@ -462,10 +462,10 @@ if ($edit_id) {
                     <?php endif; ?>
                     <div class="tipo-actions">
                         <a href="?edit=<?php echo $tipo['id']; ?>" class="btn btn-secondary">
-                            <i class="fas fa-edit"></i> Editar
+                            <i class="fas fa-pen-to-square"></i> Editar
                         </a>
                         <a href="?excluir=<?php echo $tipo['id']; ?>" class="btn btn-danger" onclick="return confirm('Tem certeza?')">
-                            <i class="fas fa-trash-alt"></i> Excluir
+                            <i class="fas fa-trash"></i> Excluir
                         </a>
                     </div>
                 </div>

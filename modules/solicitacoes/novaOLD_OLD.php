@@ -138,14 +138,14 @@ if ($is_admin) {
                     
                     <?php if ($sucesso): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle"></i> <?= $sucesso ?>
+                            <i class="fas fa-circle-check"></i> <?= $sucesso ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     <?php endif; ?>
                     
                     <?php if ($erro): ?>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-triangle"></i> <?= $erro ?>
+                            <i class="fas fa-triangle-exclamation"></i> <?= $erro ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     <?php endif; ?>
@@ -229,7 +229,7 @@ if ($is_admin) {
             
             <div class="card mt-3">
                 <div class="card-body">
-                    <h6><i class="fas fa-info-circle"></i> Informações importantes:</h6>
+                    <h6><i class="fas fa-circle-info"></i> Informações importantes:</h6>
                     <ul class="small text-muted">
                         <li>Solicitações de ajuste de ponto devem ser feitas em até 48 horas após o ocorrido.</li>
                         <li>Para atestados médicos, anexar documento (PDF ou imagem).</li>

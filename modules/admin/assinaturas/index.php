@@ -239,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
     <?php if ($assinatura['status'] == 'ativa' && $assinatura['data_fim'] && strtotime($assinatura['data_fim']) < strtotime('+60 days')): ?>
     <div style="margin-top: 16px;">
         <button onclick="abrirModalRenovar(<?php echo $assinatura['id']; ?>)" class="btn btn-primary" style="width: 100%;">
-            <i class="fas fa-sync-alt"></i> Renovar Assinatura
+            <i class="fas fa-arrow-rotate-right"></i> Renovar Assinatura
         </button>
     </div>
     <?php endif; ?>
@@ -248,7 +248,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
 
 <?php if (empty($assinaturas)): ?>
 <div class="empty-state" style="text-align: center; padding: 60px;">
-    <i class="fas fa-receipt" style="font-size: 48px; color: #ccc;"></i>
+    <i class="fas fa-receipt" style="font-size: 48px; color: var(--text-muted);"></i>
     <p style="margin-top: 16px;">Nenhuma assinatura encontrada</p>
 </div>
 <?php endif; ?>
@@ -256,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
 <!-- Modal Renovação -->
 <div id="modalRenovar" class="modal">
     <div class="modal-content">
-        <h3><i class="fas fa-sync-alt"></i> Renovar Assinatura</h3>
+        <h3><i class="fas fa-arrow-rotate-right"></i> Renovar Assinatura</h3>
         <form method="POST" action="">
             <input type="hidden" name="acao" value="renovar">
             <input type="hidden" name="id" id="renovarId">

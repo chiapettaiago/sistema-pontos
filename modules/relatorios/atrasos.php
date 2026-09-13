@@ -349,7 +349,7 @@ function formatarMinutos($minutos) {
 <div class="relatorio-container">
     <div class="module-header">
         <div class="module-title">
-            <h2><i class="fas fa-exclamation-triangle"></i> Relatório de Atrasos</h2>
+            <h2><i class="fas fa-triangle-exclamation"></i> Relatório de Atrasos</h2>
             <p><?php echo $titulo_periodo; ?></p>
         </div>
         <div class="module-actions">

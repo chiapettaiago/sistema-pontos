@@ -341,7 +341,7 @@ video {
         </div>
         
         <div id="facialStatus" class="facial-status info">
-            <i class="fas fa-info-circle"></i> Aguardando detecção...
+            <i class="fas fa-circle-info"></i> Aguardando detecção...
         </div>
         <a href="<?php echo htmlspecialchars(BASE_URL . '/modules/ponto/ponto'); ?>" class="back-action"><i class="fas fa-arrow-left"></i> Voltar</a>
         
@@ -350,7 +350,7 @@ video {
                 <i class="fas fa-camera"></i> Capturar e Registrar
             </button>
             <button id="fecharFacial" class="btn-cancelar">
-                <i class="fas fa-times"></i> Cancelar
+                <i class="fas fa-xmark"></i> Cancelar
             </button>
         </div>
     </div>
@@ -382,7 +382,7 @@ const facialStatusMsg = document.getElementById('facialStatusMsg');
 // FUNÇÕES DE UI
 // ============================================
 function updateFacialStatus(message, type = 'info') {
-    facialStatus.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i> ${message}`;
+    facialStatus.innerHTML = `<i class="fas ${type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info'}"></i> ${message}`;
     facialStatus.className = `facial-status ${type}`;
 }
 

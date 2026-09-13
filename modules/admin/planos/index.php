@@ -280,42 +280,42 @@ try {
                 <?php echo $plano['recurso_funcionarios'] == 0 ? 'Funcionários ilimitados' : "Até {$plano['recurso_funcionarios']} funcionários"; ?>
             </div>
             <div class="recurso-item <?php echo $plano['recurso_departamentos'] ? 'ativo' : 'inativo'; ?>">
-                <i class="fas <?php echo $plano['recurso_departamentos'] ? 'fa-check-circle' : 'fa-times-circle'; ?>"></i>
+                <i class="fas <?php echo $plano['recurso_departamentos'] ? 'fa-circle-check' : 'fa-circle-xmark'; ?>"></i>
                 Controle por departamentos
             </div>
             <div class="recurso-item <?php echo $plano['recurso_horas_extras'] ? 'ativo' : 'inativo'; ?>">
-                <i class="fas <?php echo $plano['recurso_horas_extras'] ? 'fa-check-circle' : 'fa-times-circle'; ?>"></i>
+                <i class="fas <?php echo $plano['recurso_horas_extras'] ? 'fa-circle-check' : 'fa-circle-xmark'; ?>"></i>
                 Controle de horas extras
             </div>
             <div class="recurso-item <?php echo $plano['recurso_banco_horas'] ? 'ativo' : 'inativo'; ?>">
-                <i class="fas <?php echo $plano['recurso_banco_horas'] ? 'fa-check-circle' : 'fa-times-circle'; ?>"></i>
+                <i class="fas <?php echo $plano['recurso_banco_horas'] ? 'fa-circle-check' : 'fa-circle-xmark'; ?>"></i>
                 Banco de horas
             </div>
             <div class="recurso-item <?php echo $plano['recurso_relatorios_avancados'] ? 'ativo' : 'inativo'; ?>">
-                <i class="fas <?php echo $plano['recurso_relatorios_avancados'] ? 'fa-check-circle' : 'fa-times-circle'; ?>"></i>
+                <i class="fas <?php echo $plano['recurso_relatorios_avancados'] ? 'fa-circle-check' : 'fa-circle-xmark'; ?>"></i>
                 Relatórios avançados
             </div>
             <div class="recurso-item <?php echo $plano['recurso_multi_gestores'] ? 'ativo' : 'inativo'; ?>">
-                <i class="fas <?php echo $plano['recurso_multi_gestores'] ? 'fa-check-circle' : 'fa-times-circle'; ?>"></i>
+                <i class="fas <?php echo $plano['recurso_multi_gestores'] ? 'fa-circle-check' : 'fa-circle-xmark'; ?>"></i>
                 Múltiplos gestores
             </div>
             <div class="recurso-item <?php echo $plano['recurso_qrcode'] ? 'ativo' : 'inativo'; ?>">
-                <i class="fas <?php echo $plano['recurso_qrcode'] ? 'fa-check-circle' : 'fa-times-circle'; ?>"></i>
+                <i class="fas <?php echo $plano['recurso_qrcode'] ? 'fa-circle-check' : 'fa-circle-xmark'; ?>"></i>
                 QR Code para registro
             </div>
             <div class="recurso-item <?php echo $plano['recurso_exportacao_excel'] ? 'ativo' : 'inativo'; ?>">
-                <i class="fas <?php echo $plano['recurso_exportacao_excel'] ? 'fa-check-circle' : 'fa-times-circle'; ?>"></i>
+                <i class="fas <?php echo $plano['recurso_exportacao_excel'] ? 'fa-circle-check' : 'fa-circle-xmark'; ?>"></i>
                 Exportação Excel/PDF
             </div>
             <div class="recurso-item <?php echo $plano['recurso_suporte_prioritario'] ? 'ativo' : 'inativo'; ?>">
-                <i class="fas <?php echo $plano['recurso_suporte_prioritario'] ? 'fa-check-circle' : 'fa-times-circle'; ?>"></i>
+                <i class="fas <?php echo $plano['recurso_suporte_prioritario'] ? 'fa-circle-check' : 'fa-circle-xmark'; ?>"></i>
                 Suporte prioritário
             </div>
         </div>
         
         <div style="display: flex; gap: 12px;">
             <button onclick="editarPlano(<?php echo $plano['id']; ?>)" class="btn btn-secondary" style="flex: 1;">
-                <i class="fas fa-edit"></i> Editar
+                <i class="fas fa-pen-to-square"></i> Editar
             </button>
             <button onclick="excluirPlano(<?php echo $plano['id']; ?>)" class="btn btn-danger" style="flex: 1;">
                 <i class="fas fa-trash"></i> Excluir

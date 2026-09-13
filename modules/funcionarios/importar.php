@@ -359,7 +359,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['arquivo'])) {
         
         <?php if (!empty($erros)): ?>
             <div class="erros-list">
-                <strong><i class="fas fa-exclamation-triangle"></i> Detalhes dos erros (<?php echo count($erros); ?>):</strong>
+                <strong><i class="fas fa-triangle-exclamation"></i> Detalhes dos erros (<?php echo count($erros); ?>):</strong>
                 <ul>
                     <?php foreach ($erros as $err): ?>
                         <li><?php echo htmlspecialchars($err); ?></li>
@@ -438,7 +438,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['arquivo'])) {
                     <i class="fas fa-upload"></i> Importar Funcionários
                 </button>
                 <a href="index" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancelar
+                    <i class="fas fa-xmark"></i> Cancelar
                 </a>
             </div>
         </form>

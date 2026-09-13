@@ -272,24 +272,24 @@ $stats = $stmt->fetch();
 <div class="config-container">
     <div class="form-card">
         <div class="form-header">
-            <h3><i class="fas fa-trash-alt"></i> Limpar Logs Antigos</h3>
+            <h3><i class="fas fa-trash"></i> Limpar Logs Antigos</h3>
             <p>Remova registros de auditoria antigos para liberar espaço</p>
         </div>
         
         <div class="form-body">
             <?php if ($success): ?>
                 <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i> <?php echo $success; ?>
+                    <i class="fas fa-circle-check"></i> <?php echo $success; ?>
                 </div>
                 <a href="index" class="btn btn-secondary">Voltar para Auditoria</a>
             <?php elseif ($error): ?>
                 <div class="alert alert-error">
-                    <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
+                    <i class="fas fa-circle-exclamation"></i> <?php echo $error; ?>
                 </div>
                 <a href="index" class="btn btn-secondary">Voltar</a>
             <?php else: ?>
                 <div class="warning-box">
-                    <i class="fas fa-exclamation-triangle"></i>
+                    <i class="fas fa-triangle-exclamation"></i>
                     <strong>Esta ação não pode ser desfeita!</strong><br>
                     Os logs removidos não poderão ser recuperados posteriormente.
                 </div>
@@ -320,7 +320,7 @@ $stats = $stmt->fetch();
                 
                 <form method="POST" action="">
                     <div class="form-group">
-                        <label><i class="fas fa-calendar-alt"></i> Remover logs com mais de (dias):</label>
+                        <label><i class="fas fa-calendar"></i> Remover logs com mais de (dias):</label>
                         <input type="number" name="dias" value="<?php echo $dias_retencao; ?>" min="1" max="365" required>
                         <small>A configuração atual de retenção é de <?php echo $dias_retencao; ?> dias</small>
                     </div>
@@ -331,7 +331,7 @@ $stats = $stmt->fetch();
                     </div>
                     
                     <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-trash-alt"></i> Limpar Logs Antigos
+                        <i class="fas fa-trash"></i> Limpar Logs Antigos
                     </button>
                 </form>
                 

@@ -247,7 +247,7 @@ if ($assinatura && $assinatura['data_fim']) {
     <div class="empresa-info">
         <div><i class="fas fa-envelope"></i> <?php echo htmlspecialchars($empresa['email']); ?></div>
         <div><i class="fas fa-phone"></i> <?php echo htmlspecialchars($empresa['telefone'] ?: 'Não informado'); ?></div>
-        <div><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($empresa['cidade'] ?: 'Não informado'); ?></div>
+        <div><i class="fas fa-location-dot"></i> <?php echo htmlspecialchars($empresa['cidade'] ?: 'Não informado'); ?></div>
     </div>
 </div>
 

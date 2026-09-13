@@ -362,7 +362,7 @@ small {
 <div class="form-container">
     <div class="form-card">
         <div class="form-header">
-            <h3><i class="fas fa-edit"></i> Editar Empresa</h3>
+            <h3><i class="fas fa-pen-to-square"></i> Editar Empresa</h3>
             <p>Altere os dados da empresa e gerencie a assinatura</p>
         </div>
         
@@ -438,14 +438,14 @@ small {
             
             <!-- Endereço -->
             <div class="form-section">
-                <h4><i class="fas fa-map-marker-alt"></i> Endereço</h4>
+                <h4><i class="fas fa-location-dot"></i> Endereço</h4>
                 <div class="form-row">
                     <div class="form-group">
                         <label>CEP</label>
                         <div class="cep-row">
                             <input type="text" name="cep" id="cep" value="<?php echo htmlspecialchars($empresa['cep'] ?? ''); ?>" placeholder="00000-000">
                             <button type="button" id="buscarCep" class="btn btn-secondary">
-                                <i class="fas fa-search"></i> Buscar
+                                <i class="fas fa-magnifying-glass"></i> Buscar
                             </button>
                         </div>
                     </div>
@@ -508,7 +508,7 @@ small {
                 
                 <div id="planoOptions" style="display: none;">
                     <div class="alert alert-info" style="margin: 16px 0;">
-                        <i class="fas fa-info-circle"></i>
+                        <i class="fas fa-circle-info"></i>
                         Ao alterar o plano, a assinatura atual será cancelada e uma nova será criada.
                     </div>
                     
@@ -545,10 +545,10 @@ small {
             
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Salvar Alterações
+                    <i class="fas fa-floppy-disk"></i> Salvar Alterações
                 </button>
                 <a href="visualizar?id=<?php echo $id; ?>" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancelar
+                    <i class="fas fa-xmark"></i> Cancelar
                 </a>
             </div>
         </form>

@@ -38,7 +38,7 @@ $homeUrl = function_exists('appUrl')
 
         <!-- DASHBOARD (todos exceto funcionario comum) -->
         <?php if ($usuario_tipo !== 'funcionario'): ?>
-        <?php echo pfNav($homeUrl, 'fa-tachometer-alt', 'Dashboard', in_array($activePage, ['dashboard', 'admin_dashboard'], true)); ?>
+        <?php echo pfNav($homeUrl, 'fa-gauge', 'Dashboard', in_array($activePage, ['dashboard', 'admin_dashboard'], true)); ?>
         <?php endif; ?>
 
         <!-- SUPER ADMIN -->
@@ -80,7 +80,7 @@ $homeUrl = function_exists('appUrl')
         <div class="pf-nav-divider"></div>
         <div class="pf-nav-section"><i class="fas fa-fingerprint"></i><span>Ponto</span></div>
         <?php echo pfNav($baseUrl.'/modules/ponto/ponto', 'fa-clock', 'Registrar Ponto', $activePage === 'ponto'); ?>
-        <?php echo pfNav($baseUrl.'/modules/ponto/extrato', 'fa-list-alt', 'Meu Extrato', $activePage === 'extrato'); ?>
+        <?php echo pfNav($baseUrl.'/modules/ponto/extrato', 'fa-rectangle-list', 'Meu Extrato', $activePage === 'extrato'); ?>
         <?php if ($usuario_tipo === 'admin_empresa'): ?>
         <?php echo pfNav($baseUrl.'/modules/ponto/link_publico', 'fa-link', 'Link público', $activePage === 'link_publico'); ?>
         <?php endif; ?>
@@ -103,9 +103,9 @@ $homeUrl = function_exists('appUrl')
         <!-- ESCALAS -->
         <?php if ($podeVerRelatorios): ?>
         <div class="pf-nav-divider"></div>
-        <div class="pf-nav-section"><i class="fas fa-calendar-alt"></i><span>Escalas</span></div>
+        <div class="pf-nav-section"><i class="fas fa-calendar"></i><span>Escalas</span></div>
         <?php echo pfNav($baseUrl.'/modules/escala/index', 'fa-calendar-week', 'Escalas', $activePage === 'escala'); ?>
-        <?php echo pfNav($baseUrl.'/modules/escala/configurar', 'fa-cog', 'Configurar Escala', $activePage === 'escala_config'); ?>
+        <?php echo pfNav($baseUrl.'/modules/escala/configurar', 'fa-gear', 'Configurar Escala', $activePage === 'escala_config'); ?>
         <?php endif; ?>
 
         <!-- SOLICITAÇÕES -->
@@ -125,18 +125,18 @@ $homeUrl = function_exists('appUrl')
         <?php if (in_array($usuario_tipo, ['admin_empresa','gestor'])): ?>
         <div class="pf-nav-divider"></div>
         <div class="pf-nav-section"><i class="fas fa-chart-bar"></i><span>Relatórios</span></div>
-        <?php echo pfNav($baseUrl.'/modules/relatorios/index', 'fa-file-alt', 'Relatórios', $activePage === 'relatorios'); ?>
+        <?php echo pfNav($baseUrl.'/modules/relatorios/index', 'fa-file-lines', 'Relatórios', $activePage === 'relatorios'); ?>
         <?php echo pfNav($baseUrl.'/modules/ponto/gerenciar_batidas', 'fa-pen-to-square', 'Gerenciar Batidas', $activePage === 'gerenciar_batidas'); ?>
         <?php echo pfNav($baseUrl.'/modules/relatorios/horas_trabalhadas', 'fa-hourglass-half', 'Horas Trabalhadas', $activePage === 'rel_horas'); ?>
         <?php echo pfNav($baseUrl.'/modules/relatorios/banco_horas', 'fa-piggy-bank', 'Banco de Horas', $activePage === 'rel_banco'); ?>
-        <?php echo pfNav($baseUrl.'/modules/relatorios/atrasos_faltas', 'fa-exclamation-triangle', 'Atrasos e Faltas', $activePage === 'rel_atrasos'); ?>
+        <?php echo pfNav($baseUrl.'/modules/relatorios/atrasos_faltas', 'fa-triangle-exclamation', 'Atrasos e Faltas', $activePage === 'rel_atrasos'); ?>
         <?php echo pfNav($baseUrl.'/modules/relatorios/horas_extras', 'fa-plus-square', 'Horas Extras', $activePage === 'rel_extras'); ?>
         <?php endif; ?>
 
         <!-- SEGURANÇA -->
         <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
         <div class="pf-nav-divider"></div>
-        <div class="pf-nav-section"><i class="fas fa-shield-alt"></i><span>Segurança</span></div>
+        <div class="pf-nav-section"><i class="fas fa-shield-halved"></i><span>Segurança</span></div>
         <?php echo pfNav($baseUrl.'/modules/auditoria/index', 'fa-history', 'Auditoria', $activePage === 'auditoria'); ?>
         <?php endif; ?>
 
@@ -145,7 +145,7 @@ $homeUrl = function_exists('appUrl')
         <div class="pf-nav-divider"></div>
         <div class="pf-nav-section"><i class="fas fa-bell"></i><span>Notificações</span></div>
         <?php echo pfNav($baseUrl.'/modules/notificacoes/index', 'fa-bell', 'Notificações', $activePage === 'notificacoes', ''); ?>
-        <?php echo pfNav($baseUrl.'/modules/notificacoes/config', 'fa-cog', 'Configurar Notif.', $activePage === 'notificacoes_config'); ?>
+        <?php echo pfNav($baseUrl.'/modules/notificacoes/config', 'fa-gear', 'Configurar Notif.', $activePage === 'notificacoes_config'); ?>
         <?php endif; ?>
 
     </nav>

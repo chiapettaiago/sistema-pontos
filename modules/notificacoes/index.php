@@ -73,10 +73,10 @@ $tipos = [
 ];
 
 $icones = [
-    'sistema' => 'fa-cog',
+    'sistema' => 'fa-gear',
     'ponto' => 'fa-fingerprint',
     'solicitacao' => 'fa-clipboard-list',
-    'alerta' => 'fa-exclamation-triangle',
+    'alerta' => 'fa-triangle-exclamation',
     'lembrete' => 'fa-bell'
 ];
 
@@ -90,7 +90,7 @@ $cores = [
 ?>
 <div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
     <div>
-        <h1><i class="fas fa-bell me-2 text-primary"></i>Notificações</h1>
+        <h1><i class="fas fa-bell me-2 text-secondary"></i>Notificações</h1>
         <p class="text-muted">Central de notificações do sistema</p>
     </div>
     <?php if (!empty($notificacoes_nao_lidas)): ?>
@@ -106,7 +106,7 @@ $cores = [
             <li class="list-group-item <?php echo !$n['lida'] ? 'list-group-item-light' : ''; ?>">
                 <div class="d-flex align-items-start gap-3">
                     <div class="mt-1">
-                        <i class="fas fa-bell <?php echo !$n['lida'] ? 'text-primary' : 'text-muted'; ?>"></i>
+                        <i class="fas fa-bell <?php echo !$n['lida'] ? 'text-secondary' : 'text-muted'; ?>"></i>
                     </div>
                     <div class="flex-grow-1">
                         <div class="fw-semibold <?php echo !$n['lida'] ? '' : 'text-muted'; ?>">

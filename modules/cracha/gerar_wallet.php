@@ -318,14 +318,14 @@ $data_validade = date('d/m/Y', strtotime('+1 year'));
     <div class="container">
         <div class="card">
             <div class="header">
-                <i class="fas fa-mobile-alt"></i>
+                <i class="fas fa-mobile-screen-button"></i>
                 <h1>Carteira Digital</h1>
                 <p>Adicione seu crachá à carteira do celular</p>
             </div>
             
             <div class="body">
                 <div class="info">
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-circle-info"></i>
                     <div>Tenha seu crachá sempre à mão, mesmo sem internet!</div>
                 </div>
                 
@@ -366,7 +366,7 @@ $data_validade = date('d/m/Y', strtotime('+1 year'));
                 
                 <!-- Instruções dinâmicas -->
                 <div id="instrucoes" class="instrucoes">
-                    <h4><i class="fas fa-mobile-alt"></i> Como adicionar:</h4>
+                    <h4><i class="fas fa-mobile-screen-button"></i> Como adicionar:</h4>
                     <ul>
                         <li>1. Abra a câmera do seu celular</li>
                         <li>2. Aponte para o QR Code acima</li>
@@ -403,7 +403,7 @@ $data_validade = date('d/m/Y', strtotime('+1 year'));
                         <li>5. O crachá estará disponível na sua Apple Wallet!</li>
                     </ul>
                     <p style="margin-top: 12px; font-size: 12px;">
-                        <i class="fas fa-check-circle"></i> Após adicionar, você pode acessar o crachá mesmo sem internet.
+                        <i class="fas fa-circle-check"></i> Após adicionar, você pode acessar o crachá mesmo sem internet.
                     </p>
                 `;
             } else if (tipo === 'android') {
@@ -417,7 +417,7 @@ $data_validade = date('d/m/Y', strtotime('+1 year'));
                         <li>5. O crachá estará disponível no Google Wallet!</li>
                     </ul>
                     <p style="margin-top: 12px; font-size: 12px;">
-                        <i class="fas fa-check-circle"></i> Após adicionar, você pode acessar o crachá rapidamente.
+                        <i class="fas fa-circle-check"></i> Após adicionar, você pode acessar o crachá rapidamente.
                     </p>
                 `;
             }

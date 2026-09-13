@@ -65,7 +65,7 @@ if ($usuarioTipoAtual === 'super_admin') {
 ?>
 <div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
     <div>
-        <h1><i class="fas fa-user-shield me-2 text-primary"></i>Usuários do Sistema</h1>
+        <h1><i class="fas fa-user-shield me-2 text-secondary"></i>Usuários do Sistema</h1>
         <p class="text-muted">Gerencie usuários administradores</p>
     </div>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUsuario">
@@ -111,7 +111,7 @@ if ($usuarioTipoAtual === 'super_admin') {
                                     data-email="<?php echo htmlspecialchars($u['email']); ?>"
                                     data-tipo="<?php echo $u['tipo']; ?>"
                                     data-bs-toggle="modal" data-bs-target="#modalUsuario">
-                                    <i class="fas fa-edit"></i>
+                                    <i class="fas fa-pen-to-square"></i>
                                 </button>
                             </div>
                         </td>
@@ -160,7 +160,7 @@ if ($usuarioTipoAtual === 'super_admin') {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i>Salvar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-floppy-disk me-1"></i>Salvar</button>
                 </div>
             </form>
         </div>

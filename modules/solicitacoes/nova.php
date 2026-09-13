@@ -49,7 +49,7 @@ $tipos = [
     'ferias' => ['nome' => 'Férias', 'icone' => 'fa-umbrella-beach', 'periodo' => true],
     'abono' => ['nome' => 'Abono', 'icone' => 'fa-coins', 'periodo' => true],
     'licenca' => ['nome' => 'Licença', 'icone' => 'fa-heartbeat', 'periodo' => true],
-    'justificativa' => ['nome' => 'Justificativa de Falta', 'icone' => 'fa-pencil-alt', 'periodo' => false],
+    'justificativa' => ['nome' => 'Justificativa de Falta', 'icone' => 'fa-pencil', 'periodo' => false],
     'alteracao_ponto' => ['nome' => 'Alteração de Ponto', 'icone' => 'fa-clock', 'periodo' => true]
 ];
 
@@ -323,7 +323,7 @@ small {
                 </div>
             <?php else: ?>
                 <div class="info-box">
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-circle-info"></i>
                     <div>
                         <strong>Atenção:</strong> Sua solicitação será analisada pela gestão. 
                         Você receberá uma notificação quando houver uma resposta.
@@ -352,12 +352,12 @@ small {
                     <div id="periodoFields" class="periodo-fields">
                         <div class="form-row">
                             <div class="form-group">
-                                <label><i class="fas fa-calendar-alt"></i> Data de Início</label>
+                                <label><i class="fas fa-calendar"></i> Data de Início</label>
                                 <input type="date" name="data_inicio" id="data_inicio">
                                 <small>Data em que o período começa</small>
                             </div>
                             <div class="form-group">
-                                <label><i class="fas fa-calendar-alt"></i> Data de Fim</label>
+                                <label><i class="fas fa-calendar"></i> Data de Fim</label>
                                 <input type="date" name="data_fim" id="data_fim">
                                 <small>Data em que o período termina</small>
                             </div>
@@ -375,7 +375,7 @@ small {
                             <i class="fas fa-paper-plane"></i> Enviar Solicitação
                         </button>
                         <a href="index" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Cancelar
+                            <i class="fas fa-xmark"></i> Cancelar
                         </a>
                     </div>
                 </form>

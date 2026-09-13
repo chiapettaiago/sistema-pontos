@@ -498,7 +498,7 @@ require_once '../../includes/header.php';
                     <div class="value"><?php echo $cpf_formatado ?: 'Não informado'; ?></div>
                 </div>
                 <div class="info-item">
-                    <i class="fas fa-calendar-alt"></i>
+                    <i class="fas fa-calendar"></i>
                     <div class="label">Admissão</div>
                     <div class="value"><?php echo $data_admissao; ?></div>
                 </div>

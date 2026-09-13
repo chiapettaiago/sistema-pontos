@@ -40,17 +40,17 @@ $dados_novos = $log['dados_novos'] ? json_decode($log['dados_novos'], true) : nu
 // Cores por ação
 $cores = [
     'INSERT' => ['bg' => '#d1fae5', 'text' => '#059669', 'icon' => 'fa-plus-circle'],
-    'UPDATE' => ['bg' => '#bfdbfe', 'text' => '#1e40af', 'icon' => 'fa-edit'],
-    'DELETE' => ['bg' => '#fee2e2', 'text' => '#dc2626', 'icon' => 'fa-trash-alt'],
-    'LOGIN' => ['bg' => '#d1fae5', 'text' => '#059669', 'icon' => 'fa-sign-in-alt'],
-    'LOGOUT' => ['bg' => '#fef3c7', 'text' => '#d97706', 'icon' => 'fa-sign-out-alt'],
+    'UPDATE' => ['bg' => '#bfdbfe', 'text' => '#1e40af', 'icon' => 'fa-pen-to-square'],
+    'DELETE' => ['bg' => '#fee2e2', 'text' => '#dc2626', 'icon' => 'fa-trash'],
+    'LOGIN' => ['bg' => '#d1fae5', 'text' => '#059669', 'icon' => 'fa-right-to-bracket'],
+    'LOGOUT' => ['bg' => '#fef3c7', 'text' => '#d97706', 'icon' => 'fa-right-from-bracket'],
     'VIEW' => ['bg' => '#e0e7ff', 'text' => '#4338ca', 'icon' => 'fa-eye'],
     'EXPORT' => ['bg' => '#fed7aa', 'text' => '#c2410c', 'icon' => 'fa-file-excel'],
     'BACKUP' => ['bg' => '#d1fae5', 'text' => '#059669', 'icon' => 'fa-database'],
-    'RESTORE' => ['bg' => '#fee2e2', 'text' => '#dc2626', 'icon' => 'fa-undo-alt']
+    'RESTORE' => ['bg' => '#fee2e2', 'text' => '#dc2626', 'icon' => 'fa-rotate-left']
 ];
 
-$cor = $cores[$log['acao']] ?? ['bg' => '#e5e7eb', 'text' => '#374151', 'icon' => 'fa-info-circle'];
+$cor = $cores[$log['acao']] ?? ['bg' => '#e5e7eb', 'text' => '#374151', 'icon' => 'fa-circle-info'];
 ?>
 
 <style>
@@ -248,7 +248,7 @@ $cor = $cores[$log['acao']] ?? ['bg' => '#e5e7eb', 'text' => '#374151', 'icon' =
             <!-- Informações Gerais -->
             <div class="info-grid">
                 <div class="info-card">
-                    <h4><i class="fas fa-info-circle"></i> Informações da Ação</h4>
+                    <h4><i class="fas fa-circle-info"></i> Informações da Ação</h4>
                     <div class="info-row">
                         <span class="info-label">Data/Hora:</span>
                         <span class="info-value"><?php echo date('d/m/Y H:i:s', strtotime($log['created_at'])); ?></span>
@@ -385,7 +385,7 @@ $cor = $cores[$log['acao']] ?? ['bg' => '#e5e7eb', 'text' => '#374151', 'icon' =
             <!-- Dados (para DELETE) -->
             <?php if ($log['acao'] == 'DELETE' && $dados_anteriores): ?>
             <div class="info-card" style="margin-bottom: 24px;">
-                <h4><i class="fas fa-trash-alt"></i> Dados Removidos</h4>
+                <h4><i class="fas fa-trash"></i> Dados Removidos</h4>
                 <table class="diff-table">
                     <thead>
                         <tr>

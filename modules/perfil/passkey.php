@@ -18,7 +18,7 @@ $stmt->execute([':tipo'=>$identidade['tipo'], ':id'=>$identidade['id']]);
 $dispositivos = $stmt->fetchAll();
 $baseUrl = rtrim(BASE_URL, '/');
 ?>
-<div class="pf-page-header"><h1><i class="fas fa-fingerprint me-2 text-primary"></i>Biometria do dispositivo</h1><p class="text-muted">Use impressão digital, reconhecimento do aparelho, Windows Hello ou PIN para entrar.</p></div>
+<div class="pf-page-header"><h1><i class="fas fa-fingerprint me-2 text-secondary"></i>Biometria do dispositivo</h1><p class="text-muted">Use impressão digital, reconhecimento do aparelho, Windows Hello ou PIN para entrar.</p></div>
 <div class="row g-4">
     <div class="col-lg-7"><div class="card"><div class="card-body p-4">
         <h2 class="h5">Cadastrar este dispositivo</h2>

@@ -122,7 +122,7 @@ require_once '../../includes/header.php';
 ?>
 <div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
     <div>
-        <h1><i class="fas fa-clipboard-check me-2 text-primary"></i>Gerenciar Solicitações</h1>
+        <h1><i class="fas fa-clipboard-check me-2 text-secondary"></i>Gerenciar Solicitações</h1>
         <p class="text-muted">Aprove ou reprove solicitações de funcionários</p>
     </div>
 </div>
@@ -146,7 +146,7 @@ require_once '../../includes/header.php';
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i>Filtrar</button>
-                <a href="?" class="btn btn-outline-secondary ms-1"><i class="fas fa-times"></i></a>
+                <a href="?" class="btn btn-outline-secondary ms-1"><i class="fas fa-xmark"></i></a>
             </div>
         </form>
     </div>
@@ -186,7 +186,7 @@ require_once '../../includes/header.php';
                                     <i class="fas fa-check"></i>
                                 </button></form>
                                 <form method="post" action="aprovar" class="d-inline" onsubmit="return confirm('Reprovar?')"><?= csrfField() ?><input type="hidden" name="id" value="<?php echo (int) $sol['id']; ?>"><input type="hidden" name="acao" value="rejeitar"><button type="submit" class="btn btn-danger">
-                                    <i class="fas fa-times"></i>
+                                    <i class="fas fa-xmark"></i>
                                 </button></form>
                             </div>
                             <?php else: ?>

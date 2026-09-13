@@ -266,7 +266,7 @@ session_start();
     <div class="container">
         <div class="card">
             <div class="icon">
-                <i class="fas fa-mobile-alt"></i>
+                <i class="fas fa-mobile-screen-button"></i>
             </div>
             <h1>Ponto pelo Celular</h1>
             <p class="subtitle">Registre seu ponto com biometria facial</p>
@@ -280,13 +280,13 @@ session_start();
             </div>
             
             <div id="gpsStatus" class="gps-status gps-error">
-                <i class="fas fa-map-marker-alt"></i>
+                <i class="fas fa-location-dot"></i>
                 <span>Capturando localização...</span>
             </div>
             
             <div class="status-grid" id="statusGrid">
                 <div class="status-item pending">
-                    <i class="fas fa-sign-in-alt"></i>
+                    <i class="fas fa-right-to-bracket"></i>
                     <span class="label">Entrada</span>
                     <span class="time" id="entradaHora">--:--</span>
                 </div>
@@ -296,12 +296,12 @@ session_start();
                     <span class="time" id="saidaAlmocoHora">--:--</span>
                 </div>
                 <div class="status-item pending">
-                    <i class="fas fa-undo-alt"></i>
+                    <i class="fas fa-rotate-left"></i>
                     <span class="label">Volta Almoço</span>
                     <span class="time" id="voltaAlmocoHora">--:--</span>
                 </div>
                 <div class="status-item pending">
-                    <i class="fas fa-sign-out-alt"></i>
+                    <i class="fas fa-right-from-bracket"></i>
                     <span class="label">Saída</span>
                     <span class="time" id="saidaHora">--:--</span>
                 </div>
@@ -309,7 +309,7 @@ session_start();
             
             <div id="botoesPonto">
                 <button class="btn-ponto btn-entrada" id="btnEntrada">
-                    <i class="fas fa-sign-in-alt"></i> Registrar Entrada
+                    <i class="fas fa-right-to-bracket"></i> Registrar Entrada
                 </button>
             </div>
         </div>
@@ -318,7 +318,7 @@ session_start();
     <!-- Modal de Autorização do Gerente -->
     <div id="modalAutorizacao" class="modal">
         <div class="modal-content">
-            <i class="fas fa-user-shield" style="font-size: 48px; color: #f59e0b; margin-bottom: 16px;"></i>
+            <i class="fas fa-user-shield" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
             <h3>Falha na Biometria</h3>
             <p>O reconhecimento facial falhou. Solicite a autorização do gerente.</p>
             <div class="qr-code" id="qrCodeAutorizacao">
@@ -381,7 +381,7 @@ session_start();
                 navigator.geolocation.getCurrentPosition(function(position) {
                     latitude = position.coords.latitude;
                     longitude = position.coords.longitude;
-                    gpsDiv.innerHTML = '<i class="fas fa-check-circle"></i> <span>Localização capturada ✓</span>';
+                    gpsDiv.innerHTML = '<i class="fas fa-circle-check"></i> <span>Localização capturada ✓</span>';
                     gpsDiv.className = 'gps-status gps-ok';
                 }, function(error) {
                     let msg = '';
@@ -391,11 +391,11 @@ session_start();
                         case 3: msg = 'Timeout'; break;
                         default: msg = 'Erro';
                     }
-                    gpsDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>GPS: ' + msg + '</span>';
+                    gpsDiv.innerHTML = '<i class="fas fa-triangle-exclamation"></i> <span>GPS: ' + msg + '</span>';
                     gpsDiv.className = 'gps-status gps-error';
                 });
             } else {
-                gpsDiv.innerHTML = '<i class="fas fa-times-circle"></i> <span>GPS não suportado</span>';
+                gpsDiv.innerHTML = '<i class="fas fa-circle-xmark"></i> <span>GPS não suportado</span>';
                 gpsDiv.className = 'gps-status gps-error';
             }
         }
@@ -426,23 +426,23 @@ session_start();
             botoesDiv.innerHTML = '';
             
             if (proximoTipo === 'finalizado') {
-                botoesDiv.innerHTML = '<button class="btn-ponto btn-desabilitado" disabled><i class="fas fa-check-circle"></i> Dia Finalizado!</button>';
+                botoesDiv.innerHTML = '<button class="btn-ponto btn-desabilitado" disabled><i class="fas fa-circle-check"></i> Dia Finalizado!</button>';
                 return;
             }
             
             let btnHTML = '';
             switch(proximoTipo) {
                 case 'entrada':
-                    btnHTML = '<button class="btn-ponto btn-entrada" onclick="tentarRegistrarPonto(\'entrada\')"><i class="fas fa-sign-in-alt"></i> Registrar Entrada</button>';
+                    btnHTML = '<button class="btn-ponto btn-entrada" onclick="tentarRegistrarPonto(\'entrada\')"><i class="fas fa-right-to-bracket"></i> Registrar Entrada</button>';
                     break;
                 case 'saida_almoco':
                     btnHTML = '<button class="btn-ponto btn-almoco" onclick="tentarRegistrarPonto(\'saida_almoco\')"><i class="fas fa-utensils"></i> Registrar Saída para Almoço</button>';
                     break;
                 case 'volta_almoco':
-                    btnHTML = '<button class="btn-ponto btn-volta" onclick="tentarRegistrarPonto(\'volta_almoco\')"><i class="fas fa-undo-alt"></i> Registrar Volta do Almoço</button>';
+                    btnHTML = '<button class="btn-ponto btn-volta" onclick="tentarRegistrarPonto(\'volta_almoco\')"><i class="fas fa-rotate-left"></i> Registrar Volta do Almoço</button>';
                     break;
                 case 'saida':
-                    btnHTML = '<button class="btn-ponto btn-saida" onclick="tentarRegistrarPonto(\'saida\')"><i class="fas fa-sign-out-alt"></i> Registrar Saída</button>';
+                    btnHTML = '<button class="btn-ponto btn-saida" onclick="tentarRegistrarPonto(\'saida\')"><i class="fas fa-right-from-bracket"></i> Registrar Saída</button>';
                     break;
             }
             botoesDiv.innerHTML = btnHTML;

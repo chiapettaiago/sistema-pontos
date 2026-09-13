@@ -38,7 +38,7 @@ $stmt->execute([':empresa_id' => $empresa_id]);
 $solicitacoes_pendentes = $stmt->fetch()['total'];
 ?>
 <div class="pf-page-header">
-    <h1><i class="fas fa-chart-bar me-2 text-primary"></i>Relatórios</h1>
+    <h1><i class="fas fa-chart-bar me-2 text-secondary"></i>Relatórios</h1>
     <p class="text-muted">Acesse todos os relatórios do sistema</p>
 </div>
 
@@ -72,7 +72,7 @@ $solicitacoes_pendentes = $stmt->fetch()['total'];
     <div class="col-md-6 col-xl-4">
         <a href="atrasos_faltas" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
             <div class="d-flex align-items-center gap-3 mb-3">
-                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);"><i class="fas fa-exclamation-triangle text-white"></i></div>
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);"><i class="fas fa-triangle-exclamation text-white"></i></div>
                 <h5 class="mb-0 fw-semibold">Atrasos e Faltas</h5>
             </div>
             <p class="text-muted small mb-0">Controle de atrasos, faltas e ausências</p>

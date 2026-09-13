@@ -124,7 +124,7 @@ $stats = $statsStmt->fetch();
 <!-- PAGE HEADER -->
 <div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
     <div>
-        <h1><i class="fas fa-users me-2 text-primary"></i>Funcionários</h1>
+        <h1><i class="fas fa-users me-2 text-secondary"></i>Funcionários</h1>
         <p class="text-muted">Gerencie os funcionários da empresa</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
@@ -186,7 +186,7 @@ $stats = $statsStmt->fetch();
     <div class="col-6 col-lg-3">
         <div class="card pf-stat-card p-3">
             <div class="d-flex align-items-center gap-3">
-                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);"><i class="fas fa-user-times text-white"></i></div>
+                <div class="pf-stat-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);"><i class="fas fa-user-xmark text-white"></i></div>
                 <div>
                     <div class="fs-3 fw-bold"><?php echo $stats['desligados'] ?? 0; ?></div>
                     <div class="text-muted small">Desligados</div>
@@ -203,7 +203,7 @@ $stats = $statsStmt->fetch();
             <div class="col-sm-6 col-lg-3">
                 <label class="form-label">Buscar</label>
                 <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <span class="input-group-text"><i class="fas fa-magnifying-glass"></i></span>
                     <input type="text" name="busca" class="form-control" placeholder="Nome, email, matrícula..." value="<?php echo htmlspecialchars($_GET['busca'] ?? ''); ?>">
                 </div>
             </div>
@@ -223,7 +223,7 @@ $stats = $statsStmt->fetch();
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i>Filtrar</button>
-                <a href="?" class="btn btn-outline-secondary ms-1"><i class="fas fa-times"></i></a>
+                <a href="?" class="btn btn-outline-secondary ms-1"><i class="fas fa-xmark"></i></a>
             </div>
         </form>
     </div>
@@ -233,7 +233,7 @@ $stats = $statsStmt->fetch();
 <div class="card pf-table-card">
     <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
         <span class="fw-semibold">
-            <i class="fas fa-list me-2 text-primary"></i>Lista de Funcionários
+            <i class="fas fa-list me-2 text-secondary"></i>Lista de Funcionários
             <span class="badge bg-primary ms-2"><?php echo count($funcionarios); ?></span>
         </span>
     </div>
@@ -286,7 +286,7 @@ $stats = $statsStmt->fetch();
                                 <?php endif; ?>
                                 <?php if (canEditFuncionario((int) $func['id'])): ?>
                                 <a href="editar?id=<?php echo $func['id']; ?>" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Editar">
-                                    <i class="fas fa-edit"></i>
+                                    <i class="fas fa-pen-to-square"></i>
                                 </a>
                                 <?php if (hasPermission('excluir_funcionarios')): ?><form method="post" action="excluir" class="d-inline" onsubmit="return confirm('Excluir funcionário?')"><?= csrfField() ?><input type="hidden" name="id" value="<?= (int) $func['id'] ?>"><input type="hidden" name="confirm" value="sim"><button type="submit" class="btn btn-outline-danger" data-bs-toggle="tooltip" title="Excluir"><i class="fas fa-trash"></i></button></form><?php endif; ?>
                                 <?php endif; ?>

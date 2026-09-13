@@ -208,10 +208,10 @@ function getSaldoColorBanco($minutos) {
         <div class="filter-group">
             <label>&nbsp;</label>
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-search"></i> Filtrar
+                <i class="fas fa-magnifying-glass"></i> Filtrar
             </button>
             <a href="banco_horas" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Limpar
+                <i class="fas fa-xmark"></i> Limpar
             </a>
         </div>
     </form>
@@ -254,7 +254,7 @@ function getSaldoColorBanco($minutos) {
                 <?php if (empty($resumo_funcionarios)): ?>
                 <tr class="fade-in">
                     <td colspan="6" style="text-align: center; padding: 60px;">
-                        <i class="fas fa-chart-line" style="font-size: 48px; color: #ccc;"></i>
+                        <i class="fas fa-chart-line" style="font-size: 48px; color: var(--text-muted);"></i>
                         <p style="margin-top: 10px;">Nenhum registro encontrado</p>
                     </td>
                 </tr>
@@ -267,7 +267,7 @@ function getSaldoColorBanco($minutos) {
 <!-- Detalhamento Mensal -->
 <div class="table-card">
     <div class="table-header">
-        <h3><i class="fas fa-calendar-alt"></i> Detalhamento Mensal</h3>
+        <h3><i class="fas fa-calendar"></i> Detalhamento Mensal</h3>
     </div>
     <div class="table-responsive">
         <table class="data-table" id="tabelaDetalhada">
@@ -302,7 +302,7 @@ function getSaldoColorBanco($minutos) {
                 <?php if (empty($saldos)): ?>
                 <tr class="fade-in">
                     <td colspan="7" style="text-align: center; padding: 60px;">
-                        <i class="fas fa-chart-line" style="font-size: 48px; color: #ccc;"></i>
+                        <i class="fas fa-chart-line" style="font-size: 48px; color: var(--text-muted);"></i>
                         <p style="margin-top: 10px;">Nenhum registro encontrado</p>
                     </td>
                 </tr>

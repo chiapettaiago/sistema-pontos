@@ -229,7 +229,7 @@ $administradores = $stmt->fetchAll();
     </div>
     <div class="module-actions">
         <a href="editar?id=<?php echo $id; ?>" class="btn btn-primary">
-            <i class="fas fa-edit"></i> Editar
+            <i class="fas fa-pen-to-square"></i> Editar
         </a>
         <a href="index" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Voltar
@@ -240,7 +240,7 @@ $administradores = $stmt->fetchAll();
 <div class="empresa-detalhes">
     <!-- Informações Básicas -->
     <div class="detalhe-card fade-in">
-        <h3><i class="fas fa-info-circle"></i> Informações Básicas</h3>
+        <h3><i class="fas fa-circle-info"></i> Informações Básicas</h3>
         <div class="detalhe-row">
             <span class="detalhe-label">Nome:</span>
             <span class="detalhe-value"><?php echo htmlspecialchars($empresa['nome']); ?></span>
@@ -279,7 +279,7 @@ $administradores = $stmt->fetchAll();
     
     <!-- Endereço Completo -->
     <div class="detalhe-card fade-in">
-        <h3><i class="fas fa-map-marker-alt"></i> Endereço</h3>
+        <h3><i class="fas fa-location-dot"></i> Endereço</h3>
         <div class="detalhe-row">
             <span class="detalhe-label">CEP:</span>
             <span class="detalhe-value"><?php echo htmlspecialchars($empresa['cep'] ?? '--'); ?></span>

@@ -265,18 +265,18 @@ $stats = $stmt->fetchAll();
 <div class="escala-container">
     <div class="module-header">
         <div class="module-title">
-            <h2><i class="fas fa-calendar-alt"></i> Escala de Trabalho</h2>
+            <h2><i class="fas fa-calendar"></i> Escala de Trabalho</h2>
             <p>Gerencie as escalas dos funcionários</p>
         </div>
         <div class="module-actions">
             <a href="configurar" class="btn btn-primary">
-                <i class="fas fa-cog"></i> Configurar Tipos
+                <i class="fas fa-gear"></i> Configurar Tipos
             </a>
             <a href="cadastrar" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Nova Escala
             </a>
             <a href="calendario" class="btn btn-secondary">
-                <i class="fas fa-calendar-alt"></i> Calendário
+                <i class="fas fa-calendar"></i> Calendário
             </a>
         </div>
     </div>
@@ -366,7 +366,7 @@ $stats = $stmt->fetchAll();
                                 <td><?php echo $escala['data_fim'] ? date('d/m/Y', strtotime($escala['data_fim'])) : 'Atual'; ?></td>
                                 <td>
                                     <a href="editar?id=<?php echo $escala['id']; ?>" class="btn btn-edit">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="fas fa-pen-to-square"></i>
                                     </a>
                                     <a href="calendario?funcionario=<?php echo $escala['funcionario_id']; ?>" class="btn btn-secondary">
                                         <i class="fas fa-calendar"></i>

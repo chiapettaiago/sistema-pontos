@@ -63,7 +63,7 @@ $chavePontoPublico = $assinaturaPontoPublico !== '' ? $expiraPontoPublico . '.' 
 $basePontoPublico = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http')
     . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . rtrim(BASE_URL, '/');
 $urlPontoPublico = $basePontoPublico
-    . '/ponto-publico/?empresa=' . $empresaPontoId . '&chave=' . $chavePontoPublico;
+    . '/ponto-publico?empresa=' . $empresaPontoId . '&chave=' . $chavePontoPublico;
 
 // Buscar pontos de hoje - IGNORANDO horários inválidos
 $stmt = $db->prepare("SELECT tipo, data_hora FROM pontos 
@@ -150,13 +150,13 @@ $nomes_botao = [
 ];
 
 $icones_botao = [
-    'entrada' => 'fa-sign-in-alt',
+    'entrada' => 'fa-right-to-bracket',
     'saida_almoco' => 'fa-utensils',
-    'volta_almoco' => 'fa-undo-alt',
-    'saida' => 'fa-sign-out-alt',
-    'extra_entrada' => 'fa-sign-in-alt',
-    'extra_saida' => 'fa-sign-out-alt',
-    'finalizado' => 'fa-check-circle'
+    'volta_almoco' => 'fa-rotate-left',
+    'saida' => 'fa-right-from-bracket',
+    'extra_entrada' => 'fa-right-to-bracket',
+    'extra_saida' => 'fa-right-from-bracket',
+    'finalizado' => 'fa-circle-check'
 ];
 
 $cores_botao = [
@@ -289,7 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
         .btn-manual:hover { transform: translateY(-2px); color: white; }
         .pf-footer-info {
             font-size: 13px;
-            color: #6c757d;
+            color: var(--text-muted);
             margin-top: 25px;
             padding-bottom: 20px;
             border-bottom: 1px solid #e9ecef;
@@ -317,7 +317,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
         <div class="opacity-75" style="font-size: 14px; margin-bottom: 15px;">Registre sua jornada de trabalho</div>
         <div class="d-flex justify-content-center gap-3">
             <div class="badge rounded-pill" style="background: rgba(255,255,255,0.2); font-size: 14px; padding: 8px 16px; font-weight: normal;">
-                <i class="far fa-calendar-alt me-2"></i><span id="pfDataDisplay">--/--/----</span>
+                <i class="far fa-calendar me-2"></i><span id="pfDataDisplay">--/--/----</span>
             </div>
             <div class="badge rounded-pill" style="background: rgba(255,255,255,0.2); font-size: 14px; padding: 8px 16px; font-weight: normal;">
                 <i class="far fa-clock me-2"></i><span id="pfRelógioDisplay">--:--:--</span>
@@ -337,7 +337,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
         <!-- Employee Info -->
         <div class="pf-emp-box">
             <h5 class="fw-bold mb-1" style="color: #343a40; font-size: 18px;"><?php echo htmlspecialchars($funcionario['nome'] ?? ''); ?></h5>
-            <div style="font-size: 13px; color: #6c757d; margin-bottom: 4px;">
+            <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">
                 <i class="far fa-id-badge me-1"></i> Matrícula: <?php echo htmlspecialchars($funcionario['matricula'] ?? 'Não informada'); ?>
             </div>
             <div style="font-size: 13px; color: #667eea; font-weight: 500;">
@@ -349,27 +349,27 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
         <div class="pf-grid">
             <?php
             $itens_ponto = [
-                'entrada' => ['icon' => 'fa-sign-in-alt', 'label' => 'Entrada'],
+                'entrada' => ['icon' => 'fa-right-to-bracket', 'label' => 'Entrada'],
                 'saida_almoco' => ['icon' => 'fa-utensils', 'label' => 'Saída Almoço'],
                 'volta_almoco' => ['icon' => 'fa-undo', 'label' => 'Volta Almoço'],
-                'saida' => ['icon' => 'fa-sign-out-alt', 'label' => 'Saída']
+                'saida' => ['icon' => 'fa-right-from-bracket', 'label' => 'Saída']
             ];
             
             // Mostrar horas extras se já houve saída registrada ou se já existe ponto extra
             if (in_array('saida', $tiposRegistrados) || in_array('extra_entrada', $tiposRegistrados) || in_array('extra_saida', $tiposRegistrados)) {
-                $itens_ponto['extra_entrada'] = ['icon' => 'fa-sign-in-alt', 'label' => 'Entrada Extra'];
-                $itens_ponto['extra_saida'] = ['icon' => 'fa-sign-out-alt', 'label' => 'Saída Extra'];
+                $itens_ponto['extra_entrada'] = ['icon' => 'fa-right-to-bracket', 'label' => 'Entrada Extra'];
+                $itens_ponto['extra_saida'] = ['icon' => 'fa-right-from-bracket', 'label' => 'Saída Extra'];
             }
 
             foreach($itens_ponto as $tipo => $dados) {
                 $registrado = in_array($tipo, $tiposRegistrados);
                 $hora = $registrado ? $horarios[$tipo] : '--:--';
-                $iconColor = $registrado ? '#7c6df7' : '#adb5bd';
-                $textColor = $registrado ? '#343a40' : '#adb5bd';
+                $iconColor = $registrado ? 'var(--text-primary)' : 'var(--text-muted)';
+                $textColor = $registrado ? 'var(--text-primary)' : 'var(--text-muted)';
                 
                 echo '<div class="pf-grid-item">';
                 echo '<i class="fas '.$dados['icon'].' mb-2" style="font-size: 24px; color: '.$iconColor.';"></i>';
-                echo '<div style="font-size: 11px; color: #6c757d; margin-bottom: 5px; font-weight: 500;">'.$dados['label'].'</div>';
+                echo '<div style="font-size: 11px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500;">'.$dados['label'].'</div>';
                 echo '<div style="font-size: 15px; font-weight: 700; color: '.$textColor.';">'.$hora.'</div>';
                 echo '</div>';
             }
@@ -384,11 +384,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
                 <?php echo htmlspecialchars($nomes_botao[$proximo_tipo] ?? 'Registrar ponto'); ?> com reconhecimento facial
             </a>
             <div class="pf-biometric-hint">
-                <i class="fas fa-shield-alt me-1"></i> Por segurança, o registro manual está desativado.
+                <i class="fas fa-shield-halved me-1"></i> Por segurança, o registro manual está desativado.
             </div>
             <?php else: ?>
             <button type="button" class="btn-manual" disabled style="opacity: 0.6; cursor: not-allowed; box-shadow: none;">
-                <i class="fas fa-check-circle me-2"></i> Dia Finalizado!
+                <i class="fas fa-circle-check me-2"></i> Dia Finalizado!
             </button>
             <?php endif; ?>
         </div>
@@ -396,18 +396,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
         <!-- Footer Info -->
         <div class="pf-footer-info">
             <div class="d-flex align-items-center mb-2">
-                <i class="fas fa-info-circle me-2" style="color: #7c6df7;"></i> Horário permitido: 06:00 às 22:00
+                <i class="fas fa-circle-info me-2" style="color: var(--text-muted);"></i> Horário permitido: 06:00 às 22:00
             </div>
             <div class="d-flex align-items-center" id="locStatus">
-                <i class="fas fa-spinner fa-spin me-2" style="color: #7c6df7;"></i> Capturando localização...
+                <i class="fas fa-spinner fa-spin me-2" style="color: var(--text-muted);"></i> Capturando localização...
             </div>
         </div>
 
         <!-- Bottom Navigation -->
         <div class="d-flex justify-content-center gap-2 mt-4">
-            <a href="extrato" class="pf-nav-btn"><i class="fas fa-calendar-alt me-1"></i> Meu Extrato</a>
+            <a href="extrato" class="pf-nav-btn"><i class="fas fa-calendar me-1"></i> Meu Extrato</a>
             <a href="#" class="pf-nav-btn"><i class="fas fa-clipboard-list me-1"></i> Solicitações</a>
-            <a href="<?php echo htmlspecialchars(BASE_URL . '/logout'); ?>" class="pf-nav-btn"><i class="fas fa-sign-out-alt me-1"></i> Sair</a>
+            <a href="<?php echo htmlspecialchars(BASE_URL . '/logout'); ?>" class="pf-nav-btn"><i class="fas fa-right-from-bracket me-1"></i> Sair</a>
         </div>
     </div>
 </div>
@@ -434,18 +434,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             if(lonEl) lonEl.value = pos.coords.longitude;
             var locEl = document.getElementById('locStatus');
             if (locEl) {
-                locEl.innerHTML = '<i class="fas fa-check-circle me-2" style="color: #7c6df7;"></i> Localização capturada';
+                locEl.innerHTML = '<i class="fas fa-circle-check me-2" style="color: var(--text-muted);"></i> Localização capturada';
             }
         }, function(err) {
             var locEl = document.getElementById('locStatus');
             if (locEl) {
-                locEl.innerHTML = '<i class="fas fa-exclamation-triangle me-2 text-warning"></i> Localização não permitida';
+                locEl.innerHTML = '<i class="fas fa-triangle-exclamation me-2 text-secondary"></i> Localização não permitida';
             }
         });
     } else {
         var locEl = document.getElementById('locStatus');
         if (locEl) {
-            locEl.innerHTML = '<i class="fas fa-exclamation-circle me-2 text-danger"></i> Localização não suportada';
+            locEl.innerHTML = '<i class="fas fa-circle-exclamation me-2 text-secondary"></i> Localização não suportada';
         }
     }
 })();

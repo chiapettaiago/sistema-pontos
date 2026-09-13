@@ -392,7 +392,7 @@ function formatarHorasBanco($horas) {
     <!-- Informações Adicionais -->
     <div class="actions-card" style="margin-top: 24px; padding: 16px; background: var(--bg-secondary); border-radius: 16px;">
         <div style="font-size: 12px; color: var(--text-secondary);">
-            <strong><i class="fas fa-info-circle"></i> Informações:</strong><br>
+            <strong><i class="fas fa-circle-info"></i> Informações:</strong><br>
             • Carga horária diária considerada: <strong><?php echo $carga_diaria; ?>h</strong><br>
             • Saldo positivo = Horas extras a receber<br>
             • Saldo negativo = Horas a compensar

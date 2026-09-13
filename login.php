@@ -46,34 +46,286 @@ $csrf_token=generateCSRFToken(); $baseUrl=rtrim(BASE_URL,'/');
 ?>
 <!doctype html>
 <html lang="pt-BR"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Entrar · Ponto Fácil</title>
-<link rel="icon" type="image/svg+xml" href="<?= $baseUrl ?>/assets/favicon.svg"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f6f9">
+<title>Entrar · Ponto Fácil</title>
+<link rel="icon" type="image/svg+xml" href="<?= $baseUrl ?>/assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
-:root{--ink:#eaf0ff;--muted:#9eafd1;--card:rgba(12,22,46,.76);--line:rgba(255,255,255,.13);--accent:#7c9cff;--success:#54e0b4}*{box-sizing:border-box}body{min-height:100vh;margin:0;font-family:'DM Sans',sans-serif;color:var(--ink);background:#081125;overflow-x:hidden}body:before,body:after{content:'';position:fixed;width:46vw;height:46vw;border-radius:50%;filter:blur(35px);pointer-events:none;opacity:.45}body:before{background:#435be7;top:-22vw;left:-12vw}body:after{background:#8d3cb8;right:-18vw;bottom:-27vw}.shell{position:relative;z-index:1;width:min(1120px,100%);min-height:100vh;margin:auto;padding:28px;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:72px}.brand{max-width:500px}.brand-mark{display:grid;place-items:center;width:58px;height:58px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.08);font-size:23px}h1{margin:25px 0 12px;font-size:clamp(34px,5vw,56px);letter-spacing:-.055em;line-height:1.03}.brand p{margin:0;max-width:415px;color:var(--muted);font-size:17px;line-height:1.55}.highlights{display:flex;gap:22px;margin-top:36px;color:#c8d4ef;font-size:13px}.highlights i{color:var(--success);margin-right:6px}.card{background:var(--card);border:1px solid var(--line);backdrop-filter:blur(24px);border-radius:28px;padding:28px;box-shadow:0 26px 70px rgba(0,0,0,.28)}.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}.card-head h2{margin:0;font-size:21px;letter-spacing:-.03em}.secure{color:var(--muted);font-size:12px}.secure i{color:var(--success);margin-right:5px}.camera{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:20px;background:#030916;border:1px solid rgba(255,255,255,.12)}video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}.face-guide{position:absolute;width:46%;aspect-ratio:1;top:45%;left:50%;transform:translate(-50%,-50%);border:2px solid rgba(255,255,255,.75);border-radius:48% 48% 44% 44%;box-shadow:0 0 0 999px rgba(0,0,0,.1),0 0 28px rgba(124,156,255,.5);transition:.25s}.camera.detected .face-guide{border-color:var(--success);box-shadow:0 0 0 999px rgba(0,0,0,.1),0 0 30px rgba(84,224,180,.7)}.camera-label{position:absolute;bottom:12px;left:12px;right:12px;padding:10px 12px;border-radius:12px;background:rgba(3,9,22,.62);font-size:13px;text-align:center;backdrop-filter:blur(8px)}.status{display:flex;align-items:center;gap:9px;min-height:43px;margin:14px 0;padding:10px 12px;border-radius:12px;background:rgba(124,156,255,.1);color:#cbd7ff;font-size:13px}.status.success{background:rgba(84,224,180,.11);color:#a8f1d7}.status.error{background:rgba(255,125,139,.12);color:#ffc1c9}.status i{width:16px;text-align:center}button{font:inherit}.primary{width:100%;min-height:52px;border:0;border-radius:14px;color:#071021;background:linear-gradient(135deg,#a8bcff,#6b8cff);font-weight:700;cursor:pointer;transition:transform .2s,filter .2s}.primary:hover{transform:translateY(-1px);filter:brightness(1.07)}.primary:disabled{opacity:.65;cursor:wait;transform:none}.divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;margin:19px 0}.divider:before,.divider:after{content:'';height:1px;flex:1;background:var(--line)}.password-toggle{width:100%;padding:0;border:0;background:transparent;color:#cbd7ff;font-weight:600;cursor:pointer}.password{display:none;margin-top:17px}.password.open{display:block}label{display:block;margin:0 0 7px;color:#cbd7ef;font-size:13px;font-weight:600}.field{position:relative;margin-bottom:14px}.field i{position:absolute;left:14px;top:39px;color:var(--muted);font-size:14px}.field input{width:100%;height:49px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.06);color:#fff;outline:0;padding:0 14px 0 40px;font:inherit}.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,156,255,.13)}.alert{margin-bottom:15px;padding:11px 13px;border-radius:12px;background:rgba(255,125,139,.12);color:#ffc1c9;font-size:13px}.footer{margin:18px 0 0;color:var(--muted);font-size:12px;text-align:center}@media(max-width:800px){.shell{grid-template-columns:1fr;gap:28px;padding:25px 18px;align-content:center}.brand{text-align:center;margin:auto}.brand-mark{margin:auto}h1{font-size:37px;margin-top:18px}.highlights{justify-content:center;margin-top:22px;flex-wrap:wrap}.card{width:min(500px,100%);margin:auto;padding:21px;border-radius:23px}}@media(max-width:380px){.highlights{gap:10px;font-size:11px}.card{padding:16px}}
-html,body{height:100%;overflow:hidden}.shell{height:100dvh;min-height:0}html.password-open,html.password-open body{overflow-y:auto}html.password-open .shell{height:auto;min-height:100dvh;overflow:visible}@media(min-width:801px) and (max-height:700px){.shell{padding:16px 28px;gap:48px}.card{padding:22px}.camera{height:min(40dvh,250px);aspect-ratio:auto}.card-head{margin-bottom:12px}.status{margin:9px 0;min-height:38px}.primary{min-height:46px}.divider{margin:12px 0}.password{margin-top:12px}.footer{margin:9px 0 0}.highlights{margin-top:24px}}@media(max-width:800px){.shell{height:100dvh;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:12px;padding:12px}.brand-mark{width:44px;height:44px;border-radius:14px}.brand h1{font-size:27px;margin:10px 0 0}.brand p,.highlights{display:none}.card{padding:16px;width:min(500px,100%)}.camera{height:min(34dvh,240px);aspect-ratio:auto}.card-head{margin-bottom:12px}.status{margin:9px 0;min-height:38px}.divider{margin:11px 0}.footer{margin:10px 0 0}}@media(max-width:800px) and (max-height:620px){.brand{display:none}.camera{height:min(31dvh,180px)}.footer{display:none}.card{padding:14px}.primary{min-height:46px}}
-.status{min-height:50px;padding:12px 14px;border:1px solid rgba(124,156,255,.24);font-size:14.5px;font-weight:600;line-height:1.4;letter-spacing:.005em;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}.status span{display:block;min-width:0}.status i{flex:0 0 20px;width:20px;font-size:17px}.status.success{background:rgba(22,101,82,.38);border-color:rgba(110,231,183,.4);color:#d1fae5;box-shadow:0 8px 24px rgba(16,185,129,.1),inset 0 1px 0 rgba(255,255,255,.06)}.status.success i{color:#6ee7b7}.status.error{background:rgba(127,29,29,.34);border-color:rgba(252,165,165,.34);color:#fee2e2}.camera-label{font-size:14px;font-weight:600;line-height:1.4;color:#f8fafc;background:rgba(3,9,22,.78)}
-</style>
-<style>
-/* Tique-inspired public entry screen, aligned with the authenticated UI. */
-:root{--ink:#424246;--muted:#7d7d82;--card:#fff;--line:#e8e8eb;--accent:#75009f;--success:#18bca8}
-body{color:var(--ink);background:#f7f7f8}
-body:before{width:42vw;height:42vw;background:#75009f;top:-28vw;left:-15vw;opacity:.09;filter:blur(45px)}
-body:after{width:38vw;height:38vw;background:#18bca8;right:-22vw;bottom:-25vw;opacity:.1;filter:blur(45px)}
-.brand-mark{border:0;border-radius:50%;background:#75009f;color:#fff;box-shadow:0 12px 30px rgba(117,0,159,.22)}
-.brand p{color:var(--muted)}
-.highlights{color:#626267}.highlights i{color:var(--success)}
-.card{border:0;background:#fff;backdrop-filter:none;border-radius:28px;box-shadow:0 18px 55px rgba(52,36,56,.1)}
-.secure{color:var(--muted)}.secure i{color:var(--success)}
-.camera{border-color:#e4e4e7;background:#171419}
-.status{border-color:rgba(117,0,159,.15);background:rgba(117,0,159,.06);color:#65008d;box-shadow:none}
-.status.success{background:rgba(24,188,168,.12);border-color:rgba(24,188,168,.22);color:#087f72;box-shadow:none}.status.success i{color:#18a996}
-.status.error{background:rgba(242,100,106,.12);border-color:rgba(242,100,106,.22);color:#b83d43}
-.primary{border-radius:999px;color:#fff;background:#75009f;box-shadow:0 8px 20px rgba(117,0,159,.2)}
-.password-toggle{color:#75009f}.divider{color:var(--muted)}.divider:before,.divider:after{background:var(--line)}
-label{color:#55555a}.field i{color:var(--muted)}
-.field input{border-color:var(--line);background:#f1f1f3;color:var(--ink)}
-.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(117,0,159,.1)}
-.alert{background:rgba(242,100,106,.12);color:#b83d43}.footer{color:var(--muted)}
+/* Tela de login pública — paleta e formas alinhadas ao design system do app (style.css). */
+:root {
+    --pf-primary: #6d28d9;
+    --pf-primary-strong: #581c87;
+    --pf-secondary: #0f9f91;
+    --pf-accent: #8b5cf6;
+    --pf-gradient: linear-gradient(135deg, #581c87 0%, #7c3aed 52%, #0f9f91 125%);
+    --ink: #28232d;
+    --muted: #7f7787;
+    --card: #ffffff;
+    --line: #e7e1e9;
+    --bg-tertiary: #f0edf3;
+    --success: #0f9f91;
+    --danger: #f2646a;
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+    margin: 0;
+    min-height: 100dvh;
+    font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--ink);
+    background: #f7f6f9;
+    letter-spacing: -.005em;
+}
+
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    width: 44vw;
+    height: 44vw;
+    max-width: 620px;
+    max-height: 620px;
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+}
+body::before { background: var(--pf-primary); opacity: .10; top: -20vw; left: -14vw; }
+body::after  { background: var(--pf-secondary); opacity: .10; right: -18vw; bottom: -22vw; }
+
+.shell {
+    position: relative;
+    z-index: 1;
+    width: min(1120px, 100%);
+    min-height: 100dvh;
+    margin: auto;
+    padding: clamp(16px, 4vw, 32px);
+    padding-block: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    align-items: center;
+    gap: clamp(24px, 5vw, 72px);
+}
+.shell > * { min-width: 0; max-width: 100%; }
+
+/* Coluna institucional */
+.brand { max-width: 480px; }
+.brand-mark {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--pf-gradient);
+    color: #fff;
+    font-size: 22px;
+    box-shadow: 0 12px 30px rgba(109, 40, 217, .22);
+}
+.brand h1 {
+    margin: 22px 0 12px;
+    font-size: clamp(30px, 4.4vw, 50px);
+    font-weight: 800;
+    letter-spacing: -.035em;
+    line-height: 1.06;
+    color: var(--ink);
+}
+.brand p { margin: 0; max-width: 420px; color: var(--muted); font-size: 16px; line-height: 1.6; }
+.highlights { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 32px; color: #55505c; font-size: 13px; }
+.highlights i { color: var(--success); margin-right: 6px; }
+
+/* Cartão de acesso */
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    padding: 28px;
+    box-shadow: 0 20px 60px rgba(45, 27, 51, .10);
+}
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 18px; }
+.card-head h2 { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -.02em; color: var(--ink); }
+.secure { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); font-size: 12px; white-space: nowrap; }
+.secure i { color: var(--success); }
+
+.camera {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #171419;
+    border: 1px solid var(--line);
+}
+video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); display: block; }
+.face-guide {
+    position: absolute;
+    width: 46%;
+    aspect-ratio: 1;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid rgba(255, 255, 255, .75);
+    border-radius: 48% 48% 44% 44%;
+    box-shadow: 0 0 0 999px rgba(0, 0, 0, .18);
+    transition: .25s;
+}
+.camera.detected .face-guide { border-color: var(--success); box-shadow: 0 0 0 999px rgba(0, 0, 0, .18), 0 0 30px rgba(15, 159, 145, .55); }
+.camera-label {
+    position: absolute;
+    inset: auto 12px 12px;
+    padding: 9px 12px;
+    border-radius: 12px;
+    background: rgba(23, 20, 25, .78);
+    color: #f8fafc;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+    backdrop-filter: blur(8px);
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 46px;
+    margin: 14px 0;
+    padding: 11px 13px;
+    border: 1px solid rgba(109, 40, 217, .16);
+    border-radius: 12px;
+    background: rgba(109, 40, 217, .06);
+    color: var(--pf-primary-strong);
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+.status i { flex: 0 0 18px; width: 18px; text-align: center; font-size: 15px; }
+.status span { display: block; min-width: 0; }
+.status.success { background: rgba(15, 159, 145, .10); border-color: rgba(15, 159, 145, .24); color: #0b6e64; }
+.status.success i { color: var(--success); }
+.status.error { background: rgba(242, 100, 106, .10); border-color: rgba(242, 100, 106, .24); color: #b83d43; }
+.status.error i { color: var(--danger); }
+
+button { font: inherit; }
+.primary {
+    width: 100%;
+    min-height: 50px;
+    border: 0;
+    border-radius: 999px;
+    color: #fff;
+    background: var(--pf-gradient);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(109, 40, 217, .22);
+    transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+}
+.primary:hover { transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 14px 30px rgba(109, 40, 217, .28); }
+.primary:disabled { opacity: .6; cursor: wait; transform: none; }
+
+.divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 12px; margin: 18px 0; }
+.divider::before, .divider::after { content: ''; height: 1px; flex: 1; background: var(--line); }
+
+.password-toggle { width: 100%; padding: 6px 0; border: 0; background: transparent; color: var(--pf-primary); font-weight: 700; cursor: pointer; }
+.password { display: none; margin-top: 16px; }
+.password.open { display: block; }
+
+label { display: block; margin: 0 0 7px; color: #55505c; font-size: 13px; font-weight: 700; }
+.field { position: relative; margin-bottom: 14px; }
+.field i { position: absolute; left: 14px; top: 39px; color: var(--muted); font-size: 14px; }
+.field input {
+    width: 100%;
+    height: 48px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: var(--bg-tertiary);
+    color: var(--ink);
+    outline: 0;
+    padding: 0 14px 0 40px;
+    font: inherit;
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+.field input:focus { border-color: var(--pf-primary); background: #fff; box-shadow: 0 0 0 3px rgba(109, 40, 217, .14); }
+
+.alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    padding: 11px 13px;
+    border-radius: 12px;
+    background: rgba(242, 100, 106, .10);
+    color: #b83d43;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.footer { margin: 18px 0 0; color: var(--muted); font-size: 12px; text-align: center; }
+
+/* ===== Responsivo ===== */
+
+/* Telas até tablet: empilha em uma coluna, card centralizado. */
+@media (max-width: 900px) {
+    .shell {
+        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 100dvh;
+        gap: 20px;
+    }
+    .brand { max-width: none; text-align: center; margin: 0 auto; }
+    .brand-mark { margin: 0 auto; width: 46px; height: 46px; font-size: 19px; }
+    .brand h1 { font-size: clamp(26px, 6vw, 34px); margin-top: 14px; }
+    .brand p { margin: 0 auto; }
+    .highlights { justify-content: center; margin-top: 18px; }
+    .card { width: min(480px, 100%); margin: 0 auto; padding: 20px; border-radius: 22px; }
+}
+
+/* Login com senha aberto em tela pequena: permite rolar em vez de cortar. */
+html.password-open, html.password-open body { overflow-y: auto; }
+html.password-open .shell { min-height: 100dvh; height: auto; }
+@media (max-width: 900px) {
+    .shell { height: 100dvh; overflow: hidden; }
+    html.password-open .shell { height: auto; overflow: visible; padding-block: 20px; }
+}
+
+/* Marketing sai de cena quando não há espaço vertical (celular + teclado, landscape curto). */
+@media (max-width: 900px) and (max-height: 680px) {
+    .brand { display: none; }
+    .camera { aspect-ratio: auto; height: min(30dvh, 190px); }
+    .footer { display: none; }
+    .card { padding: 16px; }
+}
+
+/* Telefones bem pequenos. */
+@media (max-width: 380px) {
+    .shell { padding: 14px; }
+    .highlights { gap: 12px; font-size: 11px; }
+    .card { padding: 16px; border-radius: 18px; }
+    .field input { height: 46px; }
+}
+
+/* Desktop com pouca altura (notebooks pequenos, zoom alto). */
+@media (min-width: 901px) and (max-height: 720px) {
+    .shell { gap: 40px; padding-block: 14px; }
+    .card { padding: 22px; }
+    .camera { aspect-ratio: auto; height: min(38dvh, 240px); }
+    .card-head { margin-bottom: 12px; }
+    .status { margin: 10px 0; }
+    .divider { margin: 12px 0; }
+    .password { margin-top: 12px; }
+    .footer { margin: 10px 0 0; }
+    .highlights { margin-top: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition-duration: .01ms !important; }
+}
 </style></head><body>
 <main class="shell"><section class="brand"><div class="brand-mark"><i class="fa-regular fa-clock"></i></div><h1>O ponto começa com um olhar.</h1><p>Entre de forma rápida e segura com o reconhecimento facial. Seus dados e sua jornada, sempre no controle.</p><div class="highlights"><span><i class="fa-solid fa-circle-check"></i>Leitura segura</span><span><i class="fa-solid fa-circle-check"></i>Acesso rápido</span><span><i class="fa-solid fa-circle-check"></i>Pronto para celular</span></div></section>
 <section class="card" aria-labelledby="login-title"><div class="card-head"><h2 id="login-title">Reconhecimento facial</h2><span class="secure"><i class="fa-solid fa-shield-halved"></i>Ambiente seguro</span></div><?php if($error): ?><div class="alert"><i class="fa-solid fa-circle-exclamation"></i> <?= htmlspecialchars($error) ?></div><?php endif; ?><div class="camera" id="camera"><video id="video" autoplay muted playsinline aria-label="Prévia da câmera"></video><div class="face-guide"></div><div class="camera-label" id="cameraLabel">Preparando a câmera…</div></div><div id="status" class="status"><i class="fa-solid fa-spinner fa-spin"></i><span>Carregando reconhecimento facial…</span></div><button class="primary" id="faceButton" type="button" disabled><i class="fa-solid fa-camera"></i> Reconhecer e entrar</button><div class="divider">ou</div><button class="password-toggle" id="passkeyButton" type="button"><i class="fa-solid fa-fingerprint"></i> Entrar com biometria do dispositivo</button><div class="divider">ou</div><button class="password-toggle" id="passwordToggle" type="button"><i class="fa-solid fa-key"></i> Entrar com e-mail e senha</button><form class="password" id="passwordForm" method="post" novalidate><input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>"><div class="field"><label for="email">E-mail</label><i class="fa-regular fa-envelope"></i><input id="email" name="email" type="email" autocomplete="email" required></div><div class="field"><label for="senha">Senha</label><i class="fa-solid fa-lock"></i><input id="senha" name="senha" type="password" autocomplete="current-password" required></div><button class="primary" type="submit"><i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar com senha</button></form><p class="footer">A câmera e a biometria do dispositivo requerem HTTPS (ou localhost).</p></section></main>

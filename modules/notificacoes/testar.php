@@ -116,12 +116,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <small>Lembrete de ponto</small>
                 </div>
                 <div class="test-option" data-tipo="aprovacao">
-                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-circle-check"></i>
                     <strong>Aprovação</strong>
                     <small>Solicitação aprovada</small>
                 </div>
                 <div class="test-option" data-tipo="rejeicao">
-                    <i class="fas fa-times-circle"></i>
+                    <i class="fas fa-circle-xmark"></i>
                     <strong>Rejeição</strong>
                     <small>Solicitação rejeitada</small>
                 </div>
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
         
         <div class="alert alert-info" style="margin-top: 20px;">
-            <i class="fas fa-info-circle"></i>
+            <i class="fas fa-circle-info"></i>
             <strong>Configuração SMTP:</strong> Para que os e-mails funcionem, configure as constantes SMTP no arquivo <code>includes/mail.php</code>.
         </div>
     </div>

@@ -138,7 +138,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo_mensagem']);
         </div>
         <div class="module-actions">
             <a href="criar" class="btn btn-primary"><i class="fas fa-plus"></i> Novo Backup</a>
-            <a href="config" class="btn btn-secondary"><i class="fas fa-cog"></i> Configurações</a>
+            <a href="config" class="btn btn-secondary"><i class="fas fa-gear"></i> Configurações</a>
         </div>
     </div>
 
@@ -151,20 +151,20 @@ unset($_SESSION['mensagem'], $_SESSION['tipo_mensagem']);
     <div class="actions-card">
         <div class="actions-grid">
             <a href="criar" class="btn btn-success"><i class="fas fa-database"></i> Backup Manual</a>
-            <a href="restaurar" class="btn btn-warning"><i class="fas fa-undo-alt"></i> Restaurar Backup</a>
+            <a href="restaurar" class="btn btn-warning"><i class="fas fa-rotate-left"></i> Restaurar Backup</a>
             <a href="config" class="btn btn-secondary"><i class="fas fa-clock"></i> Configurar Agendamento</a>
         </div>
     </div>
 
     <?php if (!$config['backup_automatico']): ?>
-    <div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> O backup automático está desativado. Ative nas configurações para backups regulares.</div>
+    <div class="alert alert-warning"><i class="fas fa-triangle-exclamation"></i> O backup automático está desativado. Ative nas configurações para backups regulares.</div>
     <?php else: ?>
-    <div class="alert alert-info"><i class="fas fa-info-circle"></i> Backup automático: <?php echo ucfirst($config['frequencia']); ?> às <?php echo substr($config['hora_backup'], 0, 5); ?>. Retenção de <?php echo $config['dias_retencao']; ?> dias.</div>
+    <div class="alert alert-info"><i class="fas fa-circle-info"></i> Backup automático: <?php echo ucfirst($config['frequencia']); ?> às <?php echo substr($config['hora_backup'], 0, 5); ?>. Retenção de <?php echo $config['dias_retencao']; ?> dias.</div>
     <?php endif; ?>
 
     <?php if ($mensagem): ?>
     <div class="alert alert-<?php echo $tipo_mensagem === 'success' ? 'info' : 'warning'; ?>">
-        <i class="fas <?php echo $tipo_mensagem === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'; ?>"></i>
+        <i class="fas <?php echo $tipo_mensagem === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'; ?>"></i>
         <?php echo htmlspecialchars($mensagem); ?>
     </div>
     <?php endif; ?>
@@ -178,7 +178,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo_mensagem']);
                 <?php echo csrfField(); ?>
                 <input type="hidden" name="todos" value="1">
                 <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;">
-                    <i class="fas fa-trash-alt"></i> Excluir Todos
+                    <i class="fas fa-trash"></i> Excluir Todos
                 </button>
             </form>
             <?php endif; ?>
@@ -199,11 +199,11 @@ unset($_SESSION['mensagem'], $_SESSION['tipo_mensagem']);
                             <td><span class="badge badge-<?php echo $backup['status']; ?>"><?php echo ucfirst($backup['status']); ?></span></td>
                             <td class="btn-actions">
                                 <a href="download?file=<?php echo urlencode($backup['nome']); ?>" class="btn btn-success" style="padding: 6px 10px; font-size: 12px; border-radius: 6px;"><i class="fas fa-download"></i> Baixar</a>
-                                <a href="restaurar?file=<?php echo urlencode($backup['nome']); ?>" class="btn btn-warning" style="padding: 6px 10px; font-size: 12px; border-radius: 6px;" onclick="return confirm('ATENÇÃO: Restaurar um backup irá SUBSTITUIR todos os dados atuais! Tem certeza?')"><i class="fas fa-undo-alt"></i> Restaurar</a>
+                                <a href="restaurar?file=<?php echo urlencode($backup['nome']); ?>" class="btn btn-warning" style="padding: 6px 10px; font-size: 12px; border-radius: 6px;" onclick="return confirm('ATENÇÃO: Restaurar um backup irá SUBSTITUIR todos os dados atuais! Tem certeza?')"><i class="fas fa-rotate-left"></i> Restaurar</a>
                                 <form method="POST" action="excluir" class="inline-form" onsubmit="return confirm('Tem certeza que deseja excluir este backup?')">
                                     <?php echo csrfField(); ?>
                                     <input type="hidden" name="file" value="<?php echo htmlspecialchars($backup['nome']); ?>">
-                                    <button type="submit" class="btn btn-danger" style="padding: 6px 10px; font-size: 12px; border-radius: 6px;"><i class="fas fa-trash-alt"></i> Excluir</button>
+                                    <button type="submit" class="btn btn-danger" style="padding: 6px 10px; font-size: 12px; border-radius: 6px;"><i class="fas fa-trash"></i> Excluir</button>
                                 </form>
                             </td>
                         </tr>
@@ -216,7 +216,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo_mensagem']);
 
     <div class="actions-card" style="margin-top: 24px;">
         <div style="font-size: 13px; color: var(--text-secondary);">
-            <strong><i class="fas fa-info-circle"></i> Informações importantes:</strong><br>
+            <strong><i class="fas fa-circle-info"></i> Informações importantes:</strong><br>
             • Os backups são salvos na pasta <code>modules/backup/backups/</code><br>
             • Recomenda-se manter backups regulares para prevenir perda de dados<br>
             • Backups automáticos são configurados via CRON<br>

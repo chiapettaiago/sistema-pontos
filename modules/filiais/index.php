@@ -90,7 +90,7 @@ if (empty($filiais)) {
     $todasFiliais = $stmt->fetchAll();
     if (!empty($todasFiliais)) {
         $diagnostico = '<div class="diagnostico-box">
-            <strong><i class="fas fa-info-circle"></i> Diagnóstico:</strong> Existem ' . count($todasFiliais) . ' filiais no banco de dados.<br><br>
+            <strong><i class="fas fa-circle-info"></i> Diagnóstico:</strong> Existem ' . count($todasFiliais) . ' filiais no banco de dados.<br><br>
             <strong>Filiais encontradas:</strong>
             <table style="width: 100%; margin-top: 10px; border-collapse: collapse;">
                 <thead>
@@ -113,9 +113,9 @@ if (empty($filiais)) {
             <br>
             <strong>Sua empresa atual tem ID = ' . $empresa_id . '</strong>. Para ver as filiais, clique no botão abaixo:<br><br>
             <a href="?corrigir=1" class="btn-corrigir" onclick="return confirm(\'ATENÇÃO: Isso vai atualizar TODAS as ' . count($todasFiliais) . ' filiais para empresa_id = ' . $empresa_id . '. Deseja continuar?\')">
-                <i class="fas fa-sync-alt"></i> Corrigir: Associar todas as filiais à empresa atual
+                <i class="fas fa-arrow-rotate-right"></i> Corrigir: Associar todas as filiais à empresa atual
             </a>
-            <p style="font-size: 12px; margin-top: 10px; color: #92400e;"><i class="fas fa-exclamation-triangle"></i> Esta ação moverá todas as filiais para sua empresa atual.</p>
+            <p style="font-size: 12px; margin-top: 10px; color: #92400e;"><i class="fas fa-triangle-exclamation"></i> Esta ação moverá todas as filiais para sua empresa atual.</p>
         </div>';
     }
 }
@@ -145,7 +145,7 @@ try {
 ?>
 <div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
     <div>
-        <h1><i class="fas fa-store me-2 text-primary"></i>Filiais</h1>
+        <h1><i class="fas fa-store me-2 text-secondary"></i>Filiais</h1>
         <p class="text-muted">Gerencie as filiais da empresa</p>
     </div>
     <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
@@ -155,7 +155,7 @@ try {
 
 <div class="card pf-table-card">
     <div class="card-header bg-transparent border-bottom fw-semibold">
-        <i class="fas fa-list me-2 text-primary"></i>Lista de Filiais
+        <i class="fas fa-list me-2 text-secondary"></i>Lista de Filiais
         <span class="badge bg-primary ms-2"><?php echo count($filiais); ?></span>
     </div>
     <div class="card-body p-0">
@@ -190,7 +190,7 @@ try {
                             <div class="btn-group btn-group-sm">
                                 <a href="visualizar?id=<?php echo $filial['id']; ?>" class="btn btn-outline-primary" title="Ver"><i class="fas fa-eye"></i></a>
                                 <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa'])): ?>
-                                <a href="editar?id=<?php echo $filial['id']; ?>" class="btn btn-outline-secondary" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="editar?id=<?php echo $filial['id']; ?>" class="btn btn-outline-secondary" title="Editar"><i class="fas fa-pen-to-square"></i></a>
                                 <form method="post" action="excluir" class="d-inline" onsubmit="return confirm('Excluir esta filial?')"><?= csrfField() ?><input type="hidden" name="id" value="<?= (int) $filial['id'] ?>"><input type="hidden" name="confirm" value="sim"><button type="submit" class="btn btn-outline-danger" title="Excluir"><i class="fas fa-trash"></i></button></form>
                                 <?php endif; ?>
                             </div>

@@ -24,7 +24,7 @@ if (isset($_SESSION['mensagem'])) {
     $mensagem = $_SESSION['mensagem'];
     $tipo_mensagem = $_SESSION['tipo_mensagem'] ?? 'info';
     echo "<div class='alert alert-{$tipo_mensagem}' style='margin-bottom: 20px;'>
-            <i class='fas " . ($tipo_mensagem == 'success' ? 'fa-check-circle' : 'fa-info-circle') . "'></i> 
+            <i class='fas " . ($tipo_mensagem == 'success' ? 'fa-circle-check' : 'fa-circle-info') . "'></i> 
             {$mensagem}
           </div>";
     unset($_SESSION['mensagem']);
@@ -190,7 +190,7 @@ $empresas = $stmt->fetchAll();
 <div class="filters-card">
     <form method="GET" action="" class="filters-form">
         <div class="filter-group">
-            <label><i class="fas fa-search"></i> Buscar</label>
+            <label><i class="fas fa-magnifying-glass"></i> Buscar</label>
             <input type="text" name="search" placeholder="Nome ou e-mail" value="<?php echo htmlspecialchars($search); ?>">
         </div>
         <div class="filter-group">
@@ -226,14 +226,14 @@ $empresas = $stmt->fetchAll();
             </span>
             <div class="dropdown">
                 <button class="btn-icon dropdown-toggle" onclick="toggleMenu(this)">
-                    <i class="fas fa-ellipsis-v"></i>
+                    <i class="fas fa-ellipsis-vertical"></i>
                 </button>
                 <div class="dropdown-menu">
                     <a href="visualizar?id=<?php echo $empresa['id']; ?>" class="dropdown-item">
                         <i class="fas fa-eye"></i> Visualizar
                     </a>
                     <a href="editar?id=<?php echo $empresa['id']; ?>" class="dropdown-item">
-                        <i class="fas fa-edit"></i> Editar
+                        <i class="fas fa-pen-to-square"></i> Editar
                     </a>
                     <?php if ($empresa['status'] == 'ativa'): ?>
                     <form method="post" action="suspender" onsubmit="return confirm('Tem certeza que deseja suspender esta empresa?')"><?= csrfField() ?><input type="hidden" name="id" value="<?php echo (int) $empresa['id']; ?>"><button type="submit" class="dropdown-item text-warning">
@@ -272,7 +272,7 @@ $empresas = $stmt->fetchAll();
 
 <?php if (empty($empresas)): ?>
 <div class="empty-state" style="text-align: center; padding: 60px;">
-    <i class="fas fa-building" style="font-size: 48px; color: #ccc;"></i>
+    <i class="fas fa-building" style="font-size: 48px; color: var(--text-muted);"></i>
     <p style="margin-top: 16px;">Nenhuma empresa encontrada</p>
     <a href="cadastrar" class="btn btn-primary" style="margin-top: 16px;">
         <i class="fas fa-plus"></i> Cadastrar primeira empresa

@@ -48,6 +48,11 @@ server {
         fastcgi_pass unix:/run/php/php8.2-fpm.sock;
     }
 
+    # Canonicaliza a variante emitida por links antigos e preserva a query string.
+    location = /ponto-publico/ {
+        return 308 /ponto-publico$is_args$args;
+    }
+
     # O prefixo ^~ impede que qualquer arquivo em uploads alcance o PHP-FPM.
     location ^~ /uploads/ {
         autoindex off;

@@ -67,7 +67,7 @@ $assinaturas_vencer = $stmt->fetchAll();
 <!-- PAGE HEADER -->
 <div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
     <div>
-        <h1><i class="fas fa-crown me-2 text-warning"></i>Painel Administrativo</h1>
+        <h1><i class="fas fa-crown me-2 text-secondary"></i>Painel Administrativo</h1>
         <p class="text-muted">Gerencie todas as empresas, planos e assinaturas da plataforma</p>
     </div>
 </div>
@@ -134,7 +134,7 @@ $assinaturas_vencer = $stmt->fetchAll();
     <div class="col-lg-5">
         <div class="card pf-table-card h-100">
             <div class="card-header bg-transparent border-bottom fw-semibold">
-                <i class="fas fa-chart-pie me-2 text-primary"></i>Distribuição por Plano
+                <i class="fas fa-chart-pie me-2 text-secondary"></i>Distribuição por Plano
             </div>
             <div class="card-body d-flex align-items-center justify-content-center" style="height:280px;">
                 <canvas id="planosChart"></canvas>
@@ -146,7 +146,7 @@ $assinaturas_vencer = $stmt->fetchAll();
     <div class="col-lg-7">
         <div class="card pf-table-card h-100">
             <div class="card-header bg-transparent border-bottom fw-semibold">
-                <i class="fas fa-clock me-2 text-primary"></i>Últimas Empresas Cadastradas
+                <i class="fas fa-clock me-2 text-secondary"></i>Últimas Empresas Cadastradas
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -189,7 +189,7 @@ $assinaturas_vencer = $stmt->fetchAll();
 <?php if (!empty($assinaturas_vencer)): ?>
 <div class="card pf-table-card mb-4">
     <div class="card-header bg-transparent border-bottom fw-semibold text-warning">
-        <i class="fas fa-exclamation-triangle me-2"></i>Assinaturas a Vencer (próximos 30 dias)
+        <i class="fas fa-triangle-exclamation me-2"></i>Assinaturas a Vencer (próximos 30 dias)
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -207,7 +207,7 @@ $assinaturas_vencer = $stmt->fetchAll();
                         </td>
                         <td class="text-end">
                             <a href="assinaturas/index?renovar=<?php echo $a['id']; ?>" class="btn btn-sm btn-warning">
-                                <i class="fas fa-sync-alt"></i> Renovar
+                                <i class="fas fa-arrow-rotate-right"></i> Renovar
                             </a>
                         </td>
                     </tr>
@@ -222,7 +222,7 @@ $assinaturas_vencer = $stmt->fetchAll();
 <!-- Links Rápidos -->
 <div class="card pf-table-card mb-4">
     <div class="card-header bg-transparent border-bottom fw-semibold">
-        <i class="fas fa-link me-2 text-primary"></i>Links Rápidos
+        <i class="fas fa-link me-2 text-secondary"></i>Links Rápidos
     </div>
     <div class="card-body">
         <div class="row g-2">

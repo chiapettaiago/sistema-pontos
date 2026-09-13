@@ -225,7 +225,7 @@ if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa') {
 <div class="filters-card">
     <form method="GET" action="" class="filters-form">
         <div class="filter-group">
-            <label><i class="fas fa-search"></i> Buscar</label>
+            <label><i class="fas fa-magnifying-glass"></i> Buscar</label>
             <input type="text" name="search" placeholder="Nome ou matrícula" 
                    value="<?php echo htmlspecialchars($search); ?>">
         </div>
@@ -255,10 +255,10 @@ if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa') {
         <div class="filter-group">
             <label>&nbsp;</label>
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-search"></i> Filtrar
+                <i class="fas fa-magnifying-glass"></i> Filtrar
             </button>
             <a href="index" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Limpar
+                <i class="fas fa-xmark"></i> Limpar
             </a>
         </div>
     </form>
@@ -306,7 +306,7 @@ if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa') {
     
     <?php if (empty($funcionarios)): ?>
     <div style="grid-column: 1/-1; text-align: center; padding: 60px;">
-        <i class="fas fa-id-card" style="font-size: 64px; color: #ccc;"></i>
+        <i class="fas fa-id-card" style="font-size: 64px; color: var(--text-muted);"></i>
         <p style="margin-top: 16px;">Nenhum funcionário encontrado</p>
     </div>
     <?php endif; ?>

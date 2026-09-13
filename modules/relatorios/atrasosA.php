@@ -132,7 +132,7 @@ $total_faltas = count(array_filter($resultados, function($r) { return $r['tipo']
 
 <div class="module-header">
     <div class="module-title">
-        <h2><i class="fas fa-exclamation-triangle"></i> Relatório de Atrasos e Faltas</h2>
+        <h2><i class="fas fa-triangle-exclamation"></i> Relatório de Atrasos e Faltas</h2>
     </div>
     <div class="module-actions">
         <button onclick="window.print()" class="btn btn-secondary">
@@ -172,10 +172,10 @@ $total_faltas = count(array_filter($resultados, function($r) { return $r['tipo']
         <div class="filter-group">
             <label>&nbsp;</label>
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-search"></i> Filtrar
+                <i class="fas fa-magnifying-glass"></i> Filtrar
             </button>
             <a href="atrasos" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Limpar
+                <i class="fas fa-xmark"></i> Limpar
             </a>
         </div>
     </form>
@@ -253,7 +253,7 @@ $total_faltas = count(array_filter($resultados, function($r) { return $r['tipo']
                 <?php if (empty($resultados)): ?>
                 <tr>
                     <td colspan="7" style="text-align: center; padding: 40px;">
-                        <i class="fas fa-check-circle" style="font-size: 48px; color: #10b981;"></i>
+                        <i class="fas fa-circle-check" style="font-size: 48px; color: var(--text-muted);"></i>
                         <p style="margin-top: 10px;">Nenhum atraso ou falta encontrado no período</p>
                         <p style="font-size: 12px; color: #666;">Todos os funcionários estão em dia!</p>
                     </td>

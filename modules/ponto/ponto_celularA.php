@@ -241,12 +241,12 @@ $_SESSION['biometric_token'] = $biometric_token;
             </div>
             
             <div id="gpsStatus" class="gps-status gps-error">
-                <i class="fas fa-map-marker-alt"></i> <span>Capturando localização...</span>
+                <i class="fas fa-location-dot"></i> <span>Capturando localização...</span>
             </div>
             
             <div class="status-grid" id="statusGrid">
                 <div class="status-item <?php echo $horarios['entrada'] != '--:--' ? 'completed' : 'pending'; ?>">
-                    <i class="fas fa-sign-in-alt"></i>
+                    <i class="fas fa-right-to-bracket"></i>
                     <span class="label">Entrada</span>
                     <span class="time" id="entradaHora"><?php echo $horarios['entrada']; ?></span>
                 </div>
@@ -256,12 +256,12 @@ $_SESSION['biometric_token'] = $biometric_token;
                     <span class="time" id="saidaAlmocoHora"><?php echo $horarios['saida_almoco']; ?></span>
                 </div>
                 <div class="status-item <?php echo $horarios['volta_almoco'] != '--:--' ? 'completed' : 'pending'; ?>">
-                    <i class="fas fa-undo-alt"></i>
+                    <i class="fas fa-rotate-left"></i>
                     <span class="label">Volta Almoço</span>
                     <span class="time" id="voltaAlmocoHora"><?php echo $horarios['volta_almoco']; ?></span>
                 </div>
                 <div class="status-item <?php echo $horarios['saida'] != '--:--' ? 'completed' : 'pending'; ?>">
-                    <i class="fas fa-sign-out-alt"></i>
+                    <i class="fas fa-right-from-bracket"></i>
                     <span class="label">Saída</span>
                     <span class="time" id="saidaHora"><?php echo $horarios['saida']; ?></span>
                 </div>
@@ -284,15 +284,15 @@ $_SESSION['biometric_token'] = $biometric_token;
                         ($proximo_tipo == 'volta_almoco' ? 'btn-volta' : 'btn-saida')); 
                 ?>" id="btnManual" style="margin-top: 12px;">
                     <i class="fas <?php 
-                        echo $proximo_tipo == 'entrada' ? 'fa-sign-in-alt' : 
+                        echo $proximo_tipo == 'entrada' ? 'fa-right-to-bracket' : 
                             ($proximo_tipo == 'saida_almoco' ? 'fa-utensils' : 
-                            ($proximo_tipo == 'volta_almoco' ? 'fa-undo-alt' : 'fa-sign-out-alt')); 
+                            ($proximo_tipo == 'volta_almoco' ? 'fa-rotate-left' : 'fa-right-from-bracket')); 
                     ?>"></i>
                     Registrar sem Digital (Manual)
                 </button>
             <?php else: ?>
                 <button class="btn-ponto btn-desabilitado" disabled>
-                    <i class="fas fa-check-circle"></i> Dia Finalizado!
+                    <i class="fas fa-circle-check"></i> Dia Finalizado!
                 </button>
             <?php endif; ?>
         </div>
@@ -301,7 +301,7 @@ $_SESSION['biometric_token'] = $biometric_token;
     <!-- Modal de Autorização -->
     <div id="modalAutorizacao" class="modal">
         <div class="modal-content">
-            <i class="fas fa-user-shield" style="font-size: 48px; color: #f59e0b; margin-bottom: 16px;"></i>
+            <i class="fas fa-user-shield" style="font-size: 48px; color: var(--text-muted); margin-bottom: 16px;"></i>
             <h3>Falha na Digital</h3>
             <p>Solicite ao gerente que escaneie seu QR Code para autorizar o ponto.</p>
             <div class="qr-code" id="qrCodeAutorizacao">
@@ -337,7 +337,7 @@ $_SESSION['biometric_token'] = $biometric_token;
                 navigator.geolocation.getCurrentPosition(function(position) {
                     latitude = position.coords.latitude;
                     longitude = position.coords.longitude;
-                    gpsDiv.innerHTML = '<i class="fas fa-check-circle"></i> <span>Localização capturada ✓</span>';
+                    gpsDiv.innerHTML = '<i class="fas fa-circle-check"></i> <span>Localização capturada ✓</span>';
                     gpsDiv.className = 'gps-status gps-ok';
                 }, function(error) {
                     let msg = '';
@@ -347,11 +347,11 @@ $_SESSION['biometric_token'] = $biometric_token;
                         case 3: msg = 'Timeout'; break;
                         default: msg = 'Erro';
                     }
-                    gpsDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>GPS: ' + msg + '</span>';
+                    gpsDiv.innerHTML = '<i class="fas fa-triangle-exclamation"></i> <span>GPS: ' + msg + '</span>';
                     gpsDiv.className = 'gps-status gps-error';
                 });
             } else {
-                gpsDiv.innerHTML = '<i class="fas fa-times-circle"></i> <span>GPS não suportado</span>';
+                gpsDiv.innerHTML = '<i class="fas fa-circle-xmark"></i> <span>GPS não suportado</span>';
                 gpsDiv.className = 'gps-status gps-error';
             }
         }

@@ -79,7 +79,7 @@ function showNotification(message, type = 'info', duration = 3000) {
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
         <div class="notification-content">
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+            <i class="fas ${type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info'}"></i>
             <span>${message}</span>
         </div>
         <div class="notification-progress"></div>

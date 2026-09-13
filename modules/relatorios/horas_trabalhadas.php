@@ -401,7 +401,7 @@ foreach ($registros as $reg) {
 
     <?php if (empty($funcionarios_dados)): ?>
     <div class="empty-state" style="text-align: center; padding: 60px;">
-        <i class="fas fa-chart-line" style="font-size: 48px; color: #ccc;"></i>
+        <i class="fas fa-chart-line" style="font-size: 48px; color: var(--text-muted);"></i>
         <p>Nenhum registro encontrado no período</p>
     </div>
     <?php endif; ?>

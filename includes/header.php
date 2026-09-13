@@ -21,10 +21,10 @@ $topFuncionarioId = (int) ($_SESSION['funcionario_id'] ?? 0);
 $topUserPhotoUrl = null;
 $topPontosHoje = [];
 $topTiposPonto = [
-    'entrada' => ['label' => 'Entrada', 'icon' => 'fa-sign-in-alt'],
+    'entrada' => ['label' => 'Entrada', 'icon' => 'fa-right-to-bracket'],
     'saida_almoco' => ['label' => 'Saída almoço', 'icon' => 'fa-utensils'],
     'volta_almoco' => ['label' => 'Volta almoço', 'icon' => 'fa-rotate-left'],
-    'saida' => ['label' => 'Saída', 'icon' => 'fa-sign-out-alt'],
+    'saida' => ['label' => 'Saída', 'icon' => 'fa-right-from-bracket'],
 ];
 
 if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
@@ -107,10 +107,10 @@ if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
 </head>
 <body>
 
-    <!-- Backdrop mobile sidebar -->
-    <div class="pf-sidebar-backdrop" id="pfSidebarBackdrop"></div>
-
     <div class="pf-app-wrapper">
+        <!-- O backdrop precisa compartilhar o mesmo stacking context da sidebar. -->
+        <div class="pf-sidebar-backdrop" id="pfSidebarBackdrop"></div>
+
         <!-- SIDEBAR -->
         <?php require_once __DIR__ . '/sidebar.php'; ?>
 
@@ -135,7 +135,7 @@ if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
                         <?php if ($topFuncionarioId <= 0): ?>
                             <div class="pf-point-empty">Usuário sem vínculo de funcionário.</div>
                         <?php elseif (!$topPontosHoje): ?>
-                            <div class="pf-point-empty"><i class="fas fa-info-circle me-1"></i>Nenhuma batida registrada hoje.</div>
+                            <div class="pf-point-empty"><i class="fas fa-circle-info me-1"></i>Nenhuma batida registrada hoje.</div>
                         <?php else: foreach ($topPontosHoje as $ponto): $pontoTipo = $topTiposPonto[$ponto['tipo']] ?? ['label' => ucfirst(str_replace('_', ' ', $ponto['tipo'])), 'icon' => 'fa-clock']; ?>
                             <div class="pf-point-row"><span><i class="fas <?php echo htmlspecialchars($pontoTipo['icon']); ?>"></i><?php echo htmlspecialchars($pontoTipo['label']); ?></span><time><?php echo htmlspecialchars($ponto['hora']); ?></time></div>
                         <?php endforeach; endif; ?>
@@ -145,7 +145,7 @@ if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
 
                 <!-- Data/Hora -->
                 <div class="pf-datetime d-none d-md-flex">
-                    <i class="far fa-calendar-alt pf-datetime-icon" aria-hidden="true"></i>
+                    <i class="far fa-calendar pf-datetime-icon" aria-hidden="true"></i>
                     <span id="pfDate" class="pf-datetime-date"></span>
                     <span id="pfTime" class="pf-datetime-time" aria-label="Horário atual"></span>
                 </div>

@@ -148,7 +148,7 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
 <div class="config-dashboard">
     <div class="module-header">
         <div class="module-title">
-            <h2><i class="fas fa-cogs"></i> Configurações da Empresa</h2>
+            <h2><i class="fas fa-gears"></i> Configurações da Empresa</h2>
             <p>Gerencie as configurações gerais do sistema</p>
         </div>
     </div>
@@ -165,7 +165,7 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
                     Configure os dados cadastrais da sua empresa, como nome, CNPJ, endereço e logo.
                 </div>
                 <a href="empresa" class="btn-config">
-                    <i class="fas fa-edit"></i> Configurar Dados
+                    <i class="fas fa-pen-to-square"></i> Configurar Dados
                 </a>
             </div>
         </div>
@@ -181,7 +181,7 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
                     Defina os horários padrão de entrada, almoço e saída, além de tolerâncias.
                 </div>
                 <a href="horarios" class="btn-config">
-                    <i class="fas fa-calendar-alt"></i> Configurar Horários
+                    <i class="fas fa-calendar"></i> Configurar Horários
                 </a>
             </div>
         </div>

@@ -233,10 +233,10 @@ $total_horas_formatado = sprintf("%02d:%02d", floor($total_horas / 60), $total_h
         <div class="filter-group">
             <label>&nbsp;</label>
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-search"></i> Filtrar
+                <i class="fas fa-magnifying-glass"></i> Filtrar
             </button>
             <a href="horas_trabalhadas" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Limpar
+                <i class="fas fa-xmark"></i> Limpar
             </a>
         </div>
     </form>
@@ -292,7 +292,7 @@ $total_horas_formatado = sprintf("%02d:%02d", floor($total_horas / 60), $total_h
                 <?php if (empty($resultados)): ?>
                 <tr class="fade-in">
                     <td colspan="5" style="text-align: center; padding: 60px;">
-                        <i class="fas fa-chart-line" style="font-size: 48px; color: #ccc;"></i>
+                        <i class="fas fa-chart-line" style="font-size: 48px; color: var(--text-muted);"></i>
                         <p style="margin-top: 10px;">Nenhum registro encontrado no período</p>
                     </td>
                 </tr>

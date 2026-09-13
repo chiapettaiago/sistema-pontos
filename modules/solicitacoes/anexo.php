@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['anexo'])) {
         <form method="POST" enctype="multipart/form-data" id="uploadForm">
             <?= csrfField() ?>
             <div class="drop-area" id="dropArea">
-                <i class="fas fa-cloud-upload-alt"></i>
+                <i class="fas fa-cloud-arrow-up"></i>
                 <p>Arraste ou clique para selecionar um arquivo</p>
                 <small>Formatos: JPG, PNG e PDF (máx. 5 MB)</small>
                 <input type="file" name="anexo" id="fileInput" style="display: none;">

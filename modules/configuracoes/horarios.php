@@ -443,14 +443,14 @@ $saida = substr($config['horario_saida'], 0, 5);
     <!-- Configuração Principal -->
     <div class="config-card">
         <div class="config-header">
-            <i class="fas fa-calendar-alt"></i>
+            <i class="fas fa-calendar"></i>
             <h3>Horários Padrão</h3>
         </div>
         <div class="config-body">
             <form method="POST" action="">
                 <div class="form-row">
                     <div class="form-group">
-                        <label><i class="fas fa-sign-in-alt"></i> Horário de Entrada</label>
+                        <label><i class="fas fa-right-to-bracket"></i> Horário de Entrada</label>
                         <input type="time" name="horario_entrada" value="<?php echo $entrada; ?>" step="60">
                         <small>Horário padrão para entrada dos funcionários</small>
                     </div>
@@ -463,12 +463,12 @@ $saida = substr($config['horario_saida'], 0, 5);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label><i class="fas fa-undo-alt"></i> Volta do Almoço</label>
+                        <label><i class="fas fa-rotate-left"></i> Volta do Almoço</label>
                         <input type="time" name="horario_volta_almoco" value="<?php echo $volta_almoco; ?>" step="60">
                         <small>Horário de retorno do intervalo</small>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-sign-out-alt"></i> Horário de Saída</label>
+                        <label><i class="fas fa-right-from-bracket"></i> Horário de Saída</label>
                         <input type="time" name="horario_saida" value="<?php echo $saida; ?>" step="60">
                         <small>Horário padrão de saída</small>
                     </div>
@@ -512,7 +512,7 @@ $saida = substr($config['horario_saida'], 0, 5);
 
                 <div class="form-actions">
                     <button type="submit" name="salvar_config" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Salvar Configurações
+                        <i class="fas fa-floppy-disk"></i> Salvar Configurações
                     </button>
                     <a href="index" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Voltar
@@ -575,7 +575,7 @@ $saida = substr($config['horario_saida'], 0, 5);
             
             <?php if (empty($excecoes)): ?>
                 <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> Nenhuma exceção agendada para os próximos dias.
+                    <i class="fas fa-circle-info"></i> Nenhuma exceção agendada para os próximos dias.
                 </div>
             <?php else: ?>
                 <?php foreach ($excecoes as $exc): ?>
@@ -591,11 +591,11 @@ $saida = substr($config['horario_saida'], 0, 5);
                                 </span>
                             </div>
                             <div class="excecao-descricao">
-                                <i class="fas fa-info-circle"></i> <?php echo htmlspecialchars($exc['descricao']); ?>
+                                <i class="fas fa-circle-info"></i> <?php echo htmlspecialchars($exc['descricao']); ?>
                             </div>
                             <div class="excecao-horarios">
                                 <?php if ($exc['entrada']): ?>
-                                    <i class="fas fa-sign-in-alt"></i> Entrada: <?php echo substr($exc['entrada'], 0, 5); ?>
+                                    <i class="fas fa-right-to-bracket"></i> Entrada: <?php echo substr($exc['entrada'], 0, 5); ?>
                                 <?php endif; ?>
                                 <?php if ($exc['saida_almoco']): ?>
                                     | 🍽️ Saída Almoço: <?php echo substr($exc['saida_almoco'], 0, 5); ?>
@@ -613,7 +613,7 @@ $saida = substr($config['horario_saida'], 0, 5);
                         </div>
                         <div class="excecao-actions">
                             <a href="?remover=<?php echo $exc['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja remover esta exceção?')">
-                                <i class="fas fa-trash-alt"></i> Remover
+                                <i class="fas fa-trash"></i> Remover
                             </a>
                         </div>
                     </div>
@@ -625,7 +625,7 @@ $saida = substr($config['horario_saida'], 0, 5);
     <!-- Informações Adicionais -->
     <div class="config-card">
         <div class="config-header">
-            <i class="fas fa-info-circle"></i>
+            <i class="fas fa-circle-info"></i>
             <h3>Informações Importantes</h3>
         </div>
         <div class="config-body">

@@ -80,11 +80,11 @@ $stats = $stmt->fetchAll();
 ?>
 <div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
     <div>
-        <h1><i class="fas fa-calendar-week me-2 text-primary"></i>Escalas de Trabalho</h1>
+        <h1><i class="fas fa-calendar-week me-2 text-secondary"></i>Escalas de Trabalho</h1>
         <p class="text-muted">Gerencie as escalas e horários dos funcionários</p>
     </div>
     <div class="d-flex gap-2">
-        <a href="configurar" class="btn btn-outline-secondary"><i class="fas fa-cog me-1"></i>Configurar</a>
+        <a href="configurar" class="btn btn-outline-secondary"><i class="fas fa-gear me-1"></i>Configurar</a>
         <a href="configurar?nova=1" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Nova Escala</a>
     </div>
 </div>
@@ -129,8 +129,8 @@ $stats = $stmt->fetchAll();
                         </td>
                         <td class="text-end">
                             <div class="btn-group btn-group-sm">
-                                <a href="editar?id=<?php echo $escala['id']; ?>" class="btn btn-outline-secondary"><i class="fas fa-edit"></i></a>
-                                <a href="configurar?escala_id=<?php echo $escala['id']; ?>" class="btn btn-outline-primary"><i class="fas fa-cog"></i></a>
+                                <a href="editar?id=<?php echo $escala['id']; ?>" class="btn btn-outline-secondary"><i class="fas fa-pen-to-square"></i></a>
+                                <a href="configurar?escala_id=<?php echo $escala['id']; ?>" class="btn btn-outline-primary"><i class="fas fa-gear"></i></a>
                             </div>
                         </td>
                     </tr>

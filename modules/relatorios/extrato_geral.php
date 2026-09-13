@@ -263,7 +263,7 @@ $total_atrasos = array_sum(array_column($funcionarios, 'total_atrasos'));
             <div class="filter-group">
                 <label>&nbsp;</label>
                 <button type="submit" class="btn-filter">
-                    <i class="fas fa-search"></i> Filtrar
+                    <i class="fas fa-magnifying-glass"></i> Filtrar
                 </button>
             </div>
         </form>

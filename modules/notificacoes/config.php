@@ -267,7 +267,7 @@ hr {
 
 <div class="config-container">
     <div class="module-header">
-        <h2><i class="fas fa-sliders-h"></i> Configurações de Notificações</h2>
+        <h2><i class="fas fa-sliders"></i> Configurações de Notificações</h2>
         <p>Personalize como e quando você recebe notificações</p>
     </div>
 
@@ -417,7 +417,7 @@ hr {
         </div>
 
         <button type="submit" class="btn-salvar">
-            <i class="fas fa-save"></i> Salvar Configurações
+            <i class="fas fa-floppy-disk"></i> Salvar Configurações
         </button>
     </form>
 </div>

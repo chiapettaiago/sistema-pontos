@@ -322,7 +322,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="form-body">
             <?php if ($success): ?>
                 <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i> <?php echo $success; ?>
+                    <i class="fas fa-circle-check"></i> <?php echo $success; ?>
                 </div>
                 <div style="text-align: center; margin-top: 20px;">
                     <a href="index" class="btn btn-secondary">Voltar</a>
@@ -332,12 +332,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             <?php elseif ($error): ?>
                 <div class="alert alert-error">
-                    <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
+                    <i class="fas fa-circle-exclamation"></i> <?php echo $error; ?>
                 </div>
                 <a href="index" class="btn btn-secondary">Voltar</a>
             <?php else: ?>
                 <div class="info-box">
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-circle-info"></i>
                     <strong>O que será incluído no backup?</strong><br>
                     • Todas as tabelas do banco de dados da sua empresa<br>
                     • Registros específicos da sua empresa (quando aplicável)<br>

@@ -162,15 +162,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         <div style="display: flex; gap: 12px; margin-top: 20px;">
             <button id="btnSalvar" class="btn btn-primary" style="flex: 1;" disabled>
-                <i class="fas fa-save"></i> Salvar Digital
+                <i class="fas fa-floppy-disk"></i> Salvar Digital
             </button>
             <a href="cadastrar" class="btn btn-secondary" style="flex: 1;">
-                <i class="fas fa-times"></i> Cancelar
+                <i class="fas fa-xmark"></i> Cancelar
             </a>
         </div>
         
         <div class="alert alert-info" style="margin-top: 20px;">
-            <i class="fas fa-info-circle"></i>
+            <i class="fas fa-circle-info"></i>
             <strong>Nota:</strong> Em um ambiente de produção, esta tela se integraria com um leitor biométrico real (ex: Nitgen, DigitalPersona, SecuGen), que capturaria a digital do funcionário e geraria um template criptografado.
         </div>
     </div>

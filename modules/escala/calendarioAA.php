@@ -390,7 +390,7 @@ function funcionarioTrabalha($data, $escala) {
 <div class="calendario-container">
     <div class="module-header">
         <div class="module-title">
-            <h2><i class="fas fa-calendar-alt"></i> Calendário de Escalas</h2>
+            <h2><i class="fas fa-calendar"></i> Calendário de Escalas</h2>
             <p>Visualização das escalas de trabalho</p>
         </div>
     </div>

@@ -192,7 +192,7 @@ if ($assinatura && $assinatura['data_fim']) {
     <div class="col-lg-7">
         <div class="card pf-table-card h-100">
             <div class="card-header bg-transparent border-bottom fw-semibold">
-                <i class="fas fa-chart-line me-2 text-primary"></i>Registros por Dia (Mês)
+                <i class="fas fa-chart-line me-2 text-secondary"></i>Registros por Dia (Mês)
             </div>
             <div class="card-body" style="height:260px;">
                 <canvas id="pontosDiaChart"></canvas>
@@ -203,7 +203,7 @@ if ($assinatura && $assinatura['data_fim']) {
     <div class="col-lg-5">
         <div class="card pf-table-card h-100">
             <div class="card-header bg-transparent border-bottom fw-semibold">
-                <i class="fas fa-chart-pie me-2 text-primary"></i>Distribuição por Tipo
+                <i class="fas fa-chart-pie me-2 text-secondary"></i>Distribuição por Tipo
             </div>
             <div class="card-body d-flex align-items-center justify-content-center" style="height:260px;">
                 <canvas id="pontosTipoChart"></canvas>
@@ -218,7 +218,7 @@ if ($assinatura && $assinatura['data_fim']) {
     <div class="col-lg-4">
         <div class="card pf-table-card h-100">
             <div class="card-header bg-transparent border-bottom fw-semibold">
-                <i class="fas fa-crown me-2 text-warning"></i>Plano: <?php echo htmlspecialchars($assinatura['plano_nome'] ?? 'Básico'); ?>
+                <i class="fas fa-crown me-2 text-secondary"></i>Plano: <?php echo htmlspecialchars($assinatura['plano_nome'] ?? 'Básico'); ?>
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
@@ -254,7 +254,7 @@ if ($assinatura && $assinatura['data_fim']) {
     <div class="col-lg-<?php echo !empty($assinatura) ? '8' : '12'; ?>">
         <div class="card pf-table-card h-100">
             <div class="card-header bg-transparent border-bottom fw-semibold">
-                <i class="fas fa-trophy me-2 text-warning"></i>Top Funcionários (Mês)
+                <i class="fas fa-trophy me-2 text-secondary"></i>Top Funcionários (Mês)
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -282,7 +282,7 @@ if ($assinatura && $assinatura['data_fim']) {
 <!-- Últimas Solicitações -->
 <div class="card pf-table-card mb-4">
     <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
-        <span class="fw-semibold"><i class="fas fa-clipboard-list me-2 text-primary"></i>Últimas Solicitações</span>
+        <span class="fw-semibold"><i class="fas fa-clipboard-list me-2 text-secondary"></i>Últimas Solicitações</span>
         <a href="../solicitacoes/admin" class="btn btn-sm btn-outline-primary">Ver todas</a>
     </div>
     <div class="card-body p-0">

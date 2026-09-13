@@ -126,7 +126,7 @@ input:checked + .slider:before {
         <?php endif; ?>
         
         <div class="alert alert-info">
-            <i class="fas fa-info-circle"></i>
+            <i class="fas fa-circle-info"></i>
             <strong>Informação:</strong> O reconhecimento digital requer um leitor biométrico (hardware) conectado ao computador. 
             O reconhecimento facial utiliza a webcam do dispositivo.
         </div>
@@ -191,7 +191,7 @@ input:checked + .slider:before {
             
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Salvar Configurações
+                    <i class="fas fa-floppy-disk"></i> Salvar Configurações
                 </button>
                 <a href="index" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Voltar

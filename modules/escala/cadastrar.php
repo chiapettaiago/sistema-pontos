@@ -207,7 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a href="javascript:history.back()" class="btn btn-primary">Voltar</a>
             <?php else: ?>
                 <div class="info-box">
-                    <i class="fas fa-info-circle"></i> 
+                    <i class="fas fa-circle-info"></i> 
                     Cada funcionário pode ter apenas uma escala ativa por vez. Para alterar, edite a escala existente.
                 </div>
                 
@@ -261,7 +261,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Cadastrar Escala
+                        <i class="fas fa-floppy-disk"></i> Cadastrar Escala
                     </button>
                 </form>
             <?php endif; ?>

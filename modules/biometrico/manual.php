@@ -103,11 +103,11 @@ require_once '../../includes/header.php';
         <section class="manual-card">
             <h2><i class="fas fa-clipboard-check"></i> Antes de começar</h2>
             <ul class="manual-check">
-                <li><i class="fas fa-check-circle"></i><span>Funcionário presente e identificado</span></li>
-                <li><i class="fas fa-check-circle"></i><span>Câmera funcionando e autorizada</span></li>
-                <li><i class="fas fa-check-circle"></i><span>Rosto visível e sem obstruções</span></li>
-                <li><i class="fas fa-check-circle"></i><span>Iluminação uniforme e frontal</span></li>
-                <li><i class="fas fa-check-circle"></i><span>Conexão estável com o sistema</span></li>
+                <li><i class="fas fa-circle-check"></i><span>Funcionário presente e identificado</span></li>
+                <li><i class="fas fa-circle-check"></i><span>Câmera funcionando e autorizada</span></li>
+                <li><i class="fas fa-circle-check"></i><span>Rosto visível e sem obstruções</span></li>
+                <li><i class="fas fa-circle-check"></i><span>Iluminação uniforme e frontal</span></li>
+                <li><i class="fas fa-circle-check"></i><span>Conexão estável com o sistema</span></li>
             </ul>
             <div class="manual-callout tip"><i class="fas fa-lightbulb"></i><span>Para obter um bom reconhecimento no ponto, cadastre a face nas mesmas condições em que o funcionário normalmente registra o ponto.</span></div>
         </section>

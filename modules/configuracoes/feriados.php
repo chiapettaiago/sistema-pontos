@@ -557,7 +557,7 @@ if ($edit_id) {
                 <i class="fas fa-plus"></i> Novo Feriado
             </button>
             <button class="btn btn-secondary" onclick="adicionarFeriadosPadrao()" style="margin-left: 8px;">
-                <i class="fas fa-calendar-alt"></i> Adicionar Feriados Nacionais
+                <i class="fas fa-calendar"></i> Adicionar Feriados Nacionais
             </button>
         </div>
     </div>
@@ -616,10 +616,10 @@ if ($edit_id) {
                                     </td>
                                     <td>
                                         <a href="?edit=<?php echo $feriado['id']; ?>&ano=<?php echo $ano_filtro; ?>" class="btn btn-sm btn-secondary" style="padding: 4px 10px;">
-                                            <i class="fas fa-edit"></i>
+                                            <i class="fas fa-pen-to-square"></i>
                                         </a>
                                         <a href="?remover=<?php echo $feriado['id']; ?>&ano=<?php echo $ano_filtro; ?>" class="btn btn-sm btn-danger" style="padding: 4px 10px;" onclick="return confirm('Tem certeza que deseja remover este feriado?')">
-                                            <i class="fas fa-trash-alt"></i>
+                                            <i class="fas fa-trash"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -634,7 +634,7 @@ if ($edit_id) {
     <!-- Informações Adicionais -->
     <div class="config-card">
         <div class="config-header">
-            <i class="fas fa-info-circle"></i>
+            <i class="fas fa-circle-info"></i>
             <h3>Informações Importantes</h3>
         </div>
         <div class="config-body">
@@ -699,7 +699,7 @@ if ($edit_id) {
 <div id="modalEdit" class="modal" style="display: flex;">
     <div class="modal-content">
         <div class="modal-header">
-            <h3><i class="fas fa-edit"></i> Editar Feriado</h3>
+            <h3><i class="fas fa-pen-to-square"></i> Editar Feriado</h3>
         </div>
         <form method="POST" action="">
             <input type="hidden" name="id" value="<?php echo $edit_feriado['id']; ?>">

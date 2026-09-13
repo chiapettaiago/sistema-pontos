@@ -115,7 +115,7 @@ foreach ($extrato as &$dia) {
 
 <div class="module-header">
     <div class="module-title">
-        <h2><i class="fas fa-calendar-alt"></i> Extrato de Ponto</h2>
+        <h2><i class="fas fa-calendar"></i> Extrato de Ponto</h2>
     </div>
     <div class="module-actions">
         <button onclick="window.print()" class="btn btn-secondary">
@@ -155,10 +155,10 @@ foreach ($extrato as &$dia) {
         <div class="filter-group">
             <label>&nbsp;</label>
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-search"></i> Filtrar
+                <i class="fas fa-magnifying-glass"></i> Filtrar
             </button>
             <a href="extrato" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Limpar
+                <i class="fas fa-xmark"></i> Limpar
             </a>
         </div>
     </form>
@@ -201,7 +201,7 @@ foreach ($extrato as &$dia) {
                 <?php if (empty($extrato)): ?>
                 <tr>
                     <td colspan="9" style="text-align: center; padding: 40px;">
-                        <i class="fas fa-calendar-times" style="font-size: 48px; color: #ccc;"></i>
+                        <i class="fas fa-calendar-times" style="font-size: 48px; color: var(--text-muted);"></i>
                         <p style="margin-top: 10px;">Nenhum registro encontrado no período selecionado</p>
                     </td>
                 </tr>

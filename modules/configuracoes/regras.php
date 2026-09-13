@@ -488,7 +488,7 @@ input:checked + .slider:before {
             </div>
             <div class="config-body">
                 <div class="info-box">
-                    <p><i class="fas fa-info-circle"></i> Horas extras são calculadas automaticamente baseadas na carga horária diária/semanal configurada.</p>
+                    <p><i class="fas fa-circle-info"></i> Horas extras são calculadas automaticamente baseadas na carga horária diária/semanal configurada.</p>
                 </div>
                 
                 <div class="switch-group">
@@ -518,7 +518,7 @@ input:checked + .slider:before {
         <!-- Regras de Atrasos e Descontos -->
         <div class="config-card">
             <div class="config-header">
-                <i class="fas fa-exclamation-triangle"></i>
+                <i class="fas fa-triangle-exclamation"></i>
                 <h3>Atrasos e Descontos</h3>
             </div>
             <div class="config-body">
@@ -549,7 +549,7 @@ input:checked + .slider:before {
         <!-- Regras de Justificativas -->
         <div class="config-card">
             <div class="config-header">
-                <i class="fas fa-pencil-alt"></i>
+                <i class="fas fa-pencil"></i>
                 <h3>Justificativas</h3>
             </div>
             <div class="config-body">
@@ -659,7 +659,7 @@ input:checked + .slider:before {
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label><i class="fas fa-sign-in-alt"></i> Tempo Mínimo entre Registros</label>
+                        <label><i class="fas fa-right-to-bracket"></i> Tempo Mínimo entre Registros</label>
                         <input type="number" name="tempo_minimo_entrada" value="<?php echo $config['tempo_minimo_entrada']; ?>" min="15" max="120" step="5">
                         <small>Tempo mínimo entre registros consecutivos (minutos)</small>
                     </div>
@@ -687,7 +687,7 @@ input:checked + .slider:before {
                         <?php if (!$config['horas_extras_50'] && !$config['horas_extras_100']): ?>❌ Desativadas<br><?php endif; ?>
                     </div>
                     <div>
-                        <strong><i class="fas fa-exclamation-triangle"></i> Atrasos:</strong><br>
+                        <strong><i class="fas fa-triangle-exclamation"></i> Atrasos:</strong><br>
                         <?php if ($config['desconto_atraso']): ?>✅ Desconto ativo<br><?php else: ?>❌ Desconto inativo<br><?php endif; ?>
                         <?php if ($config['justificativa_obrigatoria']): ?>✅ Justificativa obrigatória<br><?php endif; ?>
                     </div>
@@ -708,7 +708,7 @@ input:checked + .slider:before {
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Salvar Regras
+                <i class="fas fa-floppy-disk"></i> Salvar Regras
             </button>
             <a href="index" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Voltar

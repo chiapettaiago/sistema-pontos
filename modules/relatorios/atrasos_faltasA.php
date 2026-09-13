@@ -377,7 +377,7 @@ $nome_mes = $nomes_meses[$mes_num] . ' de ' . $ano;
 <div class="relatorio-container">
     <div class="module-header">
         <div class="module-title">
-            <h2><i class="fas fa-exclamation-triangle"></i> Relatório de Atrasos e Faltas</h2>
+            <h2><i class="fas fa-triangle-exclamation"></i> Relatório de Atrasos e Faltas</h2>
             <p><?php echo $nome_mes; ?></p>
         </div>
         <div class="module-actions">
@@ -446,7 +446,7 @@ $nome_mes = $nomes_meses[$mes_num] . ' de ' . $ano;
     <div id="tab-atrasos" class="tab-pane active">
         <?php if (empty($atrasos)): ?>
             <div class="empty-state">
-                <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                <i class="fas fa-circle-check" style="color: var(--text-muted);"></i>
                 <p>Nenhum atraso registrado neste período!</p>
             </div>
         <?php else: ?>
@@ -492,7 +492,7 @@ $nome_mes = $nomes_meses[$mes_num] . ' de ' . $ano;
     <div id="tab-faltas" class="tab-pane">
         <?php if (empty($faltas)): ?>
             <div class="empty-state">
-                <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                <i class="fas fa-circle-check" style="color: var(--text-muted);"></i>
                 <p>Nenhuma falta registrada neste período!</p>
             </div>
         <?php else: ?>

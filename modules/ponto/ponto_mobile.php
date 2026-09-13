@@ -190,13 +190,13 @@ session_start();
     <div class="container">
         <div class="card">
             <div class="icon">
-                <i class="fas fa-mobile-alt"></i>
+                <i class="fas fa-mobile-screen-button"></i>
             </div>
             <h1>Ponto pelo Celular</h1>
             <p>Escaneie o QR Code do seu crachá para bater o ponto</p>
             
             <div class="info-box">
-                <i class="fas fa-info-circle"></i> 
+                <i class="fas fa-circle-info"></i> 
                 <strong>Como funciona:</strong><br>
                 1. Abra a câmera do seu celular<br>
                 2. Escaneie o QR Code do seu crachá (no aplicativo ou papel)<br>
@@ -205,7 +205,7 @@ session_start();
             </div>
             
             <div id="gpsStatus" class="gps-status gps-error">
-                <i class="fas fa-map-marker-alt"></i>
+                <i class="fas fa-location-dot"></i>
                 <span>Capturando localização...</span>
             </div>
             
@@ -248,7 +248,7 @@ session_start();
                 navigator.geolocation.getCurrentPosition(function(position) {
                     latitude = position.coords.latitude;
                     longitude = position.coords.longitude;
-                    gpsDiv.innerHTML = '<i class="fas fa-check-circle"></i> <span>Localização capturada ✓</span>';
+                    gpsDiv.innerHTML = '<i class="fas fa-circle-check"></i> <span>Localização capturada ✓</span>';
                     gpsDiv.className = 'gps-status gps-ok';
                 }, function(error) {
                     let msg = '';
@@ -258,11 +258,11 @@ session_start();
                         case 3: msg = 'Timeout'; break;
                         default: msg = 'Erro';
                     }
-                    gpsDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> <span>GPS: ' + msg + '</span>';
+                    gpsDiv.innerHTML = '<i class="fas fa-triangle-exclamation"></i> <span>GPS: ' + msg + '</span>';
                     gpsDiv.className = 'gps-status gps-error';
                 });
             } else {
-                gpsDiv.innerHTML = '<i class="fas fa-times-circle"></i> <span>GPS não suportado</span>';
+                gpsDiv.innerHTML = '<i class="fas fa-circle-xmark"></i> <span>GPS não suportado</span>';
                 gpsDiv.className = 'gps-status gps-error';
             }
         }
@@ -277,7 +277,7 @@ session_start();
             resultadoDiv.className = 'resultado';
             
             if (!latitude || !longitude) {
-                resultadoDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Aguardando localização... Tente novamente.';
+                resultadoDiv.innerHTML = '<i class="fas fa-triangle-exclamation"></i> Aguardando localização... Tente novamente.';
                 resultadoDiv.className = 'resultado resultado-error';
                 return;
             }
@@ -296,17 +296,17 @@ session_start();
                 const result = await response.json();
                 
                 if (result.success) {
-                    resultadoDiv.innerHTML = '<i class="fas fa-check-circle"></i> ' + result.message;
+                    resultadoDiv.innerHTML = '<i class="fas fa-circle-check"></i> ' + result.message;
                     resultadoDiv.className = 'resultado resultado-success';
                     setTimeout(() => {
                         location.reload();
                     }, 3000);
                 } else {
-                    resultadoDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + result.message;
+                    resultadoDiv.innerHTML = '<i class="fas fa-circle-exclamation"></i> ' + result.message;
                     resultadoDiv.className = 'resultado resultado-error';
                 }
             } catch (err) {
-                resultadoDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Erro ao processar: ' + err.message;
+                resultadoDiv.innerHTML = '<i class="fas fa-circle-exclamation"></i> Erro ao processar: ' + err.message;
                 resultadoDiv.className = 'resultado resultado-error';
             }
         }
@@ -323,7 +323,7 @@ session_start();
             scannerContainer.appendChild(videoContainer);
             
             const closeBtn = document.createElement('button');
-            closeBtn.innerHTML = '<i class="fas fa-times"></i> Fechar';
+            closeBtn.innerHTML = '<i class="fas fa-xmark"></i> Fechar';
             closeBtn.style.cssText = 'position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 30px; font-size: 16px; z-index: 1001; cursor: pointer;';
             closeBtn.onclick = function() {
                 if (html5QrCode) {

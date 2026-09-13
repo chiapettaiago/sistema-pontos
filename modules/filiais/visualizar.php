@@ -309,7 +309,7 @@ switch ($filial['tipo_ramo']) {
             <i class="fas fa-arrow-left"></i> Voltar
         </a>
         <a href="editar?id=<?php echo $id; ?>" class="btn btn-primary">
-            <i class="fas fa-edit"></i> Editar
+            <i class="fas fa-pen-to-square"></i> Editar
         </a>
     </div>
 </div>
@@ -348,7 +348,7 @@ switch ($filial['tipo_ramo']) {
 
 <!-- Informações da Filial -->
 <div class="info-section">
-    <h3><i class="fas fa-info-circle"></i> Informações da Filial</h3>
+    <h3><i class="fas fa-circle-info"></i> Informações da Filial</h3>
     <div class="info-grid">
         <div class="info-item">
             <span class="info-label">Código</span>
@@ -379,7 +379,7 @@ switch ($filial['tipo_ramo']) {
 
 <!-- Endereço - USANDO CAMPOS CORRETOS -->
 <div class="info-section">
-    <h3><i class="fas fa-map-marker-alt"></i> Endereço</h3>
+    <h3><i class="fas fa-location-dot"></i> Endereço</h3>
     <div class="info-grid">
         <div class="info-item">
             <span class="info-label">CEP</span>

@@ -209,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="form-container">
     <div class="form-card">
         <div class="form-header">
-            <h3><i class="fas fa-edit"></i> Editar Escala: <?php echo htmlspecialchars($escala['funcionario_nome']); ?></h3>
+            <h3><i class="fas fa-pen-to-square"></i> Editar Escala: <?php echo htmlspecialchars($escala['funcionario_nome']); ?></h3>
         </div>
         <div class="form-body">
             <?php if ($success): ?>
@@ -257,13 +257,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     <div class="form-actions">
                         <button type="submit" name="salvar" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Salvar Alterações
+                            <i class="fas fa-floppy-disk"></i> Salvar Alterações
                         </button>
                         <button type="submit" name="excluir" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta escala?')">
-                            <i class="fas fa-trash-alt"></i> Excluir
+                            <i class="fas fa-trash"></i> Excluir
                         </button>
                         <a href="index" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Cancelar
+                            <i class="fas fa-xmark"></i> Cancelar
                         </a>
                     </div>
                 </form>

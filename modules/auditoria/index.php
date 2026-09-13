@@ -94,7 +94,7 @@ $acoes = ['INSERT', 'UPDATE', 'DELETE', 'LOGIN', 'LOGOUT', 'VIEW', 'EXPORT', 'BA
 $modulos_lista = ['funcionarios', 'pontos', 'solicitacoes', 'relatorios', 'configuracoes', 'backup', 'usuarios', 'login'];
 ?>
 <div class="pf-page-header">
-    <h1><i class="fas fa-history me-2 text-primary"></i>Auditoria</h1>
+    <h1><i class="fas fa-history me-2 text-secondary"></i>Auditoria</h1>
     <p class="text-muted">Log de ações realizadas no sistema</p>
 </div>
 
@@ -116,7 +116,7 @@ $modulos_lista = ['funcionarios', 'pontos', 'solicitacoes', 'relatorios', 'confi
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i>Filtrar</button>
-                <a href="?" class="btn btn-outline-secondary ms-1"><i class="fas fa-times"></i></a>
+                <a href="?" class="btn btn-outline-secondary ms-1"><i class="fas fa-xmark"></i></a>
             </div>
         </form>
     </div>

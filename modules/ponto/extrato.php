@@ -78,7 +78,7 @@ require_once '../../includes/header.php';
 ?>
 <div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
     <div>
-        <h1><i class="fas fa-list-alt me-2 text-primary"></i>Meu Extrato de Ponto</h1>
+        <h1><i class="fas fa-rectangle-list me-2 text-secondary"></i>Meu Extrato de Ponto</h1>
         <p class="text-muted">Histórico completo dos seus registros</p>
     </div>
 </div>
@@ -145,7 +145,7 @@ require_once '../../includes/header.php';
                                      data-latitude="<?php echo htmlspecialchars((string) $ponto['latitude'], ENT_QUOTES, 'UTF-8'); ?>"
                                      data-longitude="<?php echo htmlspecialchars((string) $ponto['longitude'], ENT_QUOTES, 'UTF-8'); ?>">
                                     <button type="button" class="btn btn-sm btn-outline-primary consultar-endereco">
-                                        <i class="fas fa-map-marker-alt me-1"></i>Consultar endereço
+                                        <i class="fas fa-location-dot me-1"></i>Consultar endereço
                                     </button>
                                     <a class="d-block small mt-1" href="https://www.google.com/maps?q=<?php echo rawurlencode($coordenadas); ?>" target="_blank" rel="noopener noreferrer">Ver no mapa</a>
                                 </div>

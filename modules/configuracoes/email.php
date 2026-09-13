@@ -480,7 +480,7 @@ input:checked + .slider:before {
             </div>
             <div class="config-body">
                 <div class="info-box">
-                    <p><i class="fas fa-info-circle"></i> Configure as informações do seu servidor de e-mail para enviar notificações, lembretes e alertas para os usuários.</p>
+                    <p><i class="fas fa-circle-info"></i> Configure as informações do seu servidor de e-mail para enviar notificações, lembretes e alertas para os usuários.</p>
                 </div>
 
                 <!-- Provedor Rápido -->
@@ -579,7 +579,7 @@ input:checked + .slider:before {
 
         <div class="form-actions">
             <button type="submit" name="salvar" class="btn btn-primary">
-                <i class="fas fa-save"></i> Salvar Configurações
+                <i class="fas fa-floppy-disk"></i> Salvar Configurações
             </button>
             <a href="index" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Voltar

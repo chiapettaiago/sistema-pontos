@@ -62,7 +62,7 @@ if (empty($filiais)) {
 
         $filiais = [['id' => $filial_padrao_id, 'nome_fantasia' => 'Matriz']];
         $info_filial = '<div class="alert alert-info" style="margin-bottom: 20px;">
-            <i class="fas fa-info-circle"></i> 
+            <i class="fas fa-circle-info"></i> 
             Esta empresa ainda não possui filiais. Criamos uma filial padrão "Matriz" para permitir o cadastro.
         </div>';
     } catch (Exception $e) {
@@ -75,7 +75,7 @@ if (empty($filiais)) {
             $filial_padrao_id = (int) $filialExistente['id'];
         }
         $info_filial = '<div class="alert alert-warning" style="margin-bottom: 20px;">
-            <i class="fas fa-exclamation-triangle"></i> 
+            <i class="fas fa-triangle-exclamation"></i> 
             Não foi possível criar a filial padrão. Verifique a estrutura da tabela filiais.
         </div>';
     }
@@ -803,11 +803,11 @@ small {
                             <input type="file" name="foto" id="fotoInput" accept="image/*" class="file-input">
                         </label>
                         <button type="button" class="btn-foto btn-remover" id="removerFotoBtn" style="display: none;">
-                            <i class="fas fa-trash-alt"></i> Remover Foto
+                            <i class="fas fa-trash"></i> Remover Foto
                         </button>
                     </div>
                     <input type="hidden" name="foto_base64" id="foto_base64">
-                    <small><i class="fas fa-info-circle"></i> Centralize o rosto no círculo. O sistema focará nos olhos para melhor reconhecimento.</small>
+                    <small><i class="fas fa-circle-info"></i> Centralize o rosto no círculo. O sistema focará nos olhos para melhor reconhecimento.</small>
                 </div>
             </div>
             
@@ -886,14 +886,14 @@ small {
             
             <!-- Endereço -->
             <div class="form-section">
-                <h4><i class="fas fa-map-marker-alt"></i> Endereço</h4>
+                <h4><i class="fas fa-location-dot"></i> Endereço</h4>
                 <div class="form-row">
                     <div class="form-group">
                         <label>CEP</label>
                         <div class="cep-row">
                             <input type="text" name="cep" id="cep" value="<?php echo htmlspecialchars($_POST['cep'] ?? ''); ?>">
                             <button type="button" id="buscarCep" class="btn btn-secondary">
-                                <i class="fas fa-search"></i> Buscar
+                                <i class="fas fa-magnifying-glass"></i> Buscar
                             </button>
                         </div>
                     </div>
@@ -1057,16 +1057,16 @@ small {
             </div>
             
             <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i>
+                <i class="fas fa-circle-info"></i>
                 <strong>Atenção:</strong> A foto do rosto será usada para validação no reconhecimento facial.
             </div>
             
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Salvar Funcionário
+                    <i class="fas fa-floppy-disk"></i> Salvar Funcionário
                 </button>
                 <a href="index" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancelar
+                    <i class="fas fa-xmark"></i> Cancelar
                 </a>
             </div>
         </form>

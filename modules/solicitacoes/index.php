@@ -114,7 +114,7 @@ require_once '../../includes/header.php';
 ?>
 <div class="pf-page-header d-flex justify-content-between align-items-start flex-wrap gap-2">
     <div>
-        <h1><i class="fas fa-envelope-open-text me-2 text-primary"></i>Minhas Solicitações</h1>
+        <h1><i class="fas fa-envelope-open-text me-2 text-secondary"></i>Minhas Solicitações</h1>
         <p class="text-muted">Acompanhe suas solicitações de ajuste</p>
     </div>
     <a href="nova" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Nova Solicitação</a>
@@ -135,7 +135,7 @@ require_once '../../includes/header.php';
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-primary"><i class="fas fa-filter me-1"></i>Filtrar</button>
-                <a href="?" class="btn btn-outline-secondary ms-1"><i class="fas fa-times"></i></a>
+                <a href="?" class="btn btn-outline-secondary ms-1"><i class="fas fa-xmark"></i></a>
             </div>
         </form>
     </div>
@@ -170,7 +170,7 @@ require_once '../../includes/header.php';
                             <a href="nova?id=<?php echo $sol['id']; ?>" class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></a>
                             <?php if ($sol['status'] === 'pendente'): ?>
                             <a href="cancelar?id=<?php echo $sol['id']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Cancelar solicitação?')">
-                                <i class="fas fa-times"></i>
+                                <i class="fas fa-xmark"></i>
                             </a>
                             <?php endif; ?>
                         </td>

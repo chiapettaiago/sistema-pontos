@@ -259,24 +259,24 @@ if ($filename && file_exists($filepath)) {
 <div class="backup-container">
     <div class="form-card">
         <div class="form-header">
-            <h3><i class="fas fa-exclamation-triangle"></i> Restaurar Backup</h3>
+            <h3><i class="fas fa-triangle-exclamation"></i> Restaurar Backup</h3>
             <p>ATENÇÃO: Esta ação substituirá todos os dados atuais!</p>
         </div>
         
         <div class="form-body">
             <?php if ($success): ?>
                 <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i> <?php echo $success; ?>
+                    <i class="fas fa-circle-check"></i> <?php echo $success; ?>
                 </div>
                 <a href="index" class="btn btn-secondary">Voltar</a>
             <?php elseif ($error): ?>
                 <div class="alert alert-error">
-                    <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
+                    <i class="fas fa-circle-exclamation"></i> <?php echo $error; ?>
                 </div>
                 <a href="index" class="btn btn-secondary">Voltar</a>
             <?php elseif ($file_info): ?>
                 <div class="warning-box">
-                    <i class="fas fa-exclamation-triangle"></i>
+                    <i class="fas fa-triangle-exclamation"></i>
                     <strong>Esta ação não pode ser desfeita!</strong><br>
                     Restaurar este backup irá substituir TODOS os dados atuais do sistema.
                 </div>
@@ -302,7 +302,7 @@ if ($filename && file_exists($filepath)) {
                     <input type="hidden" name="confirmar" value="1">
                     
                     <button type="submit" class="btn btn-danger" onclick="return confirm('ATENÇÃO! Esta ação irá SUBSTITUIR todos os dados atuais. Tem certeza absoluta?')">
-                        <i class="fas fa-undo-alt"></i> Confirmar Restauração
+                        <i class="fas fa-rotate-left"></i> Confirmar Restauração
                     </button>
                 </form>
                 
@@ -312,7 +312,7 @@ if ($filename && file_exists($filepath)) {
                 
             <?php else: ?>
                 <div class="alert alert-error">
-                    <i class="fas fa-exclamation-circle"></i> Nenhum arquivo de backup selecionado.
+                    <i class="fas fa-circle-exclamation"></i> Nenhum arquivo de backup selecionado.
                 </div>
                 <a href="index" class="btn btn-secondary">Voltar</a>
             <?php endif; ?>

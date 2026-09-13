@@ -403,7 +403,7 @@ small {
             
             <!-- Endereço -->
             <div class="form-section">
-                <h4><i class="fas fa-map-marker-alt"></i> Endereço</h4>
+                <h4><i class="fas fa-location-dot"></i> Endereço</h4>
                 <div class="form-row">
                     <div class="form-group">
                         <label>CEP</label>
@@ -412,7 +412,7 @@ small {
                                    value="<?php echo htmlspecialchars($_POST['cep'] ?? ''); ?>"
                                    placeholder="00000-000">
                             <button type="button" id="buscarCep" class="btn btn-secondary">
-                                <i class="fas fa-search"></i> Buscar
+                                <i class="fas fa-magnifying-glass"></i> Buscar
                             </button>
                         </div>
                     </div>
@@ -529,10 +529,10 @@ small {
             
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Salvar Filial
+                    <i class="fas fa-floppy-disk"></i> Salvar Filial
                 </button>
                 <a href="index" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancelar
+                    <i class="fas fa-xmark"></i> Cancelar
                 </a>
             </div>
         </form>

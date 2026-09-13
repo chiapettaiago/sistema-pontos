@@ -149,7 +149,7 @@ $funcionarios = $stmt->fetchAll();
 </div>
 
 <div class="alert-info">
-    <i class="fas fa-info-circle"></i>
+    <i class="fas fa-circle-info"></i>
     <strong><?= $tipoCadastro === 'digital' ? 'Cadastro de digital' : 'Cadastro facial' ?>:</strong>
     <ul style="margin-top: 8px; margin-left: 20px;">
         <?php if ($tipoCadastro === 'digital'): ?>
@@ -187,7 +187,7 @@ $funcionarios = $stmt->fetchAll();
             <?php $temCadastro = $tipoCadastro === 'digital' ? $func['tem_digital'] > 0 : $func['tem_facial'] > 0; ?>
             <?php if ($temCadastro): ?>
                 <span class="status-badge status-cadastrado">
-                    <i class="fas fa-check-circle"></i> <?= $tipoCadastro === 'digital' ? 'Digital cadastrada' : 'Facial cadastrada' ?>
+                    <i class="fas fa-circle-check"></i> <?= $tipoCadastro === 'digital' ? 'Digital cadastrada' : 'Facial cadastrada' ?>
                 </span>
             <?php endif; ?>
             <a href="<?= $tipoCadastro === 'digital' ? 'digital' : '../funcionarios/cadastro_facial' ?>?id=<?php echo $func['id']; ?>" class="btn-biometrico <?= $tipoCadastro === 'digital' ? 'btn-digital' : 'btn-facial' ?>">
@@ -199,7 +199,7 @@ $funcionarios = $stmt->fetchAll();
     
     <?php if (empty($funcionarios)): ?>
     <div style="text-align: center; padding: 60px;">
-        <i class="fas fa-users" style="font-size: 48px; color: #ccc;"></i>
+        <i class="fas fa-users" style="font-size: 48px; color: var(--text-muted);"></i>
         <p style="margin-top: 16px;">Nenhum funcionário encontrado</p>
         <a href="../funcionarios/cadastrar" class="btn btn-primary" style="margin-top: 16px;">
             <i class="fas fa-plus"></i> Cadastrar Funcionário

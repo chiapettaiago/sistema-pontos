@@ -191,7 +191,7 @@ canvas {
         
         <!-- Informação do Ambiente -->
         <div class="ambiente-info" id="ambienteInfo">
-            <i class="fas fa-info-circle"></i> 
+            <i class="fas fa-circle-info"></i> 
             Carregando configurações...
         </div>
         
@@ -221,7 +221,7 @@ canvas {
                 <i class="fas fa-camera"></i> Capturar Amostra
             </button>
             <button id="btnCancelar" class="btn btn-secondary" style="flex: 1;">
-                <i class="fas fa-times"></i> Cancelar
+                <i class="fas fa-xmark"></i> Cancelar
             </button>
         </div>
         
@@ -469,7 +469,7 @@ async function finalizarCadastro() {
         if (result.success) {
             document.getElementById('resultado').innerHTML = `
                 <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i> ${result.message || 'Cadastro realizado com sucesso!'}
+                    <i class="fas fa-circle-check"></i> ${result.message || 'Cadastro realizado com sucesso!'}
                 </div>`;
             document.getElementById('resultado').style.display = 'block';
             updateStatusText('✅ Cadastro concluído! Redirecionando...', 'success');
@@ -484,7 +484,7 @@ async function finalizarCadastro() {
     } catch (err) {
         document.getElementById('resultado').innerHTML = `
             <div class="alert alert-error">
-                <i class="fas fa-exclamation-circle"></i> Erro: ${err.message}
+                <i class="fas fa-circle-exclamation"></i> Erro: ${err.message}
             </div>`;
         document.getElementById('resultado').style.display = 'block';
         updateStatusText(`❌ ${err.message}`, 'error');

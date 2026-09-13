@@ -220,14 +220,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <!-- Endereço com Busca por CEP -->
             <div class="form-section">
-                <h4><i class="fas fa-map-marker-alt"></i> Endereço</h4>
+                <h4><i class="fas fa-location-dot"></i> Endereço</h4>
                 <div class="form-row">
                     <div class="form-group">
                         <label>CEP</label>
                         <div class="cep-row">
                             <input type="text" name="cep" id="cep" placeholder="00000-000" value="<?php echo htmlspecialchars($_POST['cep'] ?? ''); ?>">
                             <button type="button" id="buscarCep" class="btn btn-secondary">
-                                <i class="fas fa-search"></i> Buscar
+                                <i class="fas fa-magnifying-glass"></i> Buscar
                             </button>
                         </div>
                     </div>
@@ -301,7 +301,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 
                 <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-circle-info"></i>
                     <strong>Informação:</strong> O administrador da empresa receberá as credenciais de acesso.
                     Senha padrão: <strong>123456</strong> (recomendamos alterar no primeiro acesso)
                 </div>
@@ -309,10 +309,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Criar Empresa
+                    <i class="fas fa-floppy-disk"></i> Criar Empresa
                 </button>
                 <a href="index" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancelar
+                    <i class="fas fa-xmark"></i> Cancelar
                 </a>
             </div>
         </form>

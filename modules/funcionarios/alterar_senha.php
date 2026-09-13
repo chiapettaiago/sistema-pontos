@@ -94,10 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> Salvar Nova Senha
+                    <i class="fas fa-floppy-disk"></i> Salvar Nova Senha
                 </button>
                 <a href="visualizar?id=<?php echo $id; ?>" class="btn btn-secondary">
-                    <i class="fas fa-times"></i> Cancelar
+                    <i class="fas fa-xmark"></i> Cancelar
                 </a>
             </div>
         </form>

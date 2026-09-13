@@ -94,7 +94,7 @@ if (isset($_SESSION['mensagem'])) {
     $mensagem = $_SESSION['mensagem'];
     $tipo_mensagem = $_SESSION['tipo_mensagem'] ?? 'info';
     echo "<div class='alert alert-{$tipo_mensagem}' style='margin-bottom: 20px;'>
-            <i class='fas " . ($tipo_mensagem == 'success' ? 'fa-check-circle' : 'fa-info-circle') . "'></i> 
+            <i class='fas " . ($tipo_mensagem == 'success' ? 'fa-circle-check' : 'fa-circle-info') . "'></i> 
             {$mensagem}
           </div>";
     unset($_SESSION['mensagem']);

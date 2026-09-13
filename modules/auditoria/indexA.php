@@ -432,7 +432,7 @@ $modulos_lista = ['funcionarios', 'pontos', 'solicitacoes', 'relatorios', 'confi
                 <i class="fas fa-file-excel"></i> Exportar Logs
             </a>
             <a href="limpar" class="btn-clear-logs" onclick="return confirm('Tem certeza que deseja limpar logs antigos? Esta ação não pode ser desfeita.')">
-                <i class="fas fa-trash-alt"></i> Limpar Logs Antigos
+                <i class="fas fa-trash"></i> Limpar Logs Antigos
             </a>
         </div>
     </div>
@@ -523,7 +523,7 @@ $modulos_lista = ['funcionarios', 'pontos', 'solicitacoes', 'relatorios', 'confi
     <!-- Aviso de Segurança (apenas para Super Admin) -->
     <?php if ($usuario_tipo === 'super_admin'): ?>
     <div style="margin-bottom: 20px; padding: 12px; background: #fef3c7; border-radius: 12px; border-left: 4px solid #f59e0b;">
-        <i class="fas fa-shield-alt"></i>
+        <i class="fas fa-shield-halved"></i>
         <strong>Modo Super Admin:</strong> Você está visualizando logs de <?php echo $empresa_filtro ? 'uma empresa específica' : 'TODAS as empresas'; ?>.
     </div>
     <?php endif; ?>

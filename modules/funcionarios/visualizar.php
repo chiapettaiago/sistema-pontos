@@ -357,7 +357,7 @@ $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
         </a>
         <?php if ($pode_editar): ?>
         <?php if (canEditFuncionario((int) $id)): ?><a href="editar?id=<?php echo $id; ?>" class="btn btn-primary">
-            <i class="fas fa-edit"></i> Editar
+            <i class="fas fa-pen-to-square"></i> Editar
         </a><?php endif; ?>
         <?php endif; ?>
     </div>
@@ -400,10 +400,10 @@ $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
         <div class="biometria-card">
             <h4>Foto</h4>
             <?php if (!empty($funcionario['foto']) && file_exists('../../' . $funcionario['foto'])): ?>
-                <div class="biometria-status biometria-ok"><i class="fas fa-check-circle"></i> Foto cadastrada</div>
+                <div class="biometria-status biometria-ok"><i class="fas fa-circle-check"></i> Foto cadastrada</div>
                 <p style="margin-top:10px;font-size:13px;color:var(--text-secondary);">A foto atual está pronta para uso no reconhecimento facial.</p>
             <?php else: ?>
-                <div class="biometria-status biometria-pendente"><i class="fas fa-exclamation-circle"></i> Foto pendente</div>
+                <div class="biometria-status biometria-pendente"><i class="fas fa-circle-exclamation"></i> Foto pendente</div>
                 <p style="margin-top:10px;font-size:13px;color:var(--text-secondary);">Cadastre ou atualize a foto para iniciar a biometria facial.</p>
             <?php endif; ?>
             <div class="biometria-links">
@@ -413,10 +413,10 @@ $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
         <div class="biometria-card">
             <h4>Facial</h4>
             <?php if (!empty($biometria['tem_facial'])): ?>
-                <div class="biometria-status biometria-ok"><i class="fas fa-check-circle"></i> Facial cadastrada</div>
+                <div class="biometria-status biometria-ok"><i class="fas fa-circle-check"></i> Facial cadastrada</div>
                 <p style="margin-top:10px;font-size:13px;color:var(--text-secondary);">O funcionário já pode usar login facial e ponto facial.</p>
             <?php else: ?>
-                <div class="biometria-status biometria-pendente"><i class="fas fa-exclamation-circle"></i> Facial pendente</div>
+                <div class="biometria-status biometria-pendente"><i class="fas fa-circle-exclamation"></i> Facial pendente</div>
                 <p style="margin-top:10px;font-size:13px;color:var(--text-secondary);">Crie o cadastro facial após atualizar a foto.</p>
             <?php endif; ?>
             <div class="biometria-links">
@@ -430,10 +430,10 @@ $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
         <div class="biometria-card">
             <h4>Digital</h4>
             <?php if (!empty($biometria['tem_digital'])): ?>
-                <div class="biometria-status biometria-ok"><i class="fas fa-check-circle"></i> Digital cadastrada</div>
+                <div class="biometria-status biometria-ok"><i class="fas fa-circle-check"></i> Digital cadastrada</div>
                 <p style="margin-top:10px;font-size:13px;color:var(--text-secondary);">A digital simulado já está disponível para teste.</p>
             <?php else: ?>
-                <div class="biometria-status biometria-pendente"><i class="fas fa-exclamation-circle"></i> Digital pendente</div>
+                <div class="biometria-status biometria-pendente"><i class="fas fa-circle-exclamation"></i> Digital pendente</div>
                 <p style="margin-top:10px;font-size:13px;color:var(--text-secondary);">Cadastre a digital simulada para permitir o fluxo de teste.</p>
             <?php endif; ?>
             <div class="biometria-links">
@@ -515,7 +515,7 @@ $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
 
 <!-- Endereço -->
 <div class="info-section">
-    <h3><i class="fas fa-map-marker-alt"></i> Endereço</h3>
+    <h3><i class="fas fa-location-dot"></i> Endereço</h3>
     <div class="info-grid">
         <div class="info-item">
             <span class="info-label">CEP</span>
