@@ -36,7 +36,7 @@ if (isset($_GET['set_session'])) {
     $_SESSION['usuario_id'] = 999999;
     $_SESSION['usuario_tipo'] = 'diagnostico';
     $_SESSION['empresa_id'] = 1;
-    header('Location: diagnostico.php');
+    header('Location: diagnostico');
     exit;
 }
 
@@ -55,7 +55,7 @@ if (isset($_GET['clear_session'])) {
         );
     }
     session_destroy();
-    header('Location: diagnostico.php');
+    header('Location: diagnostico');
     exit;
 }
 ?>
@@ -84,10 +84,10 @@ if (isset($_GET['clear_session'])) {
         <h1>Diagnostico rapido</h1>
         <p>Abra esta pagina no servidor e veja se a sessao, o banco e o caminho estao corretos.</p>
         <div class="acoes">
-            <a href="diagnostico.php?set_session=1">Gravar sessao teste</a>
-            <a href="diagnostico.php?clear_session=1" class="sec">Limpar sessao</a>
-            <a href="login.php" class="sec">Ir para login</a>
-            <a href="logout.php">Testar logout</a>
+            <a href="diagnostico?set_session=1">Gravar sessao teste</a>
+            <a href="diagnostico?clear_session=1" class="sec">Limpar sessao</a>
+            <a href="login" class="sec">Ir para login</a>
+            <a href="logout">Testar logout</a>
         </div>
     </div>
 

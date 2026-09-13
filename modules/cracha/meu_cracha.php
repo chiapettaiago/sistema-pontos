@@ -10,7 +10,7 @@ session_start();
 
 // Verificar se está logado
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -37,7 +37,7 @@ if (!$funcionario_id && isset($_SESSION['usuario_id'])) {
 if (!$funcionario_id) {
     $_SESSION['mensagem'] = 'Perfil de funcionário não encontrado.';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -60,7 +60,7 @@ $funcionario = $stmt->fetch();
 if (!$funcionario) {
     $_SESSION['mensagem'] = 'Funcionário não encontrado';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -79,11 +79,14 @@ $dados_qr = [
     'cpf' => $funcionario['cpf'],
     'empresa' => $funcionario['empresa_nome'],
     'filial' => $funcionario['filial_nome'],
+    'empresa_id' => (int) $funcionario['empresa_id'],
+    'exp' => time() + 31536000,
     'valido_ate' => date('Y-m-d', strtotime('+1 year'))
 ];
+$dados_qr['assinatura'] = hash_hmac('sha256', $dados_qr['matricula'] . '|' . $dados_qr['empresa_id'] . '|' . $dados_qr['exp'], APP_SIGNING_KEY);
 
 // URL completa para validação
-$url_validacao = $base_url . '/validar_cracha.php?data=' . urlencode(json_encode($dados_qr));
+$url_validacao = $base_url . '/validar_cracha?data=' . urlencode(json_encode($dados_qr));
 
 // Gerar QR Code com a URL
 $qr_url = "https://quickchart.io/qr?text=" . urlencode($url_validacao) . "&size=200&margin=2";
@@ -522,13 +525,13 @@ require_once '../../includes/header.php';
             </div>
             
             <div class="acoes">
-                <a href="gerar.php?id=<?php echo $funcionario_id; ?>" class="btn-acao btn-pdf" target="_blank">
+                <a href="gerar?id=<?php echo $funcionario_id; ?>" class="btn-acao btn-pdf" target="_blank">
                     <i class="fas fa-file-pdf"></i> Baixar PDF
                 </a>
                 <button class="btn-acao btn-wallet" onclick="adicionarWallet()">
                     <i class="fab fa-apple"></i> + Carteira Digital
                 </button>
-                <a href="../../modules/ponto/ponto.php" class="btn-acao btn-voltar">
+                <a href="../../modules/ponto/ponto" class="btn-acao btn-voltar">
                     <i class="fas fa-arrow-left"></i> Voltar
                 </a>
             </div>
@@ -540,7 +543,7 @@ require_once '../../includes/header.php';
 // Função para adicionar à carteira digital (Apple Wallet / Google Wallet)
 function adicionarWallet() {
     // Redirecionar para a página de configuração da carteira
-    window.location.href = 'gerar_wallet.php?id=<?php echo $funcionario_id; ?>';
+    window.location.href = 'gerar_wallet?id=<?php echo $funcionario_id; ?>';
 }
 
 // Detectar dispositivo para mostrar mensagem adicional (opcional)

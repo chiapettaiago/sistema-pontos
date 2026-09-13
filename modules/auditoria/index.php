@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 

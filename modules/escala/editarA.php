@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -36,7 +36,7 @@ $stmt->execute([':id' => $id]);
 $escala = $stmt->fetch();
 
 if (!$escala) {
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['excluir'])) {
         $stmt = $db->prepare("DELETE FROM funcionario_escala WHERE id = :id");
         $stmt->execute([':id' => $id]);
-        header('Location: index.php');
+        header('Location: index');
         exit;
     }
 }
@@ -214,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="form-body">
             <?php if ($success): ?>
                 <div class="alert alert-success"><?php echo $success; ?></div>
-                <a href="index.php" class="btn btn-primary">Voltar para lista</a>
+                <a href="index" class="btn btn-primary">Voltar para lista</a>
             <?php else: ?>
                 <form method="POST" action="">
                     <div class="form-group">
@@ -262,7 +262,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <button type="submit" name="excluir" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta escala?')">
                             <i class="fas fa-trash-alt"></i> Excluir
                         </button>
-                        <a href="index.php" class="btn btn-secondary">
+                        <a href="index" class="btn btn-secondary">
                             <i class="fas fa-times"></i> Cancelar
                         </a>
                     </div>

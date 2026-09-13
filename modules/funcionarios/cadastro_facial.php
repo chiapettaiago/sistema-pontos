@@ -3,6 +3,7 @@ $pageTitle = 'Minha biometria facial';
 $activePage = 'funcionarios';
 require_once __DIR__ . '/../../includes/auth_check.php';
 forceAuthentication();
+require_once __DIR__ . '/../../includes/auth.php';
 require_once __DIR__ . '/../../includes/csrf.php';
 require_once __DIR__ . '/../../includes/facial_recognition.php';
 
@@ -14,15 +15,18 @@ if ($funcionarioId <= 0) {
 }
 $funcionarioLogadoId = (int) ($_SESSION['funcionario_id'] ?? 0);
 $cadastroProprio = $funcionarioLogadoId === $funcionarioId;
-requireAdmin();
-$urlVoltar = $cadastroProprio ? appUrl(appHomeRouteFor($_SESSION['usuario_tipo'] ?? 'funcionario')) : rtrim(BASE_URL, '/') . '/modules/funcionarios/visualizar.php?id=' . $funcionarioId;
+if (!$cadastroProprio && !canEditFuncionario($funcionarioId)) {
+    http_response_code(403);
+    exit('Acesso negado: seu usuário não pode cadastrar a biometria deste funcionário.');
+}
+$urlVoltar = $cadastroProprio ? appUrl(appHomeRouteFor($_SESSION['usuario_tipo'] ?? 'funcionario')) : rtrim(BASE_URL, '/') . '/modules/funcionarios/visualizar?id=' . $funcionarioId;
 
 try {
     $usuarioTipo = appNormalizeUserType((string) ($_SESSION['usuario_tipo'] ?? ''));
     $empresaId = (int) ($_SESSION['empresa_id'] ?? 0);
-    $sqlFuncionario = 'SELECT id, nome, facial_cadastrado, imagem_facial FROM funcionarios WHERE id = :id AND status = :status';
+    $sqlFuncionario = 'SELECT id, nome, empresa_id, facial_cadastrado, imagem_facial FROM funcionarios WHERE id = :id AND status = :status';
     $parametrosFuncionario = [':id' => $funcionarioId, ':status' => 'ativo'];
-    if ($usuarioTipo === 'admin_empresa') {
+    if ($usuarioTipo !== 'super_admin') {
         $sqlFuncionario .= ' AND empresa_id = :empresa_id';
         $parametrosFuncionario[':empresa_id'] = $empresaId;
     }
@@ -60,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (file_put_contents($imagemDestino, $imageData, LOCK_EX) === false) throw new RuntimeException('Falha ao salvar imagem.');
                 $pdo->exec("CREATE TABLE IF NOT EXISTS biometricos_faciais (id INT NOT NULL AUTO_INCREMENT, funcionario_id INT NOT NULL, descritores LONGTEXT NOT NULL, modelo VARCHAR(50) DEFAULT 'face-api.js', ativo TINYINT(1) DEFAULT 1, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (id), KEY idx_bf_funcionario (funcionario_id), KEY idx_bf_ativo (ativo)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
                 $pdo->beginTransaction();
-                $stmt = $pdo->prepare('UPDATE funcionarios SET descritor_facial = :descritor, imagem_facial = :imagem, facial_cadastrado = 1 WHERE id = :id');
-                $stmt->execute([':descritor' => $descritor, ':imagem' => $imagemNome, ':id' => $funcionarioId]);
+                $stmt = $pdo->prepare('UPDATE funcionarios SET descritor_facial = :descritor, imagem_facial = :imagem, facial_cadastrado = 1 WHERE id = :id AND empresa_id = :empresa_id');
+                $stmt->execute([':descritor' => $descritor, ':imagem' => $imagemNome, ':id' => $funcionarioId, ':empresa_id' => (int) $funcionario['empresa_id']]);
                 $stmt = $pdo->prepare('DELETE FROM biometricos_faciais WHERE funcionario_id = :id');
                 $stmt->execute([':id' => $funcionarioId]);
                 $stmt = $pdo->prepare('INSERT INTO biometricos_faciais (funcionario_id, descritores, modelo, ativo) VALUES (:id, :descritores, :modelo, 1)');

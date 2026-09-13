@@ -1,5 +1,6 @@
 <?php
-// validar_cracha.php - Página de validação do QR Code
+// validar_cracha.php - Página pública de validação do QR Code assinado
+require_once __DIR__ . '/config/database.php';
 $dados = $_GET['data'] ?? '';
 
 if (empty($dados)) {
@@ -9,9 +10,22 @@ if (empty($dados)) {
 // Decodificar os dados
 $funcionario = json_decode(urldecode($dados), true);
 
-if (!$funcionario || !isset($funcionario['matricula'])) {
+if (!$funcionario || !isset($funcionario['matricula'], $funcionario['empresa_id'], $funcionario['exp'], $funcionario['assinatura'])) {
     die('Dados do QR Code inválidos');
 }
+
+$payloadAssinado = $funcionario['matricula'] . '|' . (int) $funcionario['empresa_id'] . '|' . (int) $funcionario['exp'];
+if ((int) $funcionario['exp'] < time() || !hash_equals(hash_hmac('sha256', $payloadAssinado, APP_SIGNING_KEY), (string) $funcionario['assinatura'])) {
+    http_response_code(403);
+    die('Crachá inválido ou expirado');
+}
+
+$stmt = $pdo->prepare('SELECT f.matricula, f.nome, f.cpf, f.foto, fi.nome_fantasia AS filial, c.nome AS cargo, e.nome_empresa AS empresa FROM funcionarios f LEFT JOIN filiais fi ON fi.id=f.filial_id LEFT JOIN cargos c ON c.id=f.cargo_id LEFT JOIN empresa e ON e.id=f.empresa_id WHERE f.matricula=:matricula AND f.empresa_id=:empresa_id AND f.status=:status LIMIT 1');
+$stmt->execute([':matricula' => $funcionario['matricula'], ':empresa_id' => (int) $funcionario['empresa_id'], ':status' => 'ativo']);
+$registro = $stmt->fetch();
+if (!$registro) { http_response_code(404); die('Crachá não encontrado ou inativo'); }
+$funcionario = array_merge($funcionario, $registro);
+$funcionario['valido_ate'] = date('Y-m-d', (int) $funcionario['exp']);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">

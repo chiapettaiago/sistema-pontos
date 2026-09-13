@@ -1,15 +1,16 @@
 <?php
 // modules/relatorios/exportar_excel.php - Exportar para Excel (CSV) - VERSÃO COMPLETA CORRIGIDA
-session_start();
+require_once '../../includes/auth.php';
+redirectIfNotLoggedIn();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
-if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'])) {
-    header('Location: ../../index.php');
+if (!hasPermission('ver_relatorios')) {
+    header('Location: ../../index');
     exit;
 }
 

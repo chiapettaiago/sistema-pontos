@@ -2,11 +2,15 @@
 // modules/filiais/cadastrar.php - Cadastrar Nova Filial (COMPLETO E CORRIGIDO)
 $pageTitle = 'Nova Filial';
 $activePage = 'filiais';
+require_once '../../includes/auth.php';
+redirectIfNotLoggedIn();
+if (!hasPermission('gerenciar_filiais')) {
+    http_response_code(403);
+    exit('Acesso negado: seu usuário não possui permissão para gerenciar filiais.');
+}
 require_once '../../includes/header.php';
 require_once '../../config/database.php';
 require_once '../../config/multi_empresa.php';
-
-redirectIfNotAdmin();
 
 $database = new Database();
 $db = $database->getConnection();
@@ -16,7 +20,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -527,7 +531,7 @@ small {
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Salvar Filial
                 </button>
-                <a href="index.php" class="btn btn-secondary">
+                <a href="index" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>
@@ -618,6 +622,5 @@ document.querySelectorAll('.form-group input, .form-group select').forEach(field
 </script>
 
 <?php require_once '../../includes/footer.php'; ?>
-
 
 

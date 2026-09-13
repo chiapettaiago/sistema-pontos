@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="form-body">
             <?php if ($success): ?>
                 <div class="alert alert-success"><?php echo $success; ?></div>
-                <a href="index.php" class="btn btn-primary">Voltar para lista</a>
+                <a href="index" class="btn btn-primary">Voltar para lista</a>
             <?php elseif ($error): ?>
                 <div class="alert alert-error"><?php echo $error; ?></div>
                 <a href="javascript:history.back()" class="btn btn-primary">Voltar</a>

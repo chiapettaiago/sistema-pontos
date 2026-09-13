@@ -6,7 +6,7 @@ session_start();
 
 // Verificar se está logado
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -16,7 +16,7 @@ if (!isset($_SESSION['usuario_id'])) {
 if ($_SESSION['usuario_tipo'] !== 'funcionario') {
     $_SESSION['mensagem'] = 'Apenas funcionários podem cancelar solicitações';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: admin.php');
+    header('Location: admin');
     exit;
 }
 
@@ -28,7 +28,7 @@ $id = $_GET['id'] ?? 0;
 if (!$id) {
     $_SESSION['mensagem'] = 'Solicitação não identificada';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -48,7 +48,7 @@ if (!$funcionario_id && isset($_SESSION['usuario_id'])) {
 if (!$funcionario_id) {
     $_SESSION['mensagem'] = 'Perfil de funcionário não encontrado';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -62,7 +62,7 @@ $solicitacao = $stmt->fetch();
 if (!$solicitacao) {
     $_SESSION['mensagem'] = 'Solicitação não encontrada';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -70,7 +70,7 @@ if (!$solicitacao) {
 if ($solicitacao['status'] !== 'pendente') {
     $_SESSION['mensagem'] = 'Apenas solicitações pendentes podem ser canceladas';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -87,6 +87,6 @@ try {
     $_SESSION['tipo_mensagem'] = 'error';
 }
 
-header('Location: index.php');
+header('Location: index');
 exit;
 ?>

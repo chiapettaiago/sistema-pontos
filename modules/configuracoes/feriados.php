@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -546,7 +546,7 @@ if ($edit_id) {
     <div class="filters-bar">
         <div class="ano-select">
             <label>Ano:</label>
-            <select id="anoFilter" onchange="window.location.href='feriados.php?ano='+this.value">
+            <select id="anoFilter" onchange="window.location.href='feriados?ano='+this.value">
                 <?php for ($i = date('Y')-2; $i <= date('Y')+2; $i++): ?>
                     <option value="<?php echo $i; ?>" <?php echo $ano_filtro == $i ? 'selected' : ''; ?>><?php echo $i; ?></option>
                 <?php endfor; ?>
@@ -734,7 +734,7 @@ if ($edit_id) {
                 <textarea name="observacao" rows="2" placeholder="Informações adicionais sobre este feriado"><?php echo htmlspecialchars($edit_feriado['observacao'] ?? ''); ?></textarea>
             </div>
             <div class="modal-footer">
-                <a href="feriados.php?ano=<?php echo $ano_filtro; ?>" class="btn btn-secondary">Cancelar</a>
+                <a href="feriados?ano=<?php echo $ano_filtro; ?>" class="btn btn-secondary">Cancelar</a>
                 <button type="submit" name="editar" class="btn btn-primary">Salvar Alterações</button>
             </div>
         </form>

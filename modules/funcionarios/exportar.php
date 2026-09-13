@@ -5,7 +5,7 @@ require_once '../../includes/auth.php';
 
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -23,7 +23,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 

@@ -4,7 +4,7 @@ require_once '../../../includes/config.php';
 
 // Verificar se está logado e é super admin
 if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_tipo'] ?? '') !== 'super_admin') {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
     exit;
 }
 
@@ -31,7 +31,7 @@ $stmt->execute([':id' => $id]);
 $empresa = $stmt->fetch();
 
 if (!$empresa) {
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -228,10 +228,10 @@ $administradores = $stmt->fetchAll();
         <p>Detalhes e informações da empresa</p>
     </div>
     <div class="module-actions">
-        <a href="editar.php?id=<?php echo $id; ?>" class="btn btn-primary">
+        <a href="editar?id=<?php echo $id; ?>" class="btn btn-primary">
             <i class="fas fa-edit"></i> Editar
         </a>
-        <a href="index.php" class="btn btn-secondary">
+        <a href="index" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Voltar
         </a>
     </div>

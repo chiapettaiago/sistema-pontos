@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -281,12 +281,12 @@ $stats = $stmt->fetch();
                 <div class="alert alert-success">
                     <i class="fas fa-check-circle"></i> <?php echo $success; ?>
                 </div>
-                <a href="index.php" class="btn btn-secondary">Voltar para Auditoria</a>
+                <a href="index" class="btn btn-secondary">Voltar para Auditoria</a>
             <?php elseif ($error): ?>
                 <div class="alert alert-error">
                     <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
                 </div>
-                <a href="index.php" class="btn btn-secondary">Voltar</a>
+                <a href="index" class="btn btn-secondary">Voltar</a>
             <?php else: ?>
                 <div class="warning-box">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -335,7 +335,7 @@ $stats = $stmt->fetch();
                     </button>
                 </form>
                 
-                <a href="index.php" class="btn btn-secondary">
+                <a href="index" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Cancelar
                 </a>
             <?php endif; ?>

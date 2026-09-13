@@ -44,7 +44,7 @@ api.interceptors.response.use(
 // Serviços de autenticação
 export const authService = {
   login: async (email, senha) => {
-    const response = await api.post('auth.php', { email, senha });
+    const response = await api.post('auth', { email, senha });
     if (response.data.success) {
       await AsyncStorage.setItem('@PontoFacil:token', response.data.token);
       await AsyncStorage.setItem('@PontoFacil:usuario', JSON.stringify(response.data.funcionario));
@@ -69,22 +69,22 @@ export const authService = {
 // Serviços de ponto
 export const pontoService = {
   registrar: async (tipo, latitude, longitude) => {
-    const response = await api.post('ponto.php', { tipo, latitude, longitude });
+    const response = await api.post('ponto', { tipo, latitude, longitude });
     return response.data;
   },
   
   getExtrato: async (mes) => {
-    const response = await api.get(`extrato.php?mes=${mes}`);
+    const response = await api.get(`extrato?mes=${mes}`);
     return response.data;
   },
   
   getHoje: async () => {
-    const response = await api.get('ponto_hoje.php');
+    const response = await api.get('ponto_hoje');
     return response.data;
   },
   
   sincronizarOffline: async (pontosOffline) => {
-    const response = await api.post('sincronizar.php', { pontos: pontosOffline });
+    const response = await api.post('sincronizar', { pontos: pontosOffline });
     return response.data;
   },
 };
@@ -92,12 +92,12 @@ export const pontoService = {
 // Serviços de funcionário
 export const funcionarioService = {
   getPerfil: async () => {
-    const response = await api.get('funcionario.php');
+    const response = await api.get('funcionario');
     return response.data;
   },
   
   updatePerfil: async (dados) => {
-    const response = await api.put('funcionario.php', dados);
+    const response = await api.put('funcionario', dados);
     return response.data;
   },
 };
@@ -105,18 +105,18 @@ export const funcionarioService = {
 // Serviços de solicitações
 export const solicitacaoService = {
   listar: async (status = null) => {
-    const url = status ? `solicitacoes.php?status=${status}` : 'solicitacoes.php';
+    const url = status ? `solicitacoes?status=${status}` : 'solicitacoes';
     const response = await api.get(url);
     return response.data;
   },
   
   criar: async (dados) => {
-    const response = await api.post('solicitacoes.php', dados);
+    const response = await api.post('solicitacoes', dados);
     return response.data;
   },
   
   cancelar: async (id) => {
-    const response = await api.delete(`solicitacoes.php?id=${id}`);
+    const response = await api.delete(`solicitacoes?id=${id}`);
     return response.data;
   },
 };

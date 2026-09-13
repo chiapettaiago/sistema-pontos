@@ -18,7 +18,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -210,7 +210,7 @@ function getSaldoColorBanco($minutos) {
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-search"></i> Filtrar
             </button>
-            <a href="banco_horas.php" class="btn btn-secondary">
+            <a href="banco_horas" class="btn btn-secondary">
                 <i class="fas fa-times"></i> Limpar
             </a>
         </div>

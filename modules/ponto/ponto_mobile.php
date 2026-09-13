@@ -283,7 +283,7 @@ session_start();
             }
             
             try {
-                const response = await fetch('api_ponto_mobileA.php', {
+                const response = await fetch('api_ponto_mobileA', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -358,7 +358,7 @@ session_start();
         
         // Ver meu QR Code
         document.getElementById('btnManual').addEventListener('click', function() {
-            window.location.href = '../cracha/meu_cracha.php';
+            window.location.href = '../cracha/meu_cracha';
         });
     </script>
 </body>

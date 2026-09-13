@@ -2,6 +2,12 @@
 // modules/funcionarios/importar.php - Importar Funcionários via CSV (COM VALIDAÇÃO DE CPF)
 $pageTitle = 'Importar Funcionários';
 $activePage = 'funcionarios';
+require_once '../../includes/auth.php';
+redirectIfNotLoggedIn();
+if (!hasPermission('cadastrar_funcionarios')) {
+    http_response_code(403);
+    exit('Acesso negado: seu usuário não possui permissão para importar funcionários.');
+}
 require_once '../../includes/header.php';
 require_once '../../config/database.php';
 
@@ -91,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['arquivo'])) {
         $empresa_id = $_SESSION['empresa_id'] ?? null;
     }
     if ($empresa_id === null || $empresa_id === '') {
-        header('Location: ../../index.php');
+        header('Location: ../../index');
         exit;
     }
     $filial_id = $_POST['filial_id'] ?? $_SESSION['usuario_filial_id'];
@@ -431,7 +437,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['arquivo'])) {
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-upload"></i> Importar Funcionários
                 </button>
-                <a href="index.php" class="btn btn-secondary">
+                <a href="index" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>
@@ -465,5 +471,4 @@ document.getElementById('downloadTemplate').addEventListener('click', function(e
 </script>
 
 <?php require_once '../../includes/footer.php'; ?>
-
 

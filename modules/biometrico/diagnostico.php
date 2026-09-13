@@ -74,8 +74,8 @@ foreach (array_keys($checks) as $table) {
         <h2 style="margin-bottom:8px;">Diagnóstico Biométrico</h2>
         <p>Este painel mostra se as tabelas e colunas necessárias para facial e digital estão presentes.</p>
         <div class="actions">
-            <a href="index.php">Voltar</a>
-            <a class="secondary" href="cadastrar.php">Cadastrar biometria</a>
+            <a href="index">Voltar</a>
+            <a class="secondary" href="cadastrar">Cadastrar biometria</a>
         </div>
     </div>
 

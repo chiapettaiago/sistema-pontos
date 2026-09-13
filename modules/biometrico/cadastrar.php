@@ -18,7 +18,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -137,7 +137,12 @@ $funcionarios = $stmt->fetchAll();
         <p>Escolha o funcionário que terá a <?= $tipoCadastro === 'digital' ? 'digital' : 'face' ?> cadastrada</p>
     </div>
     <div class="module-actions">
-        <a href="index.php" class="btn btn-secondary">
+        <?php if ($tipoCadastro === 'facial'): ?>
+        <a href="manual" class="btn btn-outline-secondary">
+            <i class="fas fa-book-open"></i> Ver manual
+        </a>
+        <?php endif; ?>
+        <a href="index" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Voltar
         </a>
     </div>
@@ -185,7 +190,7 @@ $funcionarios = $stmt->fetchAll();
                     <i class="fas fa-check-circle"></i> <?= $tipoCadastro === 'digital' ? 'Digital cadastrada' : 'Facial cadastrada' ?>
                 </span>
             <?php endif; ?>
-            <a href="<?= $tipoCadastro === 'digital' ? 'digital.php' : '../funcionarios/cadastro_facial.php' ?>?id=<?php echo $func['id']; ?>" class="btn-biometrico <?= $tipoCadastro === 'digital' ? 'btn-digital' : 'btn-facial' ?>">
+            <a href="<?= $tipoCadastro === 'digital' ? 'digital' : '../funcionarios/cadastro_facial' ?>?id=<?php echo $func['id']; ?>" class="btn-biometrico <?= $tipoCadastro === 'digital' ? 'btn-digital' : 'btn-facial' ?>">
                 <i class="fas <?= $tipoCadastro === 'digital' ? 'fa-fingerprint' : 'fa-camera' ?>"></i> <?= $temCadastro ? 'Atualizar' : 'Cadastrar' ?>
             </a>
         </div>
@@ -196,7 +201,7 @@ $funcionarios = $stmt->fetchAll();
     <div style="text-align: center; padding: 60px;">
         <i class="fas fa-users" style="font-size: 48px; color: #ccc;"></i>
         <p style="margin-top: 16px;">Nenhum funcionário encontrado</p>
-        <a href="../funcionarios/cadastrar.php" class="btn btn-primary" style="margin-top: 16px;">
+        <a href="../funcionarios/cadastrar" class="btn btn-primary" style="margin-top: 16px;">
             <i class="fas fa-plus"></i> Cadastrar Funcionário
         </a>
     </div>
@@ -204,5 +209,4 @@ $funcionarios = $stmt->fetchAll();
 </div>
 
 <?php require_once '../../includes/footer.php'; ?>
-
 

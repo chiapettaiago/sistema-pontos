@@ -7,7 +7,7 @@ require_once '../../config/multi_empresa.php';
 
 // Verificar se é admin_empresa, gestor ou superior
 if ($_SESSION['usuario_tipo'] !== 'admin_empresa' && $_SESSION['usuario_tipo'] !== 'super_admin' && $_SESSION['usuario_tipo'] !== 'gestor') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -21,7 +21,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -283,7 +283,7 @@ if ($assinatura && $assinatura['data_fim']) {
 <div class="card pf-table-card mb-4">
     <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
         <span class="fw-semibold"><i class="fas fa-clipboard-list me-2 text-primary"></i>Últimas Solicitações</span>
-        <a href="../solicitacoes/admin.php" class="btn btn-sm btn-outline-primary">Ver todas</a>
+        <a href="../solicitacoes/admin" class="btn btn-sm btn-outline-primary">Ver todas</a>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">

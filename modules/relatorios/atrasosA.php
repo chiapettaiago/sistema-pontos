@@ -174,7 +174,7 @@ $total_faltas = count(array_filter($resultados, function($r) { return $r['tipo']
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-search"></i> Filtrar
             </button>
-            <a href="atrasos.php" class="btn btn-secondary">
+            <a href="atrasos" class="btn btn-secondary">
                 <i class="fas fa-times"></i> Limpar
             </a>
         </div>

@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -137,8 +137,8 @@ unset($_SESSION['mensagem'], $_SESSION['tipo_mensagem']);
             <p>Gerencie backups do banco de dados</p>
         </div>
         <div class="module-actions">
-            <a href="criar.php" class="btn btn-primary"><i class="fas fa-plus"></i> Novo Backup</a>
-            <a href="config.php" class="btn btn-secondary"><i class="fas fa-cog"></i> Configurações</a>
+            <a href="criar" class="btn btn-primary"><i class="fas fa-plus"></i> Novo Backup</a>
+            <a href="config" class="btn btn-secondary"><i class="fas fa-cog"></i> Configurações</a>
         </div>
     </div>
 
@@ -150,9 +150,9 @@ unset($_SESSION['mensagem'], $_SESSION['tipo_mensagem']);
 
     <div class="actions-card">
         <div class="actions-grid">
-            <a href="criar.php" class="btn btn-success"><i class="fas fa-database"></i> Backup Manual</a>
-            <a href="restaurar.php" class="btn btn-warning"><i class="fas fa-undo-alt"></i> Restaurar Backup</a>
-            <a href="config.php" class="btn btn-secondary"><i class="fas fa-clock"></i> Configurar Agendamento</a>
+            <a href="criar" class="btn btn-success"><i class="fas fa-database"></i> Backup Manual</a>
+            <a href="restaurar" class="btn btn-warning"><i class="fas fa-undo-alt"></i> Restaurar Backup</a>
+            <a href="config" class="btn btn-secondary"><i class="fas fa-clock"></i> Configurar Agendamento</a>
         </div>
     </div>
 
@@ -174,7 +174,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo_mensagem']);
         <div class="table-header">
             <h3><i class="fas fa-list"></i> Backups Disponíveis</h3>
             <?php if ($total_backups > 0): ?>
-            <form method="POST" action="excluir.php" class="inline-form" onsubmit="return confirm('Tem certeza que deseja excluir TODOS os backups?')">
+            <form method="POST" action="excluir" class="inline-form" onsubmit="return confirm('Tem certeza que deseja excluir TODOS os backups?')">
                 <?php echo csrfField(); ?>
                 <input type="hidden" name="todos" value="1">
                 <button type="submit" class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;">
@@ -185,7 +185,7 @@ unset($_SESSION['mensagem'], $_SESSION['tipo_mensagem']);
         </div>
         <div class="table-responsive">
             <?php if (empty($backups)): ?>
-                <div class="empty-state"><i class="fas fa-database"></i><p>Nenhum backup encontrado</p><a href="criar.php" class="btn btn-primary">Criar primeiro backup</a></div>
+                <div class="empty-state"><i class="fas fa-database"></i><p>Nenhum backup encontrado</p><a href="criar" class="btn btn-primary">Criar primeiro backup</a></div>
             <?php else: ?>
                 <table class="data-table">
                     <thead><tr><th>Arquivo</th><th>Data</th><th>Tamanho</th><th>Tipo</th><th>Status</th><th>Ações</th></tr></thead>
@@ -198,9 +198,9 @@ unset($_SESSION['mensagem'], $_SESSION['tipo_mensagem']);
                             <td><span class="badge badge-<?php echo $backup['tipo']; ?>"><?php echo ucfirst($backup['tipo']); ?></span></td>
                             <td><span class="badge badge-<?php echo $backup['status']; ?>"><?php echo ucfirst($backup['status']); ?></span></td>
                             <td class="btn-actions">
-                                <a href="download.php?file=<?php echo urlencode($backup['nome']); ?>" class="btn btn-success" style="padding: 6px 10px; font-size: 12px; border-radius: 6px;"><i class="fas fa-download"></i> Baixar</a>
-                                <a href="restaurar.php?file=<?php echo urlencode($backup['nome']); ?>" class="btn btn-warning" style="padding: 6px 10px; font-size: 12px; border-radius: 6px;" onclick="return confirm('ATENÇÃO: Restaurar um backup irá SUBSTITUIR todos os dados atuais! Tem certeza?')"><i class="fas fa-undo-alt"></i> Restaurar</a>
-                                <form method="POST" action="excluir.php" class="inline-form" onsubmit="return confirm('Tem certeza que deseja excluir este backup?')">
+                                <a href="download?file=<?php echo urlencode($backup['nome']); ?>" class="btn btn-success" style="padding: 6px 10px; font-size: 12px; border-radius: 6px;"><i class="fas fa-download"></i> Baixar</a>
+                                <a href="restaurar?file=<?php echo urlencode($backup['nome']); ?>" class="btn btn-warning" style="padding: 6px 10px; font-size: 12px; border-radius: 6px;" onclick="return confirm('ATENÇÃO: Restaurar um backup irá SUBSTITUIR todos os dados atuais! Tem certeza?')"><i class="fas fa-undo-alt"></i> Restaurar</a>
+                                <form method="POST" action="excluir" class="inline-form" onsubmit="return confirm('Tem certeza que deseja excluir este backup?')">
                                     <?php echo csrfField(); ?>
                                     <input type="hidden" name="file" value="<?php echo htmlspecialchars($backup['nome']); ?>">
                                     <button type="submit" class="btn btn-danger" style="padding: 6px 10px; font-size: 12px; border-radius: 6px;"><i class="fas fa-trash-alt"></i> Excluir</button>

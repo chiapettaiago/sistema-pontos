@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -325,8 +325,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <i class="fas fa-check-circle"></i> <?php echo $success; ?>
                 </div>
                 <div style="text-align: center; margin-top: 20px;">
-                    <a href="index.php" class="btn btn-secondary">Voltar</a>
-                    <a href="download.php?file=<?php echo urlencode($backup_file); ?>" class="btn btn-primary" style="margin-top: 12px; background: #10b981;">
+                    <a href="index" class="btn btn-secondary">Voltar</a>
+                    <a href="download?file=<?php echo urlencode($backup_file); ?>" class="btn btn-primary" style="margin-top: 12px; background: #10b981;">
                         <i class="fas fa-download"></i> Baixar Backup
                     </a>
                 </div>
@@ -334,7 +334,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="alert alert-error">
                     <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
                 </div>
-                <a href="index.php" class="btn btn-secondary">Voltar</a>
+                <a href="index" class="btn btn-secondary">Voltar</a>
             <?php else: ?>
                 <div class="info-box">
                     <i class="fas fa-info-circle"></i>
@@ -364,7 +364,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </button>
                 </form>
                 
-                <a href="index.php" class="btn btn-secondary">
+                <a href="index" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Cancelar
                 </a>
             <?php endif; ?>

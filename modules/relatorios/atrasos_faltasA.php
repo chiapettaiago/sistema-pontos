@@ -1,15 +1,16 @@
 <?php
 // modules/relatorios/atrasos_faltas.php - Relatório de Atrasos e Faltas (CORRIGIDO)
-session_start();
+require_once '../../includes/auth.php';
+redirectIfNotLoggedIn();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
-if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'])) {
-    header('Location: ../../index.php');
+if (!hasPermission('ver_relatorios')) {
+    header('Location: ../../index');
     exit;
 }
 
@@ -380,10 +381,10 @@ $nome_mes = $nomes_meses[$mes_num] . ' de ' . $ano;
             <p><?php echo $nome_mes; ?></p>
         </div>
         <div class="module-actions">
-            <a href="exportar_excel.php?tipo=atrasos_faltas&funcionario_id=<?php echo $funcionario_id; ?>&mes=<?php echo $mes; ?>" class="btn-exportar btn-excel">
+            <a href="exportar_excel?tipo=atrasos_faltas&funcionario_id=<?php echo $funcionario_id; ?>&mes=<?php echo $mes; ?>" class="btn-exportar btn-excel">
                 <i class="fas fa-file-excel"></i> Exportar Excel
             </a>
-            <a href="exportar_pdf.php?tipo=atrasos_faltas&funcionario_id=<?php echo $funcionario_id; ?>&mes=<?php echo $mes; ?>" class="btn-exportar btn-pdf" target="_blank">
+            <a href="exportar_pdf?tipo=atrasos_faltas&funcionario_id=<?php echo $funcionario_id; ?>&mes=<?php echo $mes; ?>" class="btn-exportar btn-pdf" target="_blank">
                 <i class="fas fa-file-pdf"></i> Exportar PDF
             </a>
         </div>

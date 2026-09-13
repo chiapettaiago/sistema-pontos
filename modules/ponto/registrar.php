@@ -2,9 +2,9 @@
 session_start();
 
 if (!isset($_SESSION['funcionario_id']) && !isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
-header('Location: biometrico.php');
+header('Location: biometrico');
 exit;

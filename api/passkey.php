@@ -43,8 +43,11 @@ try {
     if ($acao === 'ponto_opcoes') {
         $empresaId = (int) ($input['empresa_id'] ?? 0);
         $chave = (string) ($input['chave'] ?? '');
-        $esperada = $empresaId > 0 ? hash_hmac('sha256', (string) $empresaId, DB_PASS . '|ponto-publico') : '';
-        if ($empresaId <= 0 || $chave === '' || !hash_equals($esperada, $chave)) throw new RuntimeException('Link do quiosque inválido.');
+        $partesChave = explode('.', $chave, 2);
+        $expiraEm = isset($partesChave[0]) ? (int) $partesChave[0] : 0;
+        $assinatura = $partesChave[1] ?? '';
+        $esperada = $empresaId > 0 ? hash_hmac('sha256', $empresaId . '|' . $expiraEm, APP_SIGNING_KEY . '|ponto-publico') : '';
+        if ($empresaId <= 0 || $expiraEm < time() || $assinatura === '' || !hash_equals($esperada, $assinatura)) throw new RuntimeException('Link do quiosque inválido ou expirado.');
         $args = $webauthn->getGetArgs([], 60, false, false, false, true, true, 'required');
         $_SESSION['passkey_challenge'] = $webauthn->getChallenge()->getBinaryString();
         $_SESSION['passkey_ponto_empresa'] = $empresaId;

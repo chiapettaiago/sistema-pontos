@@ -48,7 +48,11 @@ function appBasePath(): string
     if ($scriptFile !== '' && str_starts_with($scriptFile, $projectRoot)) {
         $relativeScript = substr($scriptFile, strlen($projectRoot));
         if ($relativeScript !== '' && str_ends_with($scriptName, $relativeScript)) {
-            return rtrim(substr($scriptName, 0, -strlen($relativeScript)), '/');
+            $detected = rtrim(substr($scriptName, 0, -strlen($relativeScript)), '/');
+            // Caminhos físicos jamais podem compor uma URL pública.
+            if (!preg_match('#^/(?:var|home|etc|usr|opt|srv)(?:/|$)#i', $detected)) {
+                return $detected;
+            }
         }
     }
 
@@ -59,14 +63,14 @@ function appHomeRouteFor(string $tipo): string
 {
     $tipo = appNormalizeUserType($tipo);
     $routes = [
-        'super_admin' => '/modules/admin/dashboard.php',
-        'admin_empresa' => '/modules/dashboard_empresa/index.php',
-        'gestor' => '/modules/dashboard_empresa/index.php',
-        'supervisor' => '/index.php',
-        'funcionario' => '/modules/ponto/ponto.php',
+        'super_admin' => '/modules/admin/dashboard',
+        'admin_empresa' => '/modules/dashboard_empresa/index',
+        'gestor' => '/modules/dashboard_empresa/index',
+        'supervisor' => '/',
+        'funcionario' => '/modules/ponto/ponto',
     ];
 
-    return $routes[$tipo] ?? '/modules/ponto/ponto.php';
+    return $routes[$tipo] ?? '/modules/ponto/ponto';
 }
 
 function appSafeInternalRoute(?string $route): ?string
@@ -111,9 +115,8 @@ function appDestinationAfterLogin(string $tipo): string
 
 function appUrl(string $route): string
 {
-    // As URLs com extensao funcionam mesmo quando mod_rewrite/AllowOverride
-    // nao esta habilitado no servidor. Quando o rewrite estiver disponivel,
-    // o .htaccess continua podendo canoniza-las para URLs amigaveis.
+    // A aplicação publica URLs canônicas sem a extensão de implementação.
+    $route = preg_replace('/\.php(?=\?|$)/', '', $route) ?? $route;
     return appBasePath() . '/' . ltrim($route, '/');
 }
 
@@ -148,13 +151,9 @@ function appRouteIsPublic(string $route): bool
 
     return in_array($route, [
         '/login',
-        '/login.php',
         '/logout',
-        '/logout.php',
         '/modules/funcionarios/login_facial',
-        '/modules/funcionarios/login_facial.php',
         '/modules/ponto/ponto_publico',
-        '/modules/ponto/ponto_publico.php',
         '/ponto-publico',
         '/ponto-publico/',
     ], true);
@@ -164,27 +163,34 @@ function appRouteAllows(string $route, string $userType): bool
 {
     if (in_array($route, [
         '/modules/funcionarios/cadastro_facial',
-        '/modules/funcionarios/cadastro_facial.php',
     ], true)) {
-        return in_array($userType, ['super_admin', 'admin_empresa'], true);
+        return true;
     }
 
     $policies = [
         '/modules/admin/' => ['super_admin'],
         '/modules/dashboard_empresa/' => ['admin_empresa', 'gestor'],
         '/modules/usuarios/' => ['admin_empresa'],
-        '/modules/filiais/' => ['admin_empresa'],
         '/modules/backup/' => ['super_admin', 'admin_empresa'],
         '/modules/configuracoes/' => ['admin_empresa'],
         '/modules/auditoria/' => ['super_admin', 'admin_empresa'],
         '/modules/notificacoes/' => ['super_admin', 'admin_empresa'],
-        '/modules/relatorios/' => ['admin_empresa', 'gestor', 'supervisor'],
         '/modules/funcionarios/' => ['admin_empresa', 'gestor', 'supervisor'],
         '/modules/biometrico/' => ['admin_empresa', 'gestor', 'supervisor'],
         '/modules/escala/' => ['admin_empresa', 'gestor'],
         '/modules/ponto/' => ['admin_empresa', 'gestor', 'supervisor', 'funcionario'],
         '/modules/solicitacoes/' => ['admin_empresa', 'gestor', 'supervisor', 'funcionario'],
     ];
+
+    if (strpos($route, '/modules/filiais/') === 0) {
+        // A decisão granular é tomada depois que includes/auth.php atualiza as
+        // flags no banco. Aqui basta permitir que um usuário autenticado chegue lá.
+        return true;
+    }
+
+    if (strpos($route, '/modules/relatorios/') === 0) {
+        return true;
+    }
 
     foreach ($policies as $prefix => $allowedTypes) {
         if (strpos($route, $prefix) === 0) {
@@ -215,9 +221,23 @@ function appProtectCurrentRoute(): void
 
     if (!$isAuthenticated) {
         appRememberIntendedRoute();
-        header('Location: ' . appUrl('/login.php'));
+        header('Location: ' . appUrl('/login'));
         exit;
     }
+
+    $sessionTimeout = defined('SESSION_TIMEOUT') ? SESSION_TIMEOUT : 7200;
+    $lastActivity = (int) ($_SESSION['last_activity'] ?? 0);
+    if ($lastActivity > 0 && time() - $lastActivity > $sessionTimeout) {
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+        }
+        session_destroy();
+        header('Location: ' . appUrl('/login?expirado=1'));
+        exit;
+    }
+    $_SESSION['last_activity'] = time();
 
     $userType = appNormalizeUserType($_SESSION['usuario_tipo'] ?? 'funcionario');
     $_SESSION['usuario_tipo'] = $userType;

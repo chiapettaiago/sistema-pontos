@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'], true)) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -19,7 +19,7 @@ require_once '../../includes/csrf.php';
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['mensagem'] = 'Acao invalida. Exclusao de backup exige confirmacao segura.';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -51,21 +51,21 @@ if ($excluir_todos) {
 
     $_SESSION['mensagem'] = $total . ' backup(s) excluido(s) com sucesso!';
     $_SESSION['tipo_mensagem'] = 'success';
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
 if ($filename === '') {
     $_SESSION['mensagem'] = 'Nenhum backup selecionado para exclusao';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
 if (!preg_match('/^backup_[A-Za-z0-9_-]+\.sql\.gz$/', $filename)) {
     $_SESSION['mensagem'] = 'Arquivo invalido';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -73,7 +73,7 @@ $filepath = $backupDir . $filename;
 if (!is_file($filepath)) {
     $_SESSION['mensagem'] = 'Arquivo nao encontrado';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -88,6 +88,6 @@ if (unlink($filepath)) {
     $_SESSION['tipo_mensagem'] = 'error';
 }
 
-header('Location: index.php');
+header('Location: index');
 exit;
 ?>

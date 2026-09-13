@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -269,13 +269,13 @@ $stats = $stmt->fetchAll();
             <p>Gerencie as escalas dos funcionários</p>
         </div>
         <div class="module-actions">
-            <a href="configurar.php" class="btn btn-primary">
+            <a href="configurar" class="btn btn-primary">
                 <i class="fas fa-cog"></i> Configurar Tipos
             </a>
-            <a href="cadastrar.php" class="btn btn-primary">
+            <a href="cadastrar" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Nova Escala
             </a>
-            <a href="calendario.php" class="btn btn-secondary">
+            <a href="calendario" class="btn btn-secondary">
                 <i class="fas fa-calendar-alt"></i> Calendário
             </a>
         </div>
@@ -338,7 +338,7 @@ $stats = $stmt->fetchAll();
                 <div class="empty-state">
                     <i class="fas fa-calendar-times"></i>
                     <p>Nenhuma escala cadastrada</p>
-                    <a href="cadastrar.php" class="btn btn-primary">Cadastrar primeira escala</a>
+                    <a href="cadastrar" class="btn btn-primary">Cadastrar primeira escala</a>
                 </div>
             <?php else: ?>
                 <table class="data-table">
@@ -365,10 +365,10 @@ $stats = $stmt->fetchAll();
                                 <td><?php echo date('d/m/Y', strtotime($escala['data_inicio'])); ?></td>
                                 <td><?php echo $escala['data_fim'] ? date('d/m/Y', strtotime($escala['data_fim'])) : 'Atual'; ?></td>
                                 <td>
-                                    <a href="editar.php?id=<?php echo $escala['id']; ?>" class="btn btn-edit">
+                                    <a href="editar?id=<?php echo $escala['id']; ?>" class="btn btn-edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="calendario.php?funcionario=<?php echo $escala['funcionario_id']; ?>" class="btn btn-secondary">
+                                    <a href="calendario?funcionario=<?php echo $escala['funcionario_id']; ?>" class="btn btn-secondary">
                                         <i class="fas fa-calendar"></i>
                                     </a>
                                 </td>

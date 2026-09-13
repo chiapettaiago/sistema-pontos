@@ -36,6 +36,65 @@ if (isset($_SESSION['usuario_id']) && empty($_SESSION['funcionario_id'])) {
     }
 }
 
+/** Atualiza tipo, escopo e permissões a partir do banco em toda requisição. */
+function refreshDatabasePermissions(PDO $db): void
+{
+    if (empty($_SESSION['usuario_id'])) return;
+
+    $tipoLogin = $_SESSION['tipo_login'] ?? 'sistema';
+    $funcionarioId = (int) ($_SESSION['funcionario_id'] ?? 0);
+    $tipo = appNormalizeUserType((string) ($_SESSION['usuario_tipo'] ?? 'funcionario'));
+    $flags = null;
+
+    if ($tipoLogin === 'sistema') {
+        $stmt = $db->prepare("SELECT id, tipo, empresa_id, status FROM usuarios_sistema WHERE id = :id LIMIT 1");
+        $stmt->execute([':id' => (int) $_SESSION['usuario_id']]);
+        $usuarioDb = $stmt->fetch();
+        if (!$usuarioDb || $usuarioDb['status'] !== 'ativo') {
+            $_SESSION = [];
+            return;
+        }
+        $tipo = appNormalizeUserType((string) $usuarioDb['tipo']);
+        $_SESSION['usuario_tipo'] = $tipo;
+        $_SESSION['empresa_id'] = $usuarioDb['empresa_id'] !== null ? (int) $usuarioDb['empresa_id'] : null;
+
+        $stmt = $db->prepare("SELECT id, empresa_id, filial_id, pode_gerenciar_filiais, pode_gerenciar_funcionarios, pode_ver_relatorios FROM funcionarios WHERE usuario_sistema_id = :id AND status = 'ativo' LIMIT 1");
+        $stmt->execute([':id' => (int) $_SESSION['usuario_id']]);
+        $flags = $stmt->fetch() ?: null;
+        if ($flags) {
+            $funcionarioId = (int) $flags['id'];
+            $_SESSION['funcionario_id'] = $funcionarioId;
+            $_SESSION['usuario_filial_id'] = (int) $flags['filial_id'];
+        }
+    } elseif ($funcionarioId > 0) {
+        $stmt = $db->prepare("SELECT id, empresa_id, filial_id, tipo_usuario, status, pode_gerenciar_filiais, pode_gerenciar_funcionarios, pode_ver_relatorios FROM funcionarios WHERE id = :id LIMIT 1");
+        $stmt->execute([':id' => $funcionarioId]);
+        $flags = $stmt->fetch() ?: null;
+        if (!$flags || $flags['status'] !== 'ativo') {
+            $_SESSION = [];
+            return;
+        }
+        $tipo = appNormalizeUserType((string) ($flags['tipo_usuario'] ?? 'funcionario'));
+        $_SESSION['usuario_tipo'] = $tipo;
+        $_SESSION['empresa_id'] = (int) $flags['empresa_id'];
+        $_SESSION['usuario_filial_id'] = (int) $flags['filial_id'];
+    }
+
+    $administrador = in_array($tipo, ['super_admin', 'admin_empresa'], true);
+    $temFlags = is_array($flags);
+    $_SESSION['db_permissions'] = [
+        'gerenciar_filiais' => $administrador || ($temFlags && (int) $flags['pode_gerenciar_filiais'] === 1),
+        'gerenciar_funcionarios' => $administrador || ($temFlags
+            ? (int) $flags['pode_gerenciar_funcionarios'] === 1
+            : $tipo === 'gestor'),
+        'ver_relatorios' => $administrador || ($temFlags
+            ? (int) $flags['pode_ver_relatorios'] === 1
+            : in_array($tipo, ['gestor', 'supervisor'], true)),
+    ];
+}
+
+refreshDatabasePermissions($db);
+
 // ============================================
 // FUNÇÕES DE SESSÃO E AUTENTICAÇÃO
 // ============================================
@@ -48,10 +107,10 @@ function redirectIfNotLoggedIn() {
     if (!isLoggedIn()) {
         appRememberIntendedRoute();
         if (!headers_sent()) {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
             exit;
         } else {
-    echo '<script>window.location.href="' . BASE_URL . '/login.php";</script>';
+    echo '<script>window.location.href="' . BASE_URL . '/login";</script>';
             exit;
         }
     }
@@ -62,10 +121,10 @@ function redirectIfNotAdmin() {
     $tipo = $_SESSION['usuario_tipo'] ?? '';
     if ($tipo !== 'super_admin' && $tipo !== 'admin_empresa') {
         if (!headers_sent()) {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
             exit;
         } else {
-    echo '<script>window.location.href="' . BASE_URL . '/index.php";</script>';
+    echo '<script>window.location.href="' . BASE_URL . '/index";</script>';
             exit;
         }
     }
@@ -80,17 +139,33 @@ function hasPermission($permissao) {
     
     $tipo = $_SESSION['usuario_tipo'] ?? 'funcionario';
     
-    // Super Admin tem acesso total
+    // Super Admin tem acesso total.
     if ($tipo === 'super_admin') {
         return true;
     }
     
-    // Admin de Empresa tem acesso total na sua empresa
+    // Admin de Empresa tem acesso total somente na sua empresa.
     if ($tipo === 'admin_empresa') {
         return true;
     }
     
-    // Permissões específicas por tipo
+    $dbPermissions = $_SESSION['db_permissions'] ?? [];
+    $databaseMap = [
+        'ver_filiais' => 'gerenciar_filiais',
+        'editar_filiais' => 'gerenciar_filiais',
+        'gerenciar_filiais' => 'gerenciar_filiais',
+        'ver_funcionarios' => 'gerenciar_funcionarios',
+        'editar_funcionarios' => 'gerenciar_funcionarios',
+        'cadastrar_funcionarios' => 'gerenciar_funcionarios',
+        'excluir_funcionarios' => 'gerenciar_funcionarios',
+        'gerenciar_funcionarios' => 'gerenciar_funcionarios',
+        'ver_relatorios' => 'ver_relatorios',
+    ];
+    if (isset($databaseMap[$permissao]) && array_key_exists($databaseMap[$permissao], $dbPermissions)) {
+        return (bool) $dbPermissions[$databaseMap[$permissao]];
+    }
+
+    // Permissões básicas inerentes ao perfil.
     $permissoes = [
         'gestor' => [
             'ver_funcionarios' => true,
@@ -155,18 +230,29 @@ function canEditFuncionario($funcionario_id) {
     $tipo = $_SESSION['usuario_tipo'] ?? 'funcionario';
     $usuario_filial_id = $_SESSION['usuario_filial_id'] ?? null;
     
-    // Super Admin e Admin Empresa podem editar qualquer funcionário
-    if ($tipo === 'super_admin' || $tipo === 'admin_empresa') {
+    if ($tipo === 'super_admin') {
         return true;
     }
-    
-    // Gestor só pode editar funcionários da sua filial
-    if ($tipo === 'gestor' && $usuario_filial_id) {
+
+    if ($tipo === 'admin_empresa') {
         global $db;
-        $stmt = $db->prepare("SELECT filial_id FROM funcionarios WHERE id = :id");
-        $stmt->execute([':id' => $funcionario_id]);
-        $funcionario = $stmt->fetch();
-        return $funcionario && $funcionario['filial_id'] == $usuario_filial_id;
+        $stmt = $db->prepare("SELECT 1 FROM funcionarios WHERE id = :id AND empresa_id = :empresa_id");
+        $stmt->execute([':id' => $funcionario_id, ':empresa_id' => (int) ($_SESSION['empresa_id'] ?? 0)]);
+        return (bool) $stmt->fetchColumn();
+    }
+
+    if (!hasPermission('editar_funcionarios')) return false;
+    
+    // Usuários delegados gerenciam apenas funcionários da própria empresa/filial.
+    if ($usuario_filial_id) {
+        global $db;
+        $stmt = $db->prepare("SELECT 1 FROM funcionarios WHERE id = :id AND empresa_id = :empresa_id AND filial_id = :filial_id");
+        $stmt->execute([
+            ':id' => $funcionario_id,
+            ':empresa_id' => (int) ($_SESSION['empresa_id'] ?? 0),
+            ':filial_id' => (int) $usuario_filial_id,
+        ]);
+        return (bool) $stmt->fetchColumn();
     }
     
     return false;
@@ -179,18 +265,27 @@ function canViewFuncionario($funcionario_id) {
     $usuario_filial_id = $_SESSION['usuario_filial_id'] ?? null;
     $usuario_id = $_SESSION['usuario_id'] ?? null;
     
-    // Super Admin e Admin Empresa podem ver qualquer funcionário
-    if ($tipo === 'super_admin' || $tipo === 'admin_empresa') {
+    if ($tipo === 'super_admin') {
         return true;
     }
-    
-    // Gestor e Supervisor só podem ver funcionários da sua filial
-    if (($tipo === 'gestor' || $tipo === 'supervisor') && $usuario_filial_id) {
+
+    if ($tipo === 'admin_empresa') {
         global $db;
-        $stmt = $db->prepare("SELECT filial_id FROM funcionarios WHERE id = :id");
-        $stmt->execute([':id' => $funcionario_id]);
-        $funcionario = $stmt->fetch();
-        return $funcionario && $funcionario['filial_id'] == $usuario_filial_id;
+        $stmt = $db->prepare("SELECT 1 FROM funcionarios WHERE id = :id AND empresa_id = :empresa_id");
+        $stmt->execute([':id' => $funcionario_id, ':empresa_id' => (int) ($_SESSION['empresa_id'] ?? 0)]);
+        return (bool) $stmt->fetchColumn();
+    }
+    
+    // Gestores, supervisores e usuários delegados veem apenas a própria filial.
+    if (($tipo === 'gestor' || $tipo === 'supervisor' || hasPermission('gerenciar_funcionarios')) && $usuario_filial_id) {
+        global $db;
+        $stmt = $db->prepare("SELECT 1 FROM funcionarios WHERE id = :id AND empresa_id = :empresa_id AND filial_id = :filial_id");
+        $stmt->execute([
+            ':id' => $funcionario_id,
+            ':empresa_id' => (int) ($_SESSION['empresa_id'] ?? 0),
+            ':filial_id' => (int) $usuario_filial_id,
+        ]);
+        return (bool) $stmt->fetchColumn();
     }
     
     // Funcionário só pode ver a si mesmo
@@ -236,6 +331,26 @@ function getCurrentUserFilial() {
 function checkModuleAccess($module) {
     redirectIfNotLoggedIn();
     
+    $modulePermission = [
+        'filiais' => 'ver_filiais',
+        'relatorios' => 'ver_relatorios',
+        'funcionarios' => 'ver_funcionarios',
+        'solicitacoes_admin' => 'aprovar_solicitacoes',
+    ];
+    if (isset($modulePermission[$module])) {
+        if (!hasPermission($modulePermission[$module])) {
+            http_response_code(403);
+            $destination = appUrl(appHomeRouteFor($_SESSION['usuario_tipo'] ?? 'funcionario'));
+            if (!headers_sent()) {
+                header('Location: ' . $destination);
+            } else {
+                echo '<script>window.location.href=' . json_encode($destination) . ';</script>';
+            }
+            exit;
+        }
+        return;
+    }
+
     // Mapeamento de módulos para tipos de usuário
     $modulePermissions = [
         'dashboard' => ['super_admin', 'admin_empresa', 'gestor', 'supervisor', 'funcionario'],
@@ -258,10 +373,10 @@ function checkModuleAccess($module) {
     
     if (!in_array($userType, $modulePermissions[$module] ?? [])) {
         if (!headers_sent()) {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
             exit;
         } else {
-    echo '<script>window.location.href="/index.php";</script>';
+    echo '<script>window.location.href="/index";</script>';
             exit;
         }
     }

@@ -6,7 +6,7 @@ require_once '../../../includes/header.php';
 require_once '../../../config/database.php';
 
 if ($_SESSION['usuario_tipo'] !== 'super_admin') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -311,7 +311,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Criar Empresa
                 </button>
-                <a href="index.php" class="btn btn-secondary">
+                <a href="index" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>

@@ -19,7 +19,7 @@ $stmt->execute([':id' => $funcionario_id]);
 $funcionario = $stmt->fetch();
 
 if (!$funcionario) {
-    header('Location: cadastrar.php');
+    header('Location: cadastrar');
     exit;
 }
 
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tipo_mensagem = "success";
             
             // Redirecionar após 2 segundos
-            echo '<script>setTimeout(function(){ window.location.href = "cadastrar.php"; }, 2000);</script>';
+            echo '<script>setTimeout(function(){ window.location.href = "cadastrar"; }, 2000);</script>';
         } catch (Exception $e) {
             $mensagem = "Erro ao cadastrar digital: " . $e->getMessage();
             $tipo_mensagem = "error";
@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button id="btnSalvar" class="btn btn-primary" style="flex: 1;" disabled>
                 <i class="fas fa-save"></i> Salvar Digital
             </button>
-            <a href="cadastrar.php" class="btn btn-secondary" style="flex: 1;">
+            <a href="cadastrar" class="btn btn-secondary" style="flex: 1;">
                 <i class="fas fa-times"></i> Cancelar
             </a>
         </div>

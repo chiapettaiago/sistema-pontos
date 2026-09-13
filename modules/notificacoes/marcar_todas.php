@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -26,6 +26,6 @@ try {
     $_SESSION['tipo_mensagem'] = 'error';
 }
 
-header('Location: index.php');
+header('Location: index');
 exit;
 ?>

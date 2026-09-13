@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -84,8 +84,8 @@ $stats = $stmt->fetchAll();
         <p class="text-muted">Gerencie as escalas e horários dos funcionários</p>
     </div>
     <div class="d-flex gap-2">
-        <a href="configurar.php" class="btn btn-outline-secondary"><i class="fas fa-cog me-1"></i>Configurar</a>
-        <a href="configurar.php?nova=1" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Nova Escala</a>
+        <a href="configurar" class="btn btn-outline-secondary"><i class="fas fa-cog me-1"></i>Configurar</a>
+        <a href="configurar?nova=1" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Nova Escala</a>
     </div>
 </div>
 
@@ -129,8 +129,8 @@ $stats = $stmt->fetchAll();
                         </td>
                         <td class="text-end">
                             <div class="btn-group btn-group-sm">
-                                <a href="editar.php?id=<?php echo $escala['id']; ?>" class="btn btn-outline-secondary"><i class="fas fa-edit"></i></a>
-                                <a href="configurar.php?escala_id=<?php echo $escala['id']; ?>" class="btn btn-outline-primary"><i class="fas fa-cog"></i></a>
+                                <a href="editar?id=<?php echo $escala['id']; ?>" class="btn btn-outline-secondary"><i class="fas fa-edit"></i></a>
+                                <a href="configurar?escala_id=<?php echo $escala['id']; ?>" class="btn btn-outline-primary"><i class="fas fa-cog"></i></a>
                             </div>
                         </td>
                     </tr>

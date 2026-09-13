@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -419,7 +419,7 @@ input:checked + .slider:before {
                 <code>0 2 * * * php <?php echo realpath(__DIR__); ?>/agendador.php</code>
                 <br><br>
                 <strong>Via Web (a cada hora):</strong><br>
-                <code>0 * * * * wget -q -O - "<?php echo 'http://' . $_SERVER['HTTP_HOST'] . '/modules/backup/agendador.php?token=' . $cron_token; ?>"</code>
+                <code>0 * * * * wget -q -O - "<?php echo 'http://' . $_SERVER['HTTP_HOST'] . '/modules/backup/agendador?token=' . $cron_token; ?>"</code>
             </div>
             <div class="alert alert-info" style="margin-top: 16px;">
                 <i class="fas fa-info-circle"></i>
@@ -429,10 +429,9 @@ input:checked + .slider:before {
     </div>
     
     <!-- Botão Voltar -->
-    <a href="index.php" class="btn btn-secondary">
+    <a href="index" class="btn btn-secondary">
         <i class="fas fa-arrow-left"></i> Voltar
     </a>
 </div>
 
 <?php require_once '../../includes/footer.php'; ?>
-

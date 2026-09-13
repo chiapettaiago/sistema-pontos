@@ -23,11 +23,12 @@ if ($action === 'logout') {
     $headers = function_exists('getallheaders') ? getallheaders() : [];
     $token = trim(str_replace('Bearer ', '', $headers['Authorization'] ?? $headers['authorization'] ?? ''));
 
-    if ($token !== '') {
-        $stmt = $db->prepare("UPDATE usuarios_sistema SET api_token = NULL WHERE api_token = :token");
-        $stmt->execute([':token' => $token]);
-        $stmt = $db->prepare("UPDATE funcionarios SET api_token = NULL WHERE api_token = :token");
-        $stmt->execute([':token' => $token]);
+if ($token !== '') {
+    $tokenHash = hash('sha256', $token);
+    $stmt = $db->prepare("UPDATE usuarios_sistema SET api_token = NULL WHERE api_token = :token");
+    $stmt->execute([':token' => $tokenHash]);
+    $stmt = $db->prepare("UPDATE funcionarios SET api_token = NULL WHERE api_token = :token");
+    $stmt->execute([':token' => $tokenHash]);
     }
 
     jsonSuccess(null, 'Logout realizado');
@@ -63,6 +64,10 @@ if ($email === '') {
     jsonError('Email obrigatorio', 'MISSING_EMAIL', 400);
 }
 
+if (($remaining = loginThrottleRemaining($email)) > 0) {
+    jsonError('Muitas tentativas. Tente novamente mais tarde.', 'RATE_LIMITED', 429);
+}
+
 try {
     if ($tipo !== 'funcionario') {
         $stmt = $db->prepare("SELECT u.*, e.nome as empresa_nome
@@ -73,6 +78,10 @@ try {
         $usuario = $stmt->fetch();
 
         if ($usuario && senhaConfereApi($senha, $usuario['senha'])) {
+            if (password_needs_rehash($usuario['senha'], PASSWORD_DEFAULT)) {
+                $db->prepare('UPDATE usuarios_sistema SET senha = :senha WHERE id = :id')->execute([':senha' => password_hash($senha, PASSWORD_DEFAULT), ':id' => $usuario['id']]);
+            }
+            loginThrottleClear($email);
             $tokenData = generateAPIToken($usuario['id'], 'admin', $usuario['empresa_id'] ?? null);
             if (!$tokenData) {
                 jsonError('Erro ao gerar token', 'TOKEN_ERROR', 500);
@@ -111,6 +120,10 @@ try {
     $funcionario = $stmt->fetch();
 
     if ($funcionario && senhaConfereApi($senha, $funcionario['senha'])) {
+        if (password_needs_rehash($funcionario['senha'], PASSWORD_DEFAULT)) {
+            $db->prepare('UPDATE funcionarios SET senha = :senha WHERE id = :id')->execute([':senha' => password_hash($senha, PASSWORD_DEFAULT), ':id' => $funcionario['id']]);
+        }
+        loginThrottleClear($email);
         $tokenData = generateAPIToken($funcionario['id'], 'funcionario', $funcionario['empresa_id'] ?? null);
         if (!$tokenData) {
             jsonError('Erro ao gerar token', 'TOKEN_ERROR', 500);
@@ -140,10 +153,10 @@ try {
         ]);
     }
 
+    loginThrottleFailure($email);
     jsonError('Email ou senha invalidos', 'INVALID_CREDENTIALS', 401);
 } catch (Exception $e) {
     error_log('Erro auth API: ' . $e->getMessage());
     jsonError('Erro interno do servidor', 'SERVER_ERROR', 500);
 }
 ?>
-

@@ -164,7 +164,7 @@ function enviarLembretePonto($funcionario_email, $funcionario_nome, $horario) {
                 </div>
                 <p>Registre sua entrada ou saída para manter sua frequência em dia.</p>
                 <br>
-                <a href='" . (defined('SITE_URL') ? SITE_URL : '') . "/modules/ponto/ponto.php' class='button'>Registrar Ponto Agora</a>
+                <a href='" . (defined('SITE_URL') ? SITE_URL : '') . "/modules/ponto/ponto' class='button'>Registrar Ponto Agora</a>
             </div>
             <div class='footer'>
                 <p>Este é um e-mail automático, por favor não responda.</p>
@@ -212,7 +212,7 @@ function enviarAlertaAtraso($funcionario_email, $funcionario_nome, $data, $horar
                 </div>
                 <p>Lembre-se de justificar o atraso no sistema.</p>
                 <br>
-                <a href='" . (defined('SITE_URL') ? SITE_URL : '') . "/modules/solicitacoes/nova.php' class='button'>Justificar Atraso</a>
+                <a href='" . (defined('SITE_URL') ? SITE_URL : '') . "/modules/solicitacoes/nova' class='button'>Justificar Atraso</a>
             </div>
             <div class='footer'>
                 <p>Este é um e-mail automático, por favor não responda.</p>

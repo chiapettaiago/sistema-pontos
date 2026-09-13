@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -29,7 +29,7 @@ $stmt->execute([':id' => $id]);
 $log = $stmt->fetch();
 
 if (!$log) {
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -417,7 +417,7 @@ $cor = $cores[$log['acao']] ?? ['bg' => '#e5e7eb', 'text' => '#374151', 'icon' =
             
             <!-- Botão Voltar -->
             <div style="margin-top: 24px; text-align: center;">
-                <a href="index.php" class="btn-voltar">
+                <a href="index" class="btn-voltar">
                     <i class="fas fa-arrow-left"></i> Voltar para Auditoria
                 </a>
             </div>

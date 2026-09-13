@@ -354,19 +354,19 @@ session_start();
         // Carregar dados do funcionário
         async function carregarDadosFuncionario() {
             try {
-                const response = await fetch('api_ponto_celular.php?acao=dados');
+                const response = await fetch('api_ponto_celular?acao=dados');
                 const data = await response.json();
                 
                 if (data.success) {
                     funcionarioId = data.funcionario_id;
-                    document.getElementById('nomeFuncionario').innerHTML = data.nome;
-                    document.getElementById('matriculaFuncionario').innerHTML = 'Matrícula: ' + data.matricula;
-                    document.getElementById('filialFuncionario').innerHTML = 'Filial: ' + data.filial;
+                    document.getElementById('nomeFuncionario').textContent = data.nome;
+                    document.getElementById('matriculaFuncionario').textContent = 'Matrícula: ' + data.matricula;
+                    document.getElementById('filialFuncionario').textContent = 'Filial: ' + data.filial;
                     
                     // Atualizar status dos pontos
                     atualizarStatus(data.horarios, data.proximo_tipo);
                 } else {
-                    window.location.href = '../../login.php';
+                    window.location.href = '../../login';
                 }
             } catch (err) {
                 console.error('Erro:', err);
@@ -491,7 +491,7 @@ session_start();
                 stream.getTracks().forEach(track => track.stop());
                 
                 // Validar facial
-                const response = await fetch('validar_facial_celular.php', {
+                const response = await fetch('validar_facial_celular', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -516,7 +516,7 @@ session_start();
             loading.style.display = 'block';
             
             try {
-                const response = await fetch('registrar_ponto_celular.php', {
+                const response = await fetch('registrar_ponto_celular', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -552,7 +552,7 @@ session_start();
             qrImg.style.display = 'none';
             
             try {
-                const response = await fetch('gerar_qr_autorizacao.php', {
+                const response = await fetch('gerar_qr_autorizacao', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -586,7 +586,7 @@ session_start();
         // Verificar autorização do gerente
         async function verificarAutorizacao(token) {
             const checkInterval = setInterval(async () => {
-                const response = await fetch('api_verificar_autorizacao.php?token=' + encodeURIComponent(token));
+                const response = await fetch('api_verificar_autorizacao?token=' + encodeURIComponent(token));
                 const result = await response.json();
                 
                 if (result.autorizado) {

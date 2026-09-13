@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -33,7 +33,7 @@ if ($funcionario_id) {
     $funcionario = $stmt->fetch();
     
     if (!$funcionario) {
-        header('Location: index.php');
+        header('Location: index');
         exit;
     }
     
@@ -55,7 +55,7 @@ if ($funcionario_id) {
     
     if (!$escala_atual) {
         echo "<div class='alert alert-warning'>Funcionário não possui escala cadastrada.</div>";
-        echo "<a href='index.php' class='btn btn-secondary'>Voltar</a>";
+        echo "<a href='index' class='btn btn-secondary'>Voltar</a>";
         require_once '../../includes/footer.php';
         exit;
     }
@@ -244,7 +244,7 @@ if ($funcionario_id) {
             <p>Visualize as escalas dos funcionários</p>
         </div>
         <div class="module-actions">
-            <a href="index.php" class="btn btn-secondary">
+            <a href="index" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Voltar
             </a>
         </div>

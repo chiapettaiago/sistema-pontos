@@ -18,7 +18,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -235,7 +235,7 @@ $total_horas_formatado = sprintf("%02d:%02d", floor($total_horas / 60), $total_h
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-search"></i> Filtrar
             </button>
-            <a href="horas_trabalhadas.php" class="btn btn-secondary">
+            <a href="horas_trabalhadas" class="btn btn-secondary">
                 <i class="fas fa-times"></i> Limpar
             </a>
         </div>

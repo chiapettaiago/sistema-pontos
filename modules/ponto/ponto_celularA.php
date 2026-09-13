@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['funcionario_id']) && !isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -31,7 +31,7 @@ if (!$funcionario_id && isset($_SESSION['usuario_id'])) {
 if (!$funcionario_id) {
     echo "<div style='text-align: center; padding: 50px;'>
             <h2>Perfil não encontrado</h2>
-            <a href='../../logout.php'>Sair</a>
+            <a href='../../logout'>Sair</a>
           </div>";
     exit;
 }
@@ -448,7 +448,7 @@ $_SESSION['biometric_token'] = $biometric_token;
             loading.style.display = 'block';
             
             try {
-                const response = await fetch('registrar_ponto_celular.php', {
+                const response = await fetch('registrar_ponto_celular', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -488,7 +488,7 @@ $_SESSION['biometric_token'] = $biometric_token;
             loading.style.display = 'block';
             
             try {
-                const response = await fetch('registrar_ponto_celular.php', {
+                const response = await fetch('registrar_ponto_celular', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -528,7 +528,7 @@ $_SESSION['biometric_token'] = $biometric_token;
             qrImg.style.display = 'none';
             
             try {
-                const response = await fetch('api_solicitar_autorizacao.php', {
+                const response = await fetch('api_solicitar_autorizacao', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -545,7 +545,7 @@ $_SESSION['biometric_token'] = $biometric_token;
                 if (result.success) {
                     tokenAutorizacao = result.token;
                     const qrUrl = 'https://quickchart.io/qr?text=' + encodeURIComponent(
-                        window.location.origin + '/modules/ponto/autorizar_gerente.php?token=' + tokenAutorizacao
+                        window.location.origin + '/modules/ponto/autorizar_gerente?token=' + tokenAutorizacao
                     );
                     qrImg.src = qrUrl;
                     qrImg.style.display = 'block';
@@ -567,7 +567,7 @@ $_SESSION['biometric_token'] = $biometric_token;
         async function aguardarAutorizacao(token) {
             const interval = setInterval(async () => {
                 try {
-                    const response = await fetch('api_verificar_autorizacao.php?token=' + token);
+                    const response = await fetch('api_verificar_autorizacao?token=' + token);
                     const result = await response.json();
                     
                     if (result.autorizado) {

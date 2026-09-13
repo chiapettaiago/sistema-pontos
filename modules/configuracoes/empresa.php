@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -17,6 +17,7 @@ $pageTitle = 'Dados da Empresa';
 $activePage = 'configuracoes';
 require_once '../../includes/header.php';
 require_once '../../config/database.php';
+require_once '../../includes/csrf.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -47,6 +48,7 @@ $empresa = $stmt->fetch();
 
 // Processar formulário
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCSRFToken();
     $nome_empresa = trim($_POST['nome_empresa'] ?? '');
     $cnpj = preg_replace('/[^0-9]/', '', $_POST['cnpj'] ?? '');
     $inscricao_estadual = trim($_POST['inscricao_estadual'] ?? '');
@@ -79,14 +81,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = '../../uploads/empresas/';
         if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+            mkdir($uploadDir, 0755, true);
         }
-        
-        $extensao = strtolower(pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION));
+
+        $mime = (new finfo(FILEINFO_MIME_TYPE))->file($_FILES['logo']['tmp_name']);
+        $tiposLogo = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+        if (!isset($tiposLogo[$mime]) || @getimagesize($_FILES['logo']['tmp_name']) === false || $_FILES['logo']['size'] > MAX_FILE_SIZE) {
+            $error = 'O logotipo deve ser uma imagem JPG, PNG ou WEBP válida de até 5 MB.';
+        }
+        $extensao = $tiposLogo[$mime] ?? '';
         $nomeArquivo = 'logo_' . $empresa_id . '_' . time() . '.' . $extensao;
         $caminho = $uploadDir . $nomeArquivo;
-        
-        if (move_uploaded_file($_FILES['logo']['tmp_name'], $caminho)) {
+
+        if ($error === '' && move_uploaded_file($_FILES['logo']['tmp_name'], $caminho)) {
             // Remover logo antigo
             if ($logo_path && file_exists('../../' . $logo_path)) {
                 unlink('../../' . $logo_path);
@@ -343,6 +350,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
         
         <form method="POST" action="" class="form-body" enctype="multipart/form-data">
+            <?= csrfField() ?>
             <!-- Logo -->
             <div class="form-group">
                 <label>Logo da Empresa</label>
@@ -460,7 +468,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Salvar Alterações
                 </button>
-                <a href="index.php" class="btn btn-secondary">
+                <a href="index" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Voltar
                 </a>
             </div>

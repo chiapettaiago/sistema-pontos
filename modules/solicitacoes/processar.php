@@ -5,7 +5,7 @@ require_once '../../config/database.php';
 
 // Verificar se está logado
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -20,7 +20,7 @@ $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!$id || !$acao) {
     $_SESSION['mensagem'] = 'Dados inválidos';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: ' . ($usuario_tipo == 'funcionario' ? 'index.php' : 'admin.php'));
+    header('Location: ' . ($usuario_tipo == 'funcionario' ? 'index' : 'admin'));
     exit;
 }
 
@@ -43,7 +43,7 @@ if ($acao == 'cancelar' && $usuario_tipo == 'funcionario') {
     if (!$funcionario_id) {
         $_SESSION['mensagem'] = 'Perfil de funcionário não encontrado';
         $_SESSION['tipo_mensagem'] = 'error';
-        header('Location: index.php');
+        header('Location: index');
         exit;
     }
     
@@ -55,7 +55,7 @@ if ($acao == 'cancelar' && $usuario_tipo == 'funcionario') {
     if (!$stmt->fetch()) {
         $_SESSION['mensagem'] = 'Solicitação não encontrada ou não pode ser cancelada';
         $_SESSION['tipo_mensagem'] = 'error';
-        header('Location: index.php');
+        header('Location: index');
         exit;
     }
     
@@ -65,13 +65,13 @@ if ($acao == 'cancelar' && $usuario_tipo == 'funcionario') {
         
         $_SESSION['mensagem'] = '✅ Solicitação cancelada com sucesso!';
         $_SESSION['tipo_mensagem'] = 'success';
-        header('Location: index.php');
+        header('Location: index');
         exit;
         
     } catch (Exception $e) {
         $_SESSION['mensagem'] = 'Erro ao cancelar: ' . $e->getMessage();
         $_SESSION['tipo_mensagem'] = 'error';
-        header('Location: index.php');
+        header('Location: index');
         exit;
     }
 }
@@ -111,13 +111,13 @@ if (in_array($acao, ['aprovar', 'rejeitar']) && in_array($usuario_tipo, ['super_
         
         $_SESSION['mensagem'] = '✅ Solicitação ' . ($acao == 'aprovar' ? 'aprovada' : 'rejeitada') . ' com sucesso!';
         $_SESSION['tipo_mensagem'] = 'success';
-        header('Location: admin.php');
+        header('Location: admin');
         exit;
         
     } catch (Exception $e) {
         $_SESSION['mensagem'] = 'Erro ao processar: ' . $e->getMessage();
         $_SESSION['tipo_mensagem'] = 'error';
-        header('Location: admin.php');
+        header('Location: admin');
         exit;
     }
 }
@@ -125,6 +125,6 @@ if (in_array($acao, ['aprovar', 'rejeitar']) && in_array($usuario_tipo, ['super_
 // Ação inválida
 $_SESSION['mensagem'] = 'Ação inválida ou sem permissão';
 $_SESSION['tipo_mensagem'] = 'error';
-header('Location: index.php');
+header('Location: index');
 exit;
 ?>

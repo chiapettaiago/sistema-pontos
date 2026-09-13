@@ -6,7 +6,7 @@ require_once '../../../includes/config.php';
 
 // Verificar se está logado e é super admin
 if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_tipo'] ?? '') !== 'super_admin') {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
     exit;
 }
 
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
         $_SESSION['tipo_mensagem'] = "error";
     }
     
-    header('Location: recuperar.php');
+    header('Location: recuperar');
     exit;
 }
 
@@ -209,7 +209,7 @@ $empresas_excluidas = $stmt->fetchAll();
         <p>Recupere empresas que foram movidas para a lixeira</p>
     </div>
     <div class="module-actions">
-        <a href="index.php" class="btn btn-secondary">
+        <a href="index" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Voltar para Empresas
         </a>
     </div>
@@ -219,7 +219,7 @@ $empresas_excluidas = $stmt->fetchAll();
 <div class="empty-state">
     <i class="fas fa-trash-restore"></i>
     <p style="margin-top: 16px;">Não há empresas na lixeira</p>
-    <a href="index.php" class="btn btn-primary" style="margin-top: 16px;">Voltar para Empresas</a>
+    <a href="index" class="btn btn-primary" style="margin-top: 16px;">Voltar para Empresas</a>
 </div>
 <?php else: ?>
     <?php foreach ($empresas_excluidas as $empresa): ?>

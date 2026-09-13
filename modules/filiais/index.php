@@ -2,12 +2,16 @@
 // modules/filiais/index.php - Lista de Filiais (VERSÃO DEFINITIVA)
 $pageTitle = 'Filiais';
 $activePage = 'filiais';
+require_once '../../includes/auth.php';
+redirectIfNotLoggedIn();
+if (!hasPermission('gerenciar_filiais')) {
+    http_response_code(403);
+    exit('Acesso negado: seu usuário não possui permissão para gerenciar filiais.');
+}
 require_once '../../includes/header.php';
 require_once '../../config/database.php';
 require_once '../../config/multi_empresa.php';
-
-// Verificar permissão (apenas admin)
-redirectIfNotAdmin();
+require_once '../../includes/csrf.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -31,7 +35,7 @@ if (!$empresa_id && isset($_SESSION['usuario_id'])) {
 }
 
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -39,10 +43,10 @@ if ($empresa_id === null || $empresa_id === '') {
 // PROCESSAR CORREÇÃO (se solicitado)
 // ============================================
 if (isset($_GET['corrigir']) && $_GET['corrigir'] == '1') {
-    $stmt = $db->prepare("UPDATE filiais SET empresa_id = :empresa_id");
+    $stmt = $db->prepare("UPDATE filiais SET empresa_id = :empresa_id WHERE empresa_id IS NULL");
     $stmt->execute([':empresa_id' => $empresa_id]);
     $atualizadas = $stmt->rowCount();
-    echo "<script>alert('{$atualizadas} filiais foram atualizadas para empresa_id = {$empresa_id}. Recarregando...'); window.location.href = 'index.php';</script>";
+    echo "<script>alert('{$atualizadas} filiais foram atualizadas para empresa_id = {$empresa_id}. Recarregando...'); window.location.href = 'index';</script>";
     exit;
 }
 
@@ -145,7 +149,7 @@ try {
         <p class="text-muted">Gerencie as filiais da empresa</p>
     </div>
     <?php if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa'): ?>
-    <a href="cadastrar.php" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Nova Filial</a>
+    <a href="cadastrar" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Nova Filial</a>
     <?php endif; ?>
 </div>
 
@@ -184,11 +188,10 @@ try {
                         </td>
                         <td class="text-end">
                             <div class="btn-group btn-group-sm">
-                                <a href="visualizar.php?id=<?php echo $filial['id']; ?>" class="btn btn-outline-primary" title="Ver"><i class="fas fa-eye"></i></a>
+                                <a href="visualizar?id=<?php echo $filial['id']; ?>" class="btn btn-outline-primary" title="Ver"><i class="fas fa-eye"></i></a>
                                 <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa'])): ?>
-                                <a href="editar.php?id=<?php echo $filial['id']; ?>" class="btn btn-outline-secondary" title="Editar"><i class="fas fa-edit"></i></a>
-                                <a href="excluir.php?id=<?php echo $filial['id']; ?>" class="btn btn-outline-danger" title="Excluir"
-                                   onclick="return confirm('Excluir esta filial?')"><i class="fas fa-trash"></i></a>
+                                <a href="editar?id=<?php echo $filial['id']; ?>" class="btn btn-outline-secondary" title="Editar"><i class="fas fa-edit"></i></a>
+                                <form method="post" action="excluir" class="d-inline" onsubmit="return confirm('Excluir esta filial?')"><?= csrfField() ?><input type="hidden" name="id" value="<?= (int) $filial['id'] ?>"><input type="hidden" name="confirm" value="sim"><button type="submit" class="btn btn-outline-danger" title="Excluir"><i class="fas fa-trash"></i></button></form>
                                 <?php endif; ?>
                             </div>
                         </td>
@@ -206,4 +209,3 @@ try {
 </div>
 
 <?php require_once '../../includes/footer.php'; ?>
-

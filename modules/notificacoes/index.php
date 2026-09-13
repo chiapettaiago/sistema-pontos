@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -94,7 +94,7 @@ $cores = [
         <p class="text-muted">Central de notificações do sistema</p>
     </div>
     <?php if (!empty($notificacoes_nao_lidas)): ?>
-    <a href="marcar_todas.php" class="btn btn-outline-primary"><i class="fas fa-check-double me-1"></i>Marcar todas como lidas</a>
+    <a href="marcar_todas" class="btn btn-outline-primary"><i class="fas fa-check-double me-1"></i>Marcar todas como lidas</a>
     <?php endif; ?>
 </div>
 
@@ -120,7 +120,7 @@ $cores = [
                         </div>
                     </div>
                     <?php if (!$n['lida']): ?>
-                    <a href="marcar_lida.php?id=<?php echo $n['id']; ?>" class="btn btn-sm btn-outline-primary flex-shrink-0">
+                    <a href="marcar_lida?id=<?php echo $n['id']; ?>" class="btn btn-sm btn-outline-primary flex-shrink-0">
                         <i class="fas fa-check"></i>
                     </a>
                     <?php endif; ?>

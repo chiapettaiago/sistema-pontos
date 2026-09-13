@@ -4,6 +4,7 @@ $pageTitle = 'Funcionários';
 $activePage = 'funcionarios';
 require_once '../../includes/header.php';
 require_once '../../config/database.php';
+require_once '../../includes/csrf.php';
 
 // Verificar permissão para acessar o módulo
 checkModuleAccess('funcionarios');
@@ -20,14 +21,14 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
 // PARA GESTOR E SUPERVISOR: Só podem ver funcionários da sua filial
 // PARA FUNCIONÁRIO: Não deve acessar esta página (redirect)
 if ($usuario_tipo === 'funcionario') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -127,20 +128,20 @@ $stats = $statsStmt->fetch();
         <p class="text-muted">Gerencie os funcionários da empresa</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
-        <a href="importar.php" class="btn btn-outline-secondary">
+        <?php if (hasPermission('cadastrar_funcionarios')): ?><a href="importar" class="btn btn-outline-secondary">
             <i class="fas fa-file-import me-1"></i>Importar
-        </a>
+        </a><?php endif; ?>
         <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
                 <i class="fas fa-download me-1"></i>Exportar
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="exportar.php?formato=excel"><i class="fas fa-file-excel me-2"></i>Excel</a></li>
-                <li><a class="dropdown-item" href="exportar.php?formato=pdf"><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
+                <li><a class="dropdown-item" href="exportar?formato=excel"><i class="fas fa-file-excel me-2"></i>Excel</a></li>
+                <li><a class="dropdown-item" href="exportar?formato=pdf"><i class="fas fa-file-pdf me-2"></i>PDF</a></li>
             </ul>
         </div>
-        <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor'])): ?>
-        <a href="cadastrar.php" class="btn btn-primary">
+        <?php if (hasPermission('cadastrar_funcionarios')): ?>
+        <a href="cadastrar" class="btn btn-primary">
             <i class="fas fa-plus me-1"></i>Novo Funcionário
         </a>
         <?php endif; ?>
@@ -275,22 +276,19 @@ $stats = $statsStmt->fetch();
                         </td>
                         <td class="text-end">
                             <div class="btn-group btn-group-sm">
-                                <a href="visualizar.php?id=<?php echo $func['id']; ?>" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Visualizar">
+                                <a href="visualizar?id=<?php echo $func['id']; ?>" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Visualizar">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa'], true)): ?>
-                                <a href="cadastro_facial.php?id=<?php echo $func['id']; ?>" class="btn btn-outline-success" data-bs-toggle="tooltip" title="Cadastrar biometria facial">
+                                <?php if ((int) ($_SESSION['funcionario_id'] ?? 0) === (int) $func['id'] || canEditFuncionario((int) $func['id'])): ?>
+                                <a href="cadastro_facial?id=<?php echo $func['id']; ?>" class="btn btn-outline-success" data-bs-toggle="tooltip" title="Cadastrar biometria facial">
                                     <i class="fas fa-face-smile"></i>
                                 </a>
                                 <?php endif; ?>
-                                <?php if (in_array($usuario_tipo, ['super_admin','admin_empresa','gestor'])): ?>
-                                <a href="editar.php?id=<?php echo $func['id']; ?>" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Editar">
+                                <?php if (canEditFuncionario((int) $func['id'])): ?>
+                                <a href="editar?id=<?php echo $func['id']; ?>" class="btn btn-outline-secondary" data-bs-toggle="tooltip" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="excluir.php?id=<?php echo $func['id']; ?>" class="btn btn-outline-danger" data-bs-toggle="tooltip" title="Excluir"
-                                   onclick="return confirm('Excluir funcionário?')">
-                                    <i class="fas fa-trash"></i>
-                                </a>
+                                <?php if (hasPermission('excluir_funcionarios')): ?><form method="post" action="excluir" class="d-inline" onsubmit="return confirm('Excluir funcionário?')"><?= csrfField() ?><input type="hidden" name="id" value="<?= (int) $func['id'] ?>"><input type="hidden" name="confirm" value="sim"><button type="submit" class="btn btn-outline-danger" data-bs-toggle="tooltip" title="Excluir"><i class="fas fa-trash"></i></button></form><?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </td>

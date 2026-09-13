@@ -24,7 +24,7 @@ $stmt->execute([':id' => $id]);
 $funcionario = $stmt->fetch();
 
 if (!$funcionario) {
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -242,10 +242,10 @@ $qrCodeUrl = gerarQRCode($qrData);
     </div>
     
     <div class="actions">
-        <a href="gerar.php?id=<?php echo $id; ?>" class="btn-download" target="_blank">
+        <a href="gerar?id=<?php echo $id; ?>" class="btn-download" target="_blank">
             <i class="fas fa-file-pdf"></i> Baixar PDF
         </a>
-        <a href="index.php" class="btn-download" style="background: var(--bg-secondary); color: var(--text-primary);">
+        <a href="index" class="btn-download" style="background: var(--bg-secondary); color: var(--text-primary);">
             <i class="fas fa-arrow-left"></i> Voltar
         </a>
     </div>

@@ -4,7 +4,7 @@ session_start();
 
 // Verificar se está logado
 if (!isset($_SESSION['funcionario_id'])) {
-    header('Location: login_facial.php');
+    header('Location: login_facial');
     exit;
 }
 
@@ -25,7 +25,7 @@ $funcionario = $stmt->fetch();
 
 if (!$funcionario) {
     session_destroy();
-    header('Location: login_facial.php');
+    header('Location: login_facial');
     exit;
 }
 
@@ -573,7 +573,7 @@ $total_pontos_mes = $stats_mes['total_pontos'] ?? 0;
             <div class="user-avatar">
                 <?php echo strtoupper(substr($funcionario['nome'], 0, 1)); ?>
             </div>
-            <a href="../../logout.php" class="logout-btn">
+            <a href="../../logout" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Sair</span>
             </a>
@@ -630,7 +630,7 @@ $total_pontos_mes = $stats_mes['total_pontos'] ?? 0;
             <div class="card">
                 <h3><i class="fas fa-fingerprint"></i> Bater Ponto</h3>
                 
-                <form method="POST" action="../ponto/registrar.php">
+                <form method="POST" action="../ponto/registrar">
                     <input type="hidden" name="origem" value="dashboard">
                     <input type="hidden" name="latitude" id="latitude">
                     <input type="hidden" name="longitude" id="longitude">
@@ -711,15 +711,15 @@ $total_pontos_mes = $stats_mes['total_pontos'] ?? 0;
         <div class="card" style="margin-bottom: 0;">
             <h3><i class="fas fa-th-large"></i> Ações Rápidas</h3>
             <div class="actions-grid">
-                <a href="../ponto/extrato.php" class="action-btn">
+                <a href="../ponto/extrato" class="action-btn">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Meu Extrato</span>
                 </a>
-                <a href="../solicitacoes/index.php" class="action-btn">
+                <a href="../solicitacoes/index" class="action-btn">
                     <i class="fas fa-clipboard-list"></i>
                     <span>Solicitações</span>
                 </a>
-                <a href="../cracha/index.php" class="action-btn">
+                <a href="../cracha/index" class="action-btn">
                     <i class="fas fa-id-card"></i>
                     <span>Meu Crachá</span>
                 </a>

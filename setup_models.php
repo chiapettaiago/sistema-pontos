@@ -139,8 +139,8 @@ echo "</ul>";
 
 echo "<hr>";
 echo "<div style='text-align: center;'>";
-echo "<a href='modules/biometrico/cadastrar.php' class='btn btn-primary'>🔐 Ir para Cadastro Biométrico</a>";
-echo "<a href='teste_camera.php' class='btn btn-secondary'>📷 Testar Câmera</a>";
+echo "<a href='modules/biometrico/cadastrar' class='btn btn-primary'>🔐 Ir para Cadastro Biométrico</a>";
+echo "<a href='teste_camera' class='btn btn-secondary'>📷 Testar Câmera</a>";
 echo "</div>";
 
 echo "</body>";

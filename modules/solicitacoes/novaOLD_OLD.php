@@ -17,7 +17,7 @@ $filial_id = $_SESSION['funcionario_filial_id'] ?? null;
 $is_admin = isset($_SESSION['user_tipo']) && $_SESSION['user_tipo'] === 'admin';
 
 if (!$funcionario_id && !$is_admin) {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
     exit;
 }
 
@@ -219,7 +219,7 @@ if ($is_admin) {
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-send"></i> Enviar Solicitação
                             </button>
-                    <a href="../../index.php" class="btn btn-secondary">
+                    <a href="../../index" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Voltar
                             </a>
                         </div>

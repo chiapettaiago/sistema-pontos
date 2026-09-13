@@ -2,12 +2,15 @@
 // modules/filiais/visualizar.php - Visualizar Filial (CORRIGIDO - ENDEREÇO)
 $pageTitle = 'Visualizar Filial';
 $activePage = 'filiais';
+require_once '../../includes/auth.php';
+redirectIfNotLoggedIn();
+if (!hasPermission('gerenciar_filiais')) {
+    http_response_code(403);
+    exit('Acesso negado: seu usuário não possui permissão para visualizar filiais.');
+}
 require_once '../../includes/header.php';
 require_once '../../config/database.php';
 require_once '../../config/multi_empresa.php';
-
-// Verificar permissão
-redirectIfNotAdmin();
 
 $database = new Database();
 $db = $database->getConnection();
@@ -15,7 +18,7 @@ $db = $database->getConnection();
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if (!$id) {
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -23,10 +26,10 @@ if (!$id) {
 $query = "SELECT f.*, 
           (SELECT COUNT(*) FROM funcionarios WHERE filial_id = f.id AND status = 'ativo') as total_funcionarios
           FROM filiais f
-          WHERE f.id = :id";
+          WHERE f.id = :id AND f.empresa_id = :empresa_id";
 
 $stmt = $db->prepare($query);
-$stmt->execute([':id' => $id]);
+$stmt->execute([':id' => $id, ':empresa_id' => (int) ($_SESSION['empresa_id'] ?? 0)]);
 $filial = $stmt->fetch();
 
 if (!$filial) {
@@ -302,10 +305,10 @@ switch ($filial['tipo_ramo']) {
         <p>Detalhes da filial</p>
     </div>
     <div class="module-actions">
-        <a href="index.php" class="btn btn-secondary">
+        <a href="index" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Voltar
         </a>
-        <a href="editar.php?id=<?php echo $id; ?>" class="btn btn-primary">
+        <a href="editar?id=<?php echo $id; ?>" class="btn btn-primary">
             <i class="fas fa-edit"></i> Editar
         </a>
     </div>

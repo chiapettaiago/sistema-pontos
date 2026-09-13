@@ -1,17 +1,18 @@
 # api/.htaccess - Regras de reescrita para API
 RewriteEngine On
 
-# Permitir CORS
-Header set Access-Control-Allow-Origin "*"
-Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+# CORS é aplicado de forma restrita por api/config.php.
 
-# RewriteBase /ponto_empresarial/api/
+# A API usa o mesmo front controller da aplicação. REQUEST_URI é preservada,
+# permitindo resolver /api/recurso sem expor o arquivo recurso.php.
+RewriteCond %{THE_REQUEST} \s/+[^?\ ]+\.php(?:[?\s]) [NC]
+RewriteRule ^ ../front-controller.php [END,QSA]
 
-# Remover extensão .php das URLs (opcional)
-# RewriteCond %{REQUEST_FILENAME} !-d
-# RewriteCond %{REQUEST_FILENAME}.php -f
-# RewriteRule ^(.*)$ $1.php [L]
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [END]
+
+RewriteRule ^ ../front-controller.php [END,QSA]
 
 # Forçar JSON como padrão
 AddType application/json .json

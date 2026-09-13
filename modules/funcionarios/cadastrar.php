@@ -2,9 +2,16 @@
 // modules/funcionarios/cadastrar.php - Cadastrar Novo Funcionário (COM DETECÇÃO FACIAL)
 $pageTitle = 'Novo Funcionário';
 $activePage = 'funcionarios';
+require_once '../../includes/auth.php';
+redirectIfNotLoggedIn();
+if (!hasPermission('cadastrar_funcionarios')) {
+    http_response_code(403);
+    exit('Acesso negado: seu usuário não possui permissão para cadastrar funcionários.');
+}
 require_once '../../includes/header.php';
 require_once '../../config/database.php';
 require_once '../../config/multi_empresa.php';
+require_once '../../includes/csrf.php';
 
 checkModuleAccess('funcionarios');
 
@@ -24,7 +31,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? 'funcionario';
@@ -229,12 +236,13 @@ function uploadFoto($file, $matricula) {
 // PROCESSAR FORMULÁRIO
 // ============================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCSRFToken();
     $empresa_id = getCurrentEmpresaId();
     if ($empresa_id === null || $empresa_id === '') {
         $empresa_id = $_SESSION['empresa_id'] ?? null;
     }
     if ($empresa_id === null || $empresa_id === '') {
-        header('Location: ' . BASE_URL . '/index.php');
+        header('Location: ' . BASE_URL . '/index');
         exit;
     }
     $filial_id = $_POST['filial_id'] ?? null;
@@ -268,6 +276,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pode_gerenciar_filiais = isset($_POST['pode_gerenciar_filiais']) ? 1 : 0;
     $pode_gerenciar_funcionarios = isset($_POST['pode_gerenciar_funcionarios']) ? 1 : 0;
     $pode_ver_relatorios = isset($_POST['pode_ver_relatorios']) ? 1 : 0;
+    if (!in_array($_SESSION['usuario_tipo'] ?? '', ['super_admin', 'admin_empresa'], true)) {
+        // Delegar o cadastro de pessoas não concede o direito de criar novos
+        // administradores nem de repassar permissões especiais.
+        $tipo_usuario = 'funcionario';
+        $pode_gerenciar_filiais = 0;
+        $pode_gerenciar_funcionarios = 0;
+        $pode_ver_relatorios = 0;
+    }
     $status = $_POST['status'] ?? 'ativo';
     
     $foto_base64 = $_POST['foto_base64'] ?? '';
@@ -770,6 +786,7 @@ small {
         <?php endif; ?>
         
         <form method="POST" action="" class="form-main" enctype="multipart/form-data" id="cadastroForm">
+            <?= csrfField() ?>
             <!-- Foto com Câmera -->
             <div class="form-section">
                 <h4><i class="fas fa-camera"></i> Foto do Funcionário (para reconhecimento facial)</h4>
@@ -1048,7 +1065,7 @@ small {
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Salvar Funcionário
                 </button>
-                <a href="index.php" class="btn btn-secondary">
+                <a href="index" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>
@@ -1416,6 +1433,3 @@ document.querySelector('select[name="filial_id"]')?.addEventListener('change', f
 </script>
 
 <?php require_once '../../includes/footer.php'; ?>
-
-
-

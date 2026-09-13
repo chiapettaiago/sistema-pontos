@@ -1,5 +1,5 @@
 <?php
-// modules/notificacoes/marcar_lida.php - Marcar notificação como lida (AJAX)
+// modules/notificacoes/marcar_lida - Marcar notificação como lida (AJAX)
 session_start();
 header('Content-Type: application/json');
 

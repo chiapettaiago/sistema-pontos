@@ -198,7 +198,7 @@
             const senha = document.getElementById('senha').value;
             
             try {
-                const response = await fetch(baseUrl + 'auth.php', {
+                const response = await fetch(baseUrl + 'auth', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: email, senha: senha })
@@ -241,7 +241,7 @@
             if (longitude) body.longitude = parseFloat(longitude);
             
             try {
-                const response = await fetch(baseUrl + 'ponto.php', {
+                const response = await fetch(baseUrl + 'ponto', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -272,7 +272,7 @@
             const mes = document.getElementById('mesExtrato').value;
             
             try {
-                const response = await fetch(baseUrl + `extrato.php?mes=${mes}`, {
+                const response = await fetch(baseUrl + `extrato?mes=${mes}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 

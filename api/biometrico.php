@@ -25,8 +25,11 @@ function currentApiOrSessionUser(bool $allowPublic = false, array $input = []) {
     if ($allowPublic) {
         $empresaId = (int) ($input['empresa_id'] ?? 0);
         $signature = (string) ($input['chave'] ?? '');
-        $expected = $empresaId > 0 ? hash_hmac('sha256', (string) $empresaId, DB_PASS . '|ponto-publico') : '';
-        if ($empresaId > 0 && $signature !== '' && hash_equals($expected, $signature)) {
+        $keyParts = explode('.', $signature, 2);
+        $expiresAt = isset($keyParts[0]) ? (int) $keyParts[0] : 0;
+        $providedSignature = $keyParts[1] ?? '';
+        $expected = $empresaId > 0 ? hash_hmac('sha256', $empresaId . '|' . $expiresAt, APP_SIGNING_KEY . '|ponto-publico') : '';
+        if ($empresaId > 0 && $expiresAt >= time() && $providedSignature !== '' && hash_equals($expected, $providedSignature)) {
             return ['id' => null, 'nome' => 'Ponto público', 'email' => '', 'tipo' => 'publico', 'tipo_usuario' => 'publico', 'empresa_id' => $empresaId, 'funcionario_id' => null];
         }
         jsonError('Link público inválido ou expirado', 'INVALID_PUBLIC_LINK', 401);
@@ -45,6 +48,7 @@ function currentApiOrSessionUser(bool $allowPublic = false, array $input = []) {
             'tipo_usuario' => ($_SESSION['usuario_tipo'] ?? '') === 'funcionario' ? 'funcionario' : 'admin',
             'empresa_id' => $_SESSION['empresa_id'] ?? null,
             'funcionario_id' => $_SESSION['funcionario_id'] ?? null,
+            'permissions' => $_SESSION['db_permissions'] ?? [],
         ];
     }
 
@@ -146,7 +150,9 @@ $user = currentApiOrSessionUser(
 );
 
 if ($acao === 'salvar_facial') {
-    if (!in_array($user['tipo'], ['super_admin', 'admin_empresa', 'gestor'], true)) {
+    $podeGerenciarFuncionarios = in_array($user['tipo'], ['super_admin', 'admin_empresa'], true)
+        || !empty($user['permissions']['gerenciar_funcionarios']);
+    if (!$podeGerenciarFuncionarios) {
         jsonError('Sem permissao para cadastrar biometria facial', 'FORBIDDEN', 403);
     }
 

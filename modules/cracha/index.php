@@ -20,7 +20,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -257,7 +257,7 @@ if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa') {
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-search"></i> Filtrar
             </button>
-            <a href="index.php" class="btn btn-secondary">
+            <a href="index" class="btn btn-secondary">
                 <i class="fas fa-times"></i> Limpar
             </a>
         </div>
@@ -294,10 +294,10 @@ if ($usuario_tipo === 'super_admin' || $usuario_tipo === 'admin_empresa') {
             </div>
         </div>
         <div class="cracha-actions">
-            <a href="visualizar.php?id=<?php echo $func['id']; ?>" class="btn-cracha btn-view" target="_blank">
+            <a href="visualizar?id=<?php echo $func['id']; ?>" class="btn-cracha btn-view" target="_blank">
                 <i class="fas fa-eye"></i> Visualizar
             </a>
-            <a href="gerar.php?id=<?php echo $func['id']; ?>" class="btn-cracha btn-pdf">
+            <a href="gerar?id=<?php echo $func['id']; ?>" class="btn-cracha btn-pdf">
                 <i class="fas fa-file-pdf"></i> Baixar PDF
             </a>
         </div>

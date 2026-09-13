@@ -114,16 +114,17 @@ function generateToken($length = 32) {
 function generateAPIToken($user_id, $user_type, $empresa_id = null) {
     $db = getDB();
     $token = generateToken(32);
+    $tokenHash = hash('sha256', $token);
     $expires_at = date('Y-m-d H:i:s', time() + TOKEN_EXPIRY);
 
     try {
         $table = $user_type === 'admin' ? 'usuarios_sistema' : 'funcionarios';
         if (apiColumnExists($db, $table, 'token_expires_at')) {
             $stmt = $db->prepare("UPDATE {$table} SET api_token = :token, token_expires_at = :expires_at WHERE id = :id");
-            $stmt->execute([':token' => $token, ':expires_at' => $expires_at, ':id' => $user_id]);
+            $stmt->execute([':token' => $tokenHash, ':expires_at' => $expires_at, ':id' => $user_id]);
         } else {
             $stmt = $db->prepare("UPDATE {$table} SET api_token = :token WHERE id = :id");
-            $stmt->execute([':token' => $token, ':id' => $user_id]);
+            $stmt->execute([':token' => $tokenHash, ':id' => $user_id]);
         }
 
         return [
@@ -146,6 +147,7 @@ function validateAPIToken($token) {
     }
 
     try {
+        $token = hash('sha256', $token);
         $stmt = $db->prepare("SELECT * FROM usuarios_sistema WHERE api_token = :token AND status = 'ativo'");
         $stmt->execute([':token' => $token]);
         $usuario = $stmt->fetch();
@@ -155,14 +157,34 @@ function validateAPIToken($token) {
                 return ['error' => 'Token expirado', 'code' => 401];
             }
 
+            $tipo = $usuario['tipo'] === 'admin' ? 'admin_empresa' : $usuario['tipo'];
+            $administrador = in_array($tipo, ['super_admin', 'admin_empresa'], true);
+            $permissions = [
+                'gerenciar_filiais' => $administrador,
+                'gerenciar_funcionarios' => $administrador,
+                'ver_relatorios' => $administrador,
+            ];
+            $funcionarioId = null;
+            $linked = $db->prepare("SELECT id, pode_gerenciar_filiais, pode_gerenciar_funcionarios, pode_ver_relatorios FROM funcionarios WHERE usuario_sistema_id = :id AND status = 'ativo' LIMIT 1");
+            $linked->execute([':id' => $usuario['id']]);
+            if ($flags = $linked->fetch()) {
+                $funcionarioId = (int) $flags['id'];
+                $permissions = [
+                    'gerenciar_filiais' => $administrador || (int) $flags['pode_gerenciar_filiais'] === 1,
+                    'gerenciar_funcionarios' => $administrador || (int) $flags['pode_gerenciar_funcionarios'] === 1,
+                    'ver_relatorios' => $administrador || (int) $flags['pode_ver_relatorios'] === 1,
+                ];
+            }
+
             return [
                 'id' => $usuario['id'],
                 'nome' => $usuario['nome'],
                 'email' => $usuario['email'],
-                'tipo' => $usuario['tipo'],
+                'tipo' => $tipo,
                 'tipo_usuario' => 'admin',
                 'empresa_id' => $usuario['empresa_id'] ?? null,
-                'funcionario_id' => $usuario['funcionario_id'] ?? null,
+                'funcionario_id' => $funcionarioId,
+                'permissions' => $permissions,
             ];
         }
 
@@ -175,15 +197,21 @@ function validateAPIToken($token) {
                 return ['error' => 'Token expirado', 'code' => 401];
             }
 
+            $tipo = $funcionario['tipo_usuario'] === 'admin' ? 'admin_empresa' : ($funcionario['tipo_usuario'] ?? 'funcionario');
             return [
                 'id' => $funcionario['id'],
                 'nome' => $funcionario['nome'],
                 'email' => $funcionario['email'],
-                'tipo' => 'funcionario',
+                'tipo' => $tipo,
                 'tipo_usuario' => 'funcionario',
                 'empresa_id' => $funcionario['empresa_id'] ?? null,
                 'filial_id' => $funcionario['filial_id'] ?? null,
                 'funcionario_id' => $funcionario['id'],
+                'permissions' => [
+                    'gerenciar_filiais' => (int) ($funcionario['pode_gerenciar_filiais'] ?? 0) === 1,
+                    'gerenciar_funcionarios' => (int) ($funcionario['pode_gerenciar_funcionarios'] ?? 0) === 1,
+                    'ver_relatorios' => (int) ($funcionario['pode_ver_relatorios'] ?? 0) === 1,
+                ],
             ];
         }
 

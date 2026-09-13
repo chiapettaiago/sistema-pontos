@@ -5,6 +5,32 @@
  */
 
 require_once __DIR__ . '/router.php';
+
+// Endurecimento central da sessão. Deve ser aplicado antes de qualquer session_start().
+if (session_status() === PHP_SESSION_NONE) {
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
+    $secureCookie = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => $secureCookie,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+}
+
+if (PHP_SAPI !== 'cli' && !headers_sent()) {
+    header('X-Content-Type-Options: nosniff');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    header('Permissions-Policy: camera=(self), geolocation=(self), microphone=()');
+    header('X-Frame-Options: DENY');
+    header("Content-Security-Policy: frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
+    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+        header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+    }
+}
+
 appProtectCurrentRoute();
 
 function loadDatabaseEnvironment(string $path): array
@@ -36,6 +62,7 @@ define('DB_USER', $databaseEnvironment['DB_USER']);
 define('DB_PASS', $databaseEnvironment['DB_PASS']);
 define('DB_CHARSET', $databaseEnvironment['DB_CHARSET']);
 define('DB_CONNECT_TIMEOUT', (int) $databaseEnvironment['DB_CONNECT_TIMEOUT']);
+define('APP_SIGNING_KEY', hash('sha256', DB_PASS . '|' . DB_NAME . '|application-signing-key'));
 
 define('SITE_NAME', 'Sistema de Ponto Eletronico');
 define('SITE_URL', 'https://divulgpontofacil.com.br');
@@ -94,4 +121,29 @@ try {
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+}
+
+function loginThrottleKey(string $identity): string
+{
+    return hash('sha256', strtolower(trim($identity)) . '|' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+}
+
+function loginThrottleRemaining(string $identity): int
+{
+    $entry = $_SESSION['login_throttle'][loginThrottleKey($identity)] ?? null;
+    if (!is_array($entry) || (int) ($entry['count'] ?? 0) < MAX_LOGIN_ATTEMPTS) return 0;
+    return max(0, LOCKOUT_TIME - (time() - (int) ($entry['last'] ?? 0)));
+}
+
+function loginThrottleFailure(string $identity): void
+{
+    $key = loginThrottleKey($identity);
+    $entry = $_SESSION['login_throttle'][$key] ?? ['count' => 0, 'last' => 0];
+    if (time() - (int) $entry['last'] > LOCKOUT_TIME) $entry['count'] = 0;
+    $_SESSION['login_throttle'][$key] = ['count' => (int) $entry['count'] + 1, 'last' => time()];
+}
+
+function loginThrottleClear(string $identity): void
+{
+    unset($_SESSION['login_throttle'][loginThrottleKey($identity)]);
 }

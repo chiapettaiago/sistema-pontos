@@ -6,7 +6,7 @@ require_once '../../../includes/config.php';
 
 // Verificar se é super admin
 if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_tipo'] ?? '') !== 'super_admin') {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
     exit;
 }
 
@@ -438,7 +438,7 @@ function abrirModalNovoPlano() {
 }
 
 function editarPlano(id) {
-    fetch(`../../../api/planos.php?id=${id}`)
+    fetch(`../../../api/planos?id=${id}`)
         .then(response => response.json())
         .then(data => {
             document.getElementById('modalTitle').textContent = 'Editar Plano';

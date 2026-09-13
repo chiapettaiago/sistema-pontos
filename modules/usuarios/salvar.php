@@ -23,12 +23,12 @@ $empresa_id = $usuarioTipoAtual === 'admin_empresa'
 $status = $_POST['status'] ?? 'ativo';
 
 if (!$empresa_id || !in_array($tipo, ['admin_empresa', 'gestor', 'supervisor'], true)) {
-    header('Location: index.php?error=' . urlencode('Empresa ou tipo de usuário inválido'));
+    header('Location: index?error=' . urlencode('Empresa ou tipo de usuário inválido'));
     exit;
 }
 
 if (empty($nome) || empty($email)) {
-    header('Location: index.php?error=Campos obrigatórios');
+    header('Location: index?error=Campos obrigatórios');
     exit;
 }
 
@@ -36,7 +36,7 @@ if (empty($nome) || empty($email)) {
 $check = $db->prepare("SELECT id FROM usuarios_sistema WHERE email = :email AND id != :id");
 $check->execute([':email' => $email, ':id' => $id]);
 if ($check->fetch()) {
-    header('Location: index.php?error=E-mail já cadastrado');
+    header('Location: index?error=E-mail já cadastrado');
     exit;
 }
 
@@ -44,7 +44,7 @@ if ($id && $usuarioTipoAtual === 'admin_empresa') {
     $checkScope = $db->prepare('SELECT id FROM usuarios_sistema WHERE id = :id AND empresa_id = :empresa_id');
     $checkScope->execute([':id' => $id, ':empresa_id' => $empresa_id]);
     if (!$checkScope->fetch()) {
-        header('Location: index.php?error=' . urlencode('Usuário não pertence à sua empresa'));
+        header('Location: index?error=' . urlencode('Usuário não pertence à sua empresa'));
         exit;
     }
 }
@@ -90,11 +90,11 @@ try {
                 ':id' => $id
             ]);
         }
-        header('Location: index.php?success=Usuário atualizado com sucesso');
+        header('Location: index?success=Usuário atualizado com sucesso');
     } else {
         // Criar novo usuário
         if (empty($senha)) {
-            header('Location: index.php?error=Senha é obrigatória para novo usuário');
+            header('Location: index?error=Senha é obrigatória para novo usuário');
             exit;
         }
         
@@ -110,10 +110,10 @@ try {
             ':empresa_id' => $empresa_id, 
             ':status' => $status
         ]);
-        header('Location: index.php?success=Usuário criado com sucesso');
+        header('Location: index?success=Usuário criado com sucesso');
     }
 } catch (Exception $e) {
-    header('Location: index.php?error=' . urlencode($e->getMessage()));
+    header('Location: index?error=' . urlencode($e->getMessage()));
 }
 exit;
 ?>

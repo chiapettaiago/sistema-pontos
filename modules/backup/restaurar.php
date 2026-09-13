@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -268,12 +268,12 @@ if ($filename && file_exists($filepath)) {
                 <div class="alert alert-success">
                     <i class="fas fa-check-circle"></i> <?php echo $success; ?>
                 </div>
-                <a href="index.php" class="btn btn-secondary">Voltar</a>
+                <a href="index" class="btn btn-secondary">Voltar</a>
             <?php elseif ($error): ?>
                 <div class="alert alert-error">
                     <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
                 </div>
-                <a href="index.php" class="btn btn-secondary">Voltar</a>
+                <a href="index" class="btn btn-secondary">Voltar</a>
             <?php elseif ($file_info): ?>
                 <div class="warning-box">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -306,7 +306,7 @@ if ($filename && file_exists($filepath)) {
                     </button>
                 </form>
                 
-                <a href="index.php" class="btn btn-secondary">
+                <a href="index" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Cancelar
                 </a>
                 
@@ -314,7 +314,7 @@ if ($filename && file_exists($filepath)) {
                 <div class="alert alert-error">
                     <i class="fas fa-exclamation-circle"></i> Nenhum arquivo de backup selecionado.
                 </div>
-                <a href="index.php" class="btn btn-secondary">Voltar</a>
+                <a href="index" class="btn btn-secondary">Voltar</a>
             <?php endif; ?>
         </div>
     </div>

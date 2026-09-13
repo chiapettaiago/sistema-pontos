@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: 1678/login.php');
+    header('Location: 1678/login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -420,7 +420,7 @@ if ($edit_id) {
                         <i class="fas fa-save"></i> <?php echo $edit_tipo ? 'Salvar Alterações' : 'Adicionar Tipo'; ?>
                     </button>
                     <?php if ($edit_tipo): ?>
-                        <a href="configurar.php" class="btn btn-secondary">
+                        <a href="configurar" class="btn btn-secondary">
                             <i class="fas fa-times"></i> Cancelar
                         </a>
                     <?php endif; ?>

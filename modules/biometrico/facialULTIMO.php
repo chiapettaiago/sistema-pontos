@@ -20,7 +20,7 @@ $stmt->execute([':id' => $funcionario_id]);
 $funcionario = $stmt->fetch();
 
 if (!$funcionario) {
-    header('Location: cadastrar.php');
+    header('Location: cadastrar');
     exit;
 }
 
@@ -454,7 +454,7 @@ async function finalizarCadastro() {
     const baseUrl = window.FaceConfig.getBaseUrl();
     
     try {
-        const response = await fetch(baseUrl + '/api/biometrico.php', {
+        const response = await fetch(baseUrl + '/api/biometrico', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -476,7 +476,7 @@ async function finalizarCadastro() {
             
             setTimeout(() => {
                 if (stream) stream.getTracks().forEach(track => track.stop());
-                window.location.href = 'cadastrar.php';
+                window.location.href = 'cadastrar';
             }, 2000);
         } else {
             throw new Error(result.error || 'Erro desconhecido');
@@ -500,7 +500,7 @@ document.getElementById('btnCancelar').addEventListener('click', () => {
         stream.getTracks().forEach(track => track.stop());
     }
     if (detectionInterval) clearInterval(detectionInterval);
-    window.location.href = 'cadastrar.php';
+    window.location.href = 'cadastrar';
 });
 
 // ============================================

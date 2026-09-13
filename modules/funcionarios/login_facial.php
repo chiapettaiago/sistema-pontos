@@ -1,18 +1,18 @@
 <?php
 // Rota legada: o reconhecimento facial agora e o login principal.
 require_once '../../includes/config.php';
-header('Location: ' . rtrim(BASE_URL, '/') . '/login.php');
+header('Location: ' . rtrim(BASE_URL, '/') . '/login');
 exit;
 
 session_start();
 
 if (!empty($_SESSION['usuario_id'])) {
     if (($_SESSION['usuario_tipo'] ?? '') === 'super_admin') {
-        header('Location: ../../modules/admin/dashboard.php');
+        header('Location: ../../modules/admin/dashboard');
     } elseif (in_array(($_SESSION['usuario_tipo'] ?? ''), ['admin_empresa', 'gestor'], true)) {
-        header('Location: ../../modules/dashboard_empresa/index.php');
+        header('Location: ../../modules/dashboard_empresa/index');
     } else {
-        header('Location: ../../modules/ponto/ponto.php');
+        header('Location: ../../modules/ponto/ponto');
     }
     exit;
 }
@@ -90,11 +90,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
                 $_SESSION['tipo_login'] = 'sistema';
 
                 if ($usuarioSistema['tipo'] === 'super_admin') {
-                    header('Location: ../../modules/admin/dashboard.php');
+                    header('Location: ../../modules/admin/dashboard');
                 } elseif ($usuarioSistema['tipo'] === 'admin_empresa' || $usuarioSistema['tipo'] === 'gestor') {
-                    header('Location: ../../modules/dashboard_empresa/index.php');
+                    header('Location: ../../modules/dashboard_empresa/index');
                 } else {
-                    header('Location: ../../modules/ponto/ponto.php');
+                    header('Location: ../../modules/ponto/ponto');
                 }
                 exit;
             }
@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
                 $_SESSION['empresa_id'] = $funcionario['empresa_id'] ?? null;
                 $_SESSION['empresa_nome'] = $funcionario['empresa_nome'] ?? null;
                 $_SESSION['filial_id'] = $funcionario['filial_id'] ?? null;
-                header('Location: ../../modules/ponto/ponto.php');
+                header('Location: ../../modules/ponto/ponto');
                 exit;
             }
 
@@ -255,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
         </div>
 
         <div class="small-link" style="margin-top:-2px;">
-            <a href="../../login.php">Usar login principal do sistema</a>
+            <a href="../../login">Usar login principal do sistema</a>
         </div>
 
         <div id="panel-facial" class="panel">
@@ -451,7 +451,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
                 canvas.height = video.videoHeight;
                 canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
 
-                const response = await fetch('../../api/login_face.php', {
+                const response = await fetch('../../api/login_face', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -463,7 +463,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
 
                 if (result.success) {
                     setStatus('Login realizado com sucesso.', 'success');
-                    window.location.href = '../../modules/ponto/ponto.php';
+                    window.location.href = '../../modules/ponto/ponto';
                     return;
                 }
 

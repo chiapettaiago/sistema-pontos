@@ -17,7 +17,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
     exit;
 }
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? 'funcionario';
@@ -538,7 +538,7 @@ $empresa_nome = $stmt->fetch()['nome'] ?? 'Minha Empresa';
 <div class="table-card">
     <div class="table-header">
         <h3><i class="fas fa-clock"></i> Meu Ponto de Hoje</h3>
-        <a href="modules/ponto/registrar.php" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">
+        <a href="modules/ponto/registrar" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">
             <i class="fas fa-fingerprint"></i> Registrar Ponto
         </a>
     </div>
@@ -614,7 +614,7 @@ $empresa_nome = $stmt->fetch()['nome'] ?? 'Minha Empresa';
 <div class="table-card">
     <div class="table-header">
         <h3><i class="fas fa-clipboard-list"></i> Solicitações Pendentes</h3>
-        <a href="modules/solicitacoes/admin.php" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Ver todas</a>
+        <a href="modules/solicitacoes/admin" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Ver todas</a>
     </div>
     <div class="table-responsive">
         <table class="data-table">

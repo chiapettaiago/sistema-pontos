@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -581,7 +581,7 @@ input:checked + .slider:before {
             <button type="submit" name="salvar" class="btn btn-primary">
                 <i class="fas fa-save"></i> Salvar Configurações
             </button>
-            <a href="index.php" class="btn btn-secondary">
+            <a href="index" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Voltar
             </a>
         </div>

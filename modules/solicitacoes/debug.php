@@ -134,5 +134,5 @@ try {
 }
 
 echo "<br><br>";
-echo "<a href='admin.php'>Voltar para Admin</a>";
+echo "<a href='admin'>Voltar para Admin</a>";
 ?>

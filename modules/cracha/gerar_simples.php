@@ -10,7 +10,7 @@ require_once '../../config/database.php';
 require_once '../../includes/auth.php';
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -69,5 +69,5 @@ if (is_dir($uploadDir)) {
 }
 
 echo "<br><button onclick='window.print()'>Imprimir / Salvar PDF</button>";
-echo "<br><br><a href='index.php'>Voltar</a>";
+echo "<br><br><a href='index'>Voltar</a>";
 ?>

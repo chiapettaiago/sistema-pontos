@@ -15,7 +15,13 @@ $db = $database->getConnection();
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if (!$id) {
-    header('Location: index.php');
+    header('Location: index');
+    exit;
+}
+
+if (!canViewFuncionario($id)) {
+    http_response_code(403);
+    header('Location: index');
     exit;
 }
 
@@ -346,13 +352,13 @@ $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
         <p>Detalhes do funcionário</p>
     </div>
     <div class="module-actions">
-        <a href="index.php" class="btn btn-secondary">
+        <a href="index" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Voltar
         </a>
         <?php if ($pode_editar): ?>
-        <a href="editar.php?id=<?php echo $id; ?>" class="btn btn-primary">
+        <?php if (canEditFuncionario((int) $id)): ?><a href="editar?id=<?php echo $id; ?>" class="btn btn-primary">
             <i class="fas fa-edit"></i> Editar
-        </a>
+        </a><?php endif; ?>
         <?php endif; ?>
     </div>
 </div>
@@ -380,11 +386,11 @@ $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
     <strong>Próximo passo recomendado</strong>
     Se a foto estiver correta, cadastre ou atualize a biometria facial para liberar login e ponto.
     <div class="biometria-actions-quick">
-        <a href="editar.php?id=<?php echo $id; ?>"><i class="fas fa-camera"></i> Atualizar foto</a>
-        <?php if (in_array($_SESSION['usuario_tipo'] ?? '', ['super_admin', 'admin_empresa'], true)): ?>
-        <a href="cadastro_facial.php?id=<?php echo $id; ?>"><i class="fas fa-user-plus"></i> Facial</a>
+        <?php if (canEditFuncionario((int) $id)): ?><a href="editar?id=<?php echo $id; ?>"><i class="fas fa-camera"></i> Atualizar foto</a><?php endif; ?>
+        <?php if ((int) ($_SESSION['funcionario_id'] ?? 0) === (int) $id || canEditFuncionario((int) $id)): ?>
+        <a href="cadastro_facial?id=<?php echo $id; ?>"><i class="fas fa-user-plus"></i> Facial</a>
         <?php endif; ?>
-        <a href="../biometrico/digital.php?id=<?php echo $id; ?>"><i class="fas fa-fingerprint"></i> Digital</a>
+        <a href="../biometrico/digital?id=<?php echo $id; ?>"><i class="fas fa-fingerprint"></i> Digital</a>
     </div>
 </div>
 
@@ -401,7 +407,7 @@ $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
                 <p style="margin-top:10px;font-size:13px;color:var(--text-secondary);">Cadastre ou atualize a foto para iniciar a biometria facial.</p>
             <?php endif; ?>
             <div class="biometria-links">
-                <a href="editar.php?id=<?php echo $id; ?>"><i class="fas fa-camera"></i> Atualizar foto</a>
+                <?php if (canEditFuncionario((int) $id)): ?><a href="editar?id=<?php echo $id; ?>"><i class="fas fa-camera"></i> Atualizar foto</a><?php endif; ?>
             </div>
         </div>
         <div class="biometria-card">
@@ -414,8 +420,8 @@ $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
                 <p style="margin-top:10px;font-size:13px;color:var(--text-secondary);">Crie o cadastro facial após atualizar a foto.</p>
             <?php endif; ?>
             <div class="biometria-links">
-                <?php if (in_array($_SESSION['usuario_tipo'] ?? '', ['super_admin', 'admin_empresa'], true)): ?>
-                <a href="cadastro_facial.php?id=<?php echo $id; ?>"><i class="fas fa-user-plus"></i> Cadastrar/atualizar facial</a>
+                <?php if ((int) ($_SESSION['funcionario_id'] ?? 0) === (int) $id || canEditFuncionario((int) $id)): ?>
+                <a href="cadastro_facial?id=<?php echo $id; ?>"><i class="fas fa-user-plus"></i> Cadastrar/atualizar facial</a>
                 <?php else: ?>
                 <span><i class="fas fa-lock"></i> Cadastro restrito a administradores</span>
                 <?php endif; ?>
@@ -431,7 +437,7 @@ $biometria = $stmt_bio->fetch() ?: ['tem_facial' => 0, 'tem_digital' => 0];
                 <p style="margin-top:10px;font-size:13px;color:var(--text-secondary);">Cadastre a digital simulada para permitir o fluxo de teste.</p>
             <?php endif; ?>
             <div class="biometria-links">
-                <a href="../biometrico/digital.php?id=<?php echo $id; ?>"><i class="fas fa-fingerprint"></i> Cadastrar/atualizar digital</a>
+                <a href="../biometrico/digital?id=<?php echo $id; ?>"><i class="fas fa-fingerprint"></i> Cadastrar/atualizar digital</a>
             </div>
         </div>
     </div>

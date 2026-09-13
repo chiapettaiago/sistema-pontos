@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['usuario_tipo'] = $usuario['tipo'];
             
             echo "Login realizado com sucesso! Redirecionando...\n";
-            header('Location: modules/admin/dashboard.php');
+            header('Location: modules/admin/dashboard');
             exit;
         } else {
             $error = 'Senha inválida';
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['usuario_email'] = $func['email'];
                 $_SESSION['usuario_tipo'] = $func['tipo_usuario'];
                 
-                header('Location: index.php');
+                header('Location: index');
                 exit;
             }
         }

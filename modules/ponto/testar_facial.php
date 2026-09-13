@@ -16,7 +16,7 @@ $testData = [
     'funcionario_id' => 1
 ];
 
-$ch = curl_init('http://localhost:8080/modules/ponto/processar_facial.php');
+$ch = curl_init('http://localhost:8080/modules/ponto/processar_facial');
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($testData));
 curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);

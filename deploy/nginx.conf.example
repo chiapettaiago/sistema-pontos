@@ -3,7 +3,7 @@ server {
     server_name ponto.exemplo.com;
 
     root /var/www/projects/public/sistema-pontos;
-    index index.php index.html;
+    index index.html;
 
     # Troque pelo limite desejado para fotos e anexos.
     client_max_body_size 5m;
@@ -13,34 +13,64 @@ server {
         deny all;
     }
 
-    location ~* \.(?:sql|sql\.gz)$ {
+    location ~* (?:^|/)(?:error_log|composer\.(?:json|lock)|compose\.yaml|Dockerfile)$ {
         deny all;
     }
 
-    # Arquivos existentes sao servidos diretamente. Uma rota como
-    # /modules/usuarios tenta /modules/usuarios.php e, se nao existir,
-    # devolve 404 sem encaminhar para um script arbitrario.
-    location / {
-        try_files $uri $uri/ $uri.php =404;
-    }
-
-    # Rota pública do quiosque, sem expor a extensão do script PHP.
-    location = /ponto-publico {
-        rewrite ^ /modules/ponto/ponto_publico.php last;
-    }
-
-    # Nunca execute PHP enviado para a pasta publica de uploads.
-    location ~* ^/uploads/.*\.php$ {
+    location ~* \.(?:sql|sql\.gz|env)$ {
         deny all;
     }
 
-    location ~ \.php$ {
-        try_files $uri =404;
+    location ~* ^/(?:check_tables|criar_tabelas|debug_funcao|diagnostic_facial|diagnostico|scratch|setup_models|verificar_modelos)(?:\.php)?$ {
+        deny all;
+    }
+
+    # A raiz executa o dashboard sem expor index.php.
+    location = / {
         include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+        fastcgi_param SCRIPT_NAME /index.php;
         fastcgi_param HTTP_PROXY "";
-
-        # Ajuste para o socket ou host do PHP-FPM instalado.
         fastcgi_pass unix:/run/php/php8.2-fpm.sock;
     }
+
+    # Arquivos reais são servidos diretamente; rotas sem extensão são
+    # encaminhadas ao arquivo PHP correspondente pelo named location.
+    location / {
+        try_files $uri $uri/ @php_clean;
+    }
+
+    location = /ponto-publico {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root/modules/ponto/ponto_publico.php;
+        fastcgi_param SCRIPT_NAME /modules/ponto/ponto_publico.php;
+        fastcgi_param HTTP_PROXY "";
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+    }
+
+    # O prefixo ^~ impede que qualquer arquivo em uploads alcance o PHP-FPM.
+    location ^~ /uploads/ {
+        autoindex off;
+        try_files $uri =404;
+        add_header X-Content-Type-Options nosniff always;
+    }
+
+    location @php_clean {
+        if (!-f $document_root$uri.php) { return 404; }
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$uri.php;
+        fastcgi_param SCRIPT_NAME $uri.php;
+        fastcgi_param HTTP_PROXY "";
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+    }
+
+    # URLs solicitadas com .php são canonicalizadas para a rota limpa.
+    location ~ ^(.+)\.php$ {
+        return 301 $1$is_args$args;
+    }
+
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-Frame-Options DENY always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+    add_header Permissions-Policy "camera=(self), geolocation=(self), microphone=()" always;
 }

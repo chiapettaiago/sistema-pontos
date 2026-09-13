@@ -193,7 +193,7 @@ input:checked + .slider:before {
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Salvar Configurações
                 </button>
-                <a href="index.php" class="btn btn-secondary">
+                <a href="index" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Voltar
                 </a>
             </div>

@@ -11,7 +11,7 @@ require_once '../../includes/auth.php';
 
 // Verificar permissão
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -46,11 +46,14 @@ $dados_qr = [
     'cpf' => $funcionario['cpf'],
     'empresa' => $_SESSION['empresa_nome'] ?? 'Empresa',
     'filial' => $funcionario['filial_nome'],
+    'empresa_id' => (int) $funcionario['empresa_id'],
+    'exp' => time() + 31536000,
     'valido_ate' => date('Y-m-d', strtotime('+1 year'))
 ];
+$dados_qr['assinatura'] = hash_hmac('sha256', $dados_qr['matricula'] . '|' . $dados_qr['empresa_id'] . '|' . $dados_qr['exp'], APP_SIGNING_KEY);
 
 // URL completa para validação
-$url_validacao = $base_url . '/validar_cracha.php?data=' . urlencode(json_encode($dados_qr));
+$url_validacao = $base_url . '/validar_cracha?data=' . urlencode(json_encode($dados_qr));
 
 // Gerar QR Code com a URL
 function gerarQRCode($texto) {
@@ -366,7 +369,7 @@ $noPhotoText = strtoupper(substr($funcionario['nome'], 0, 1));
             <button onclick="window.print()" class="btn-print">
                 <i class="fas fa-print"></i> Imprimir / Salvar PDF
             </button>
-            <a href="index.php" class="btn-back">
+            <a href="index" class="btn-back">
                 <i class="fas fa-arrow-left"></i> Voltar
             </a>
         </div>

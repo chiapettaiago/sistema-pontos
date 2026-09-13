@@ -1,7 +1,6 @@
 <?php
 // api/validar_cracha.php - API para validação do QR Code
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
@@ -25,11 +24,19 @@ if (empty($qr_data)) {
 // Decodificar os dados do QR Code
 $dados = json_decode(urldecode($qr_data), true);
 
-if (!$dados || !isset($dados['matricula'])) {
+if (!$dados || !isset($dados['matricula'], $dados['empresa_id'], $dados['exp'], $dados['assinatura'])) {
     echo json_encode([
         'success' => false,
         'message' => 'QR Code inválido'
     ]);
+    exit;
+}
+
+$payloadAssinado = $dados['matricula'] . '|' . (int) $dados['empresa_id'] . '|' . (int) $dados['exp'];
+$assinaturaEsperada = hash_hmac('sha256', $payloadAssinado, APP_SIGNING_KEY);
+if ((int) $dados['exp'] < time() || !hash_equals($assinaturaEsperada, (string) $dados['assinatura'])) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Crachá inválido ou expirado']);
     exit;
 }
 
@@ -42,8 +49,8 @@ $stmt = $db->prepare("SELECT f.*,
                       LEFT JOIN filiais fi ON f.filial_id = fi.id
                       LEFT JOIN cargos c ON f.cargo_id = c.id
                       LEFT JOIN empresa e ON f.empresa_id = e.id
-                      WHERE f.matricula = :matricula AND f.status = 'ativo'");
-$stmt->execute([':matricula' => $dados['matricula']]);
+                      WHERE f.matricula = :matricula AND f.empresa_id = :empresa_id AND f.status = 'ativo'");
+$stmt->execute([':matricula' => $dados['matricula'], ':empresa_id' => (int) $dados['empresa_id']]);
 $funcionario = $stmt->fetch();
 
 if (!$funcionario) {

@@ -100,7 +100,7 @@ header('Content-Type: text/html; charset=utf-8');
             <div class="endpoint">
                 <div class="endpoint-header">
                     <span class="method method-post">POST</span>
-                    <span class="url">auth.php</span>
+                    <span class="url">auth</span>
                 </div>
                 <div class="endpoint-body">
                     <h4>Autenticação</h4>
@@ -127,7 +127,7 @@ header('Content-Type: text/html; charset=utf-8');
             <div class="endpoint">
                 <div class="endpoint-header">
                     <span class="method method-post">POST</span>
-                    <span class="url">pontos.php</span>
+                    <span class="url">pontos</span>
                 </div>
                 <div class="endpoint-body">
                     <h4>Registrar Ponto</h4>
@@ -146,7 +146,7 @@ header('Content-Type: text/html; charset=utf-8');
             <div class="endpoint">
                 <div class="endpoint-header">
                     <span class="method method-get">GET</span>
-                    <span class="url">extrato.php?mes=2026-05</span>
+                    <span class="url">extrato?mes=2026-05</span>
                 </div>
                 <div class="endpoint-body">
                     <h4>Consultar Extrato</h4>
@@ -167,13 +167,13 @@ header('Content-Type: text/html; charset=utf-8');
             <div class="endpoint">
                 <div class="endpoint-header">
                     <span class="method method-get">GET</span>
-                    <span class="url">solicitacoes.php</span>
+                    <span class="url">solicitacoes</span>
                 </div>
                 <div class="endpoint-body">
                     <h4>Listar Solicitações</h4>
-                    <pre>GET /api/solicitacoes.php?status=pendente</pre>
+                    <pre>GET /api/solicitacoes?status=pendente</pre>
                     <h4>Criar Solicitação</h4>
-                    <pre>POST /api/solicitacoes.php
+                    <pre>POST /api/solicitacoes
 {
     "tipo": "ferias",
     "titulo": "Solicitação de Férias",
@@ -188,13 +188,13 @@ header('Content-Type: text/html; charset=utf-8');
             <div class="endpoint">
                 <div class="endpoint-header">
                     <span class="method method-get">GET</span>
-                    <span class="url">notificacoes.php</span>
+                    <span class="url">notificacoes</span>
                 </div>
                 <div class="endpoint-body">
                     <h4>Listar Notificações</h4>
-                    <pre>GET /api/notificacoes.php?nao_lidas=1</pre>
+                    <pre>GET /api/notificacoes?nao_lidas=1</pre>
                     <h4>Marcar como Lida</h4>
-                    <pre>PUT /api/notificacoes.php?id=1</pre>
+                    <pre>PUT /api/notificacoes?id=1</pre>
                 </div>
             </div>
 
@@ -202,13 +202,13 @@ header('Content-Type: text/html; charset=utf-8');
             <div class="endpoint">
                 <div class="endpoint-header">
                     <span class="method method-get">GET</span>
-                    <span class="url">funcionarios.php</span>
+                    <span class="url">funcionarios</span>
                 </div>
                 <div class="endpoint-body">
                     <h4>Dados do Funcionário</h4>
-                    <pre>GET /api/funcionarios.php?meus_dados=1</pre>
+                    <pre>GET /api/funcionarios?meus_dados=1</pre>
                     <h4>Crachá Digital</h4>
-                    <pre>GET /api/funcionarios.php?cracha=1</pre>
+                    <pre>GET /api/funcionarios?cracha=1</pre>
                 </div>
             </div>
         </div>
@@ -216,7 +216,7 @@ header('Content-Type: text/html; charset=utf-8');
         <div class="endpoint">
             <div class="endpoint-header">
                 <span class="method method-get">GET</span>
-                <span class="url">index.php</span>
+                <span class="url">index</span>
             </div>
             <div class="endpoint-body">
                 <h4>Códigos de Erro</h4>

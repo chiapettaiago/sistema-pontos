@@ -1,15 +1,16 @@
 <?php
 // modules/relatorios/index.php - Dashboard de Relatórios (COMPLETO)
-session_start();
+require_once '../../includes/auth.php';
+redirectIfNotLoggedIn();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
-if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'])) {
-    header('Location: ../../index.php');
+if (!hasPermission('ver_relatorios')) {
+    header('Location: ../../index');
     exit;
 }
 
@@ -42,16 +43,16 @@ $solicitacoes_pendentes = $stmt->fetch()['total'];
 </div>
 
 <div class="row g-4">
-    <?php if (in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'], true)): ?>
+    <?php if (hasPermission('ver_relatorios')): ?>
     <div class="col-md-6 col-xl-4">
-        <a href="../ponto/gerenciar_batidas.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+        <a href="../ponto/gerenciar_batidas" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
             <div class="d-flex align-items-center gap-3 mb-3"><div class="pf-stat-icon" style="background:linear-gradient(135deg,#6366f1,#4f46e5);"><i class="fas fa-pen-to-square text-white"></i></div><h5 class="mb-0 fw-semibold">Gerenciar Batidas</h5></div>
             <p class="text-muted small mb-0">Corrija data, horário e tipo das batidas da equipe</p>
         </a>
     </div>
     <?php endif; ?>
     <div class="col-md-6 col-xl-4">
-        <a href="horas_trabalhadas.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+        <a href="horas_trabalhadas" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
             <div class="d-flex align-items-center gap-3 mb-3">
                 <div class="pf-stat-icon" style="background:var(--pf-gradient);"><i class="fas fa-hourglass-half text-white"></i></div>
                 <h5 class="mb-0 fw-semibold">Horas Trabalhadas</h5>
@@ -60,7 +61,7 @@ $solicitacoes_pendentes = $stmt->fetch()['total'];
         </a>
     </div>
     <div class="col-md-6 col-xl-4">
-        <a href="banco_horas.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+        <a href="banco_horas" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
             <div class="d-flex align-items-center gap-3 mb-3">
                 <div class="pf-stat-icon" style="background:linear-gradient(135deg,#10b981,#059669);"><i class="fas fa-piggy-bank text-white"></i></div>
                 <h5 class="mb-0 fw-semibold">Banco de Horas</h5>
@@ -69,7 +70,7 @@ $solicitacoes_pendentes = $stmt->fetch()['total'];
         </a>
     </div>
     <div class="col-md-6 col-xl-4">
-        <a href="atrasos_faltas.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+        <a href="atrasos_faltas" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
             <div class="d-flex align-items-center gap-3 mb-3">
                 <div class="pf-stat-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626);"><i class="fas fa-exclamation-triangle text-white"></i></div>
                 <h5 class="mb-0 fw-semibold">Atrasos e Faltas</h5>
@@ -78,7 +79,7 @@ $solicitacoes_pendentes = $stmt->fetch()['total'];
         </a>
     </div>
     <div class="col-md-6 col-xl-4">
-        <a href="horas_extras.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+        <a href="horas_extras" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
             <div class="d-flex align-items-center gap-3 mb-3">
                 <div class="pf-stat-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);"><i class="fas fa-plus-square text-white"></i></div>
                 <h5 class="mb-0 fw-semibold">Horas Extras</h5>
@@ -87,7 +88,7 @@ $solicitacoes_pendentes = $stmt->fetch()['total'];
         </a>
     </div>
     <div class="col-md-6 col-xl-4">
-        <a href="extrato_funcionario.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+        <a href="extrato_funcionario" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
             <div class="d-flex align-items-center gap-3 mb-3">
                 <div class="pf-stat-icon" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);"><i class="fas fa-user-clock text-white"></i></div>
                 <h5 class="mb-0 fw-semibold">Extrato por Funcionário</h5>
@@ -96,7 +97,7 @@ $solicitacoes_pendentes = $stmt->fetch()['total'];
         </a>
     </div>
     <div class="col-md-6 col-xl-4">
-        <a href="extrato_coletivo.php" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
+        <a href="extrato_coletivo" class="card pf-stat-card p-4 text-decoration-none text-dark h-100">
             <div class="d-flex align-items-center gap-3 mb-3">
                 <div class="pf-stat-icon" style="background:linear-gradient(135deg,#0891b2,#0e7490);"><i class="fas fa-users text-white"></i></div>
                 <h5 class="mb-0 fw-semibold">Extrato Coletivo</h5>

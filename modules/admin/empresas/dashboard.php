@@ -7,7 +7,7 @@ require_once '../../config/multi_empresa.php';
 
 // Verificar se é admin_empresa ou superior
 if ($_SESSION['usuario_tipo'] !== 'admin_empresa' && $_SESSION['usuario_tipo'] !== 'super_admin') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -21,7 +21,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -401,7 +401,7 @@ if ($assinatura && $assinatura['data_fim']) {
 <div class="table-card">
     <div class="table-header">
         <h3><i class="fas fa-clipboard-list"></i> Últimas Solicitações</h3>
-<a href="../../solicitacoes/admin.php" class="btn btn-sm btn-secondary">Ver todas</a>
+<a href="../../solicitacoes/admin" class="btn btn-sm btn-secondary">Ver todas</a>
     </div>
     <div class="table-responsive">
         <table class="data-table">

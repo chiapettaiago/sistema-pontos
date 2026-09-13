@@ -4,6 +4,7 @@ $pageTitle = 'Editar Funcionário';
 $activePage = 'funcionarios';
 require_once '../../includes/header.php';
 require_once '../../config/database.php';
+require_once '../../includes/csrf.php';
 
 checkModuleAccess('funcionarios');
 
@@ -23,7 +24,7 @@ $stmt->execute([':id' => $id]);
 $funcionario = $stmt->fetch();
 
 if (!$funcionario) {
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -31,7 +32,7 @@ if (!$funcionario) {
 // VERIFICAR PERMISSÃO PARA EDITAR
 // ============================================
 if (!canEditFuncionario($id)) {
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -42,7 +43,7 @@ if ($_SESSION['usuario_tipo'] === 'super_admin' || $_SESSION['usuario_tipo'] ===
         $empresa_id = $_SESSION['empresa_id'] ?? null;
     }
     if ($empresa_id === null || $empresa_id === '') {
-        header('Location: ' . BASE_URL . '/index.php');
+        header('Location: ' . BASE_URL . '/index');
         exit;
     }
     $stmt = $db->prepare("SELECT id, nome_fantasia FROM filiais WHERE empresa_id = :empresa_id AND ativo = 1 ORDER BY nome_fantasia");
@@ -165,12 +166,13 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCSRFToken();
     $empresa_id = getCurrentEmpresaId();
     if ($empresa_id === null || $empresa_id === '') {
         $empresa_id = $_SESSION['empresa_id'] ?? null;
     }
     if ($empresa_id === null || $empresa_id === '') {
-        header('Location: ' . BASE_URL . '/index.php');
+        header('Location: ' . BASE_URL . '/index');
         exit;
     }
     $filial_id = $_POST['filial_id'] ?? $funcionario['filial_id'];
@@ -207,10 +209,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!in_array($tipo_usuario, ['admin', 'gestor', 'supervisor', 'funcionario'], true)) {
         $tipo_usuario = 'funcionario';
     }
+    $podeDelegarPermissoes = in_array($_SESSION['usuario_tipo'] ?? '', ['super_admin', 'admin_empresa'], true);
+    if (!$podeDelegarPermissoes) {
+        $tipo_usuario = (string) ($funcionario['tipo_usuario'] ?? 'funcionario');
+    }
     
     $pode_gerenciar_filiais = isset($_POST['pode_gerenciar_filiais']) ? 1 : 0;
     $pode_gerenciar_funcionarios = isset($_POST['pode_gerenciar_funcionarios']) ? 1 : 0;
     $pode_ver_relatorios = isset($_POST['pode_ver_relatorios']) ? 1 : 0;
+    if (!$podeDelegarPermissoes) {
+        $pode_gerenciar_filiais = (int) ($funcionario['pode_gerenciar_filiais'] ?? 0);
+        $pode_gerenciar_funcionarios = (int) ($funcionario['pode_gerenciar_funcionarios'] ?? 0);
+        $pode_ver_relatorios = (int) ($funcionario['pode_ver_relatorios'] ?? 0);
+    }
     $status = $_POST['status'] ?? 'ativo';
     
     $foto_base64 = $_POST['foto_base64'] ?? '';
@@ -312,7 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 pode_ver_relatorios = :pode_ver_relatorios,
                 status = :status,
                 foto = :foto
-            WHERE id = :id";
+            WHERE id = :id AND empresa_id = :empresa_id";
             
             $stmt = $db->prepare($query);
             $stmt->execute([
@@ -344,7 +355,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':pode_ver_relatorios' => $pode_ver_relatorios,
                 ':status' => $status,
                 ':foto' => $foto_path,
-                ':id' => $id
+                ':id' => $id,
+                ':empresa_id' => $empresa_id
             ]);
             
             $db->prepare("DELETE FROM funcionario_jornada WHERE funcionario_id = :id AND (data_fim IS NULL OR data_fim >= CURDATE())")->execute([':id' => $id]);
@@ -362,7 +374,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($abrir_facial_pos_salvar && !empty($foto_path)) {
                 $_SESSION['mensagem_biometria'] = 'Foto atualizada com sucesso. Agora vamos cadastrar/atualizar a biometria facial.';
-                $redirectAfterSave = rtrim(BASE_URL, '/') . '/modules/funcionarios/cadastro_facial.php?id=' . $id;
+                $redirectAfterSave = rtrim(BASE_URL, '/') . '/modules/funcionarios/cadastro_facial?id=' . $id;
             }
             
             $success = 'Funcionário atualizado com sucesso!';
@@ -734,6 +746,7 @@ small {
         <?php endif; ?>
         
         <form method="POST" action="" class="form-main" enctype="multipart/form-data" id="editarForm">
+            <?= csrfField() ?>
             <!-- Foto com Câmera -->
             <div class="form-section">
                 <h4><i class="fas fa-camera"></i> Foto do Funcionário (para reconhecimento facial)</h4>
@@ -1013,7 +1026,7 @@ small {
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Salvar Alterações
                 </button>
-                <a href="visualizar.php?id=<?php echo $id; ?>" class="btn btn-secondary">
+                <a href="visualizar?id=<?php echo $id; ?>" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>

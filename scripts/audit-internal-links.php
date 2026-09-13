@@ -24,21 +24,18 @@ foreach ($scanRoots as $scanRoot) {
 }
 
 $issues = [];
-$referencePattern = <<<'REGEX'
-~(?:href\s*=|action\s*=|fetch\s*\(|Location:\s*|window\.location(?:\.href)?\s*=)[^\n]*?["'`]([^"'`]*?\.php)(?:[?#][^"'`]*)?["'`]~i
-REGEX;
+$referencePattern = '~(?<![.\w])(?:href|action)\s*=\s*["\']([^"\'<>]+)["\']|fetch\(\s*["\']([^"\']+)["\']~i';
 
 foreach ($files as $source) {
     $contents = file_get_contents($source);
-    if ($contents === false || !preg_match_all($referencePattern, $contents, $matches, PREG_OFFSET_CAPTURE)) {
+    if ($contents === false || !preg_match_all($referencePattern, $contents, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE)) {
         continue;
     }
 
-    foreach ($matches[1] as [$reference, $offset]) {
-        if (str_contains($reference, '?>')) {
-            $reference = substr($reference, strrpos($reference, '?>') + 2);
-        }
-        if ($reference === '' || preg_match('~^(?:https?:)?//~i', $reference)) {
+    foreach ($matches as $match) {
+        [$reference, $offset] = ($match[1][0] ?? '') !== '' ? $match[1] : $match[2];
+        if ($reference === '' || $reference[0] === '?' || str_contains($reference, '<?') || str_contains($reference, '$')
+            || preg_match('~^(?:https?:)?//|^(?:javascript:|mailto:|tel:|#)~i', $reference)) {
             continue;
         }
 
@@ -50,6 +47,9 @@ foreach ($files as $source) {
         }
 
         $target = preg_replace('~[?#].*$~', '', $target);
+        if (!str_ends_with($target, '.php') && !is_dir($target)) {
+            $target .= $target === $root || str_ends_with($target, '/') ? 'index.php' : '.php';
+        }
         $resolvedDirectory = realpath(dirname($target));
         $normalizedTarget = $resolvedDirectory !== false
             ? $resolvedDirectory . '/' . basename($target)

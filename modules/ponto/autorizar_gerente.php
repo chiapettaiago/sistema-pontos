@@ -5,7 +5,7 @@ session_start();
 // Verificar se é gerente/admin
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -378,7 +378,7 @@ document.getElementById('btnAbrirScanner').addEventListener('click', function() 
             // QR Code lido com sucesso
             html5QrCode.stop();
             modal.style.display = 'none';
-            window.location.href = 'autorizar_gerente.php?data=' + encodeURIComponent(decodedText);
+            window.location.href = 'autorizar_gerente?data=' + encodeURIComponent(decodedText);
         }
     ).catch(err => {
         console.error("Erro:", err);

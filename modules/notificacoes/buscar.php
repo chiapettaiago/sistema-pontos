@@ -1,5 +1,5 @@
 <?php
-// modules/notificacoes/buscar.php - Buscar contador de notificações não lidas (AJAX)
+// modules/notificacoes/buscar - Buscar contador de notificações não lidas (AJAX)
 session_start();
 header('Content-Type: application/json');
 

@@ -4,7 +4,7 @@ require_once '../../includes/config.php';
 
 // Verificar se está logado
 if (!isset($_SESSION['funcionario_id']) && !isset($_SESSION['usuario_id'])) {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
     exit;
 }
 
@@ -33,7 +33,7 @@ if (!$funcionario_id) {
     echo "<div style='text-align: center; padding: 50px;'>
             <h2>Perfil não encontrado</h2>
             <p>Contacte o administrador.</p>
-            <a href='../../logout.php'>Sair</a>
+            <a href='../../logout'>Sair</a>
           </div>";
     exit;
 }
@@ -48,16 +48,18 @@ $funcionario = $stmt->fetch();
 
 if (!$funcionario) {
     session_destroy();
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 // O botão de marcação usa o quiosque público assinado da empresa. Isso
 // permite abrir a câmera sem criar uma segunda sessão de login.
 $empresaPontoId = (int) ($funcionario['empresa_id'] ?? ($_SESSION['empresa_id'] ?? 0));
-$chavePontoPublico = $empresaPontoId > 0
-    ? hash_hmac('sha256', (string) $empresaPontoId, DB_PASS . '|ponto-publico')
+$expiraPontoPublico = time() + 28800;
+$assinaturaPontoPublico = $empresaPontoId > 0
+    ? hash_hmac('sha256', $empresaPontoId . '|' . $expiraPontoPublico, APP_SIGNING_KEY . '|ponto-publico')
     : '';
+$chavePontoPublico = $assinaturaPontoPublico !== '' ? $expiraPontoPublico . '.' . $assinaturaPontoPublico : '';
 $basePontoPublico = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http')
     . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . rtrim(BASE_URL, '/');
 $urlPontoPublico = $basePontoPublico
@@ -403,9 +405,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
         <!-- Bottom Navigation -->
         <div class="d-flex justify-content-center gap-2 mt-4">
-            <a href="extrato.php" class="pf-nav-btn"><i class="fas fa-calendar-alt me-1"></i> Meu Extrato</a>
+            <a href="extrato" class="pf-nav-btn"><i class="fas fa-calendar-alt me-1"></i> Meu Extrato</a>
             <a href="#" class="pf-nav-btn"><i class="fas fa-clipboard-list me-1"></i> Solicitações</a>
-            <a href="<?php echo htmlspecialchars(BASE_URL . '/logout.php'); ?>" class="pf-nav-btn"><i class="fas fa-sign-out-alt me-1"></i> Sair</a>
+            <a href="<?php echo htmlspecialchars(BASE_URL . '/logout'); ?>" class="pf-nav-btn"><i class="fas fa-sign-out-alt me-1"></i> Sair</a>
         </div>
     </div>
 </div>

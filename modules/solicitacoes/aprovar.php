@@ -1,10 +1,11 @@
 <?php
 // modules/solicitacoes/aprovar.php - Processar Aprovação/Rejeição (CORRIGIDO)
 require_once '../../config/database.php';
+require_once '../../includes/csrf.php';
 
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -13,12 +14,18 @@ $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'])) {
     $_SESSION['mensagem'] = 'Você não tem permissão para esta ação';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
 $database = new Database();
 $db = $database->getConnection();
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    exit('Método não permitido.');
+}
+verifyCSRFToken();
 
 $id = $_POST['id'] ?? 0;
 $acao = $_POST['acao'] ?? '';
@@ -27,7 +34,7 @@ $observacao = trim($_POST['observacao'] ?? '');
 if (!$id || !$acao) {
     $_SESSION['mensagem'] = 'Dados inválidos';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: admin.php');
+    header('Location: admin');
     exit;
 }
 
@@ -35,7 +42,7 @@ if (!$id || !$acao) {
 if (!in_array($acao, ['aprovar', 'rejeitar'])) {
     $_SESSION['mensagem'] = 'Ação inválida';
     $_SESSION['tipo_mensagem'] = 'error';
-    header('Location: admin.php');
+    header('Location: admin');
     exit;
 }
 
@@ -80,6 +87,6 @@ try {
     $_SESSION['tipo_mensagem'] = 'error';
 }
 
-header('Location: admin.php');
+header('Location: admin');
 exit;
 ?>

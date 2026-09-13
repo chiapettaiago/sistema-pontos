@@ -19,13 +19,25 @@
         var backdrop = document.getElementById('pfSidebarBackdrop');
         var toggle   = document.getElementById('pfMenuToggle');
 
-        function openSidebar()  { sidebar && sidebar.classList.add('show'); backdrop && backdrop.classList.add('show'); }
-        function closeSidebar() { sidebar && sidebar.classList.remove('show'); backdrop && backdrop.classList.remove('show'); }
+        function openSidebar()  {
+            sidebar && sidebar.classList.add('show');
+            backdrop && backdrop.classList.add('show');
+            document.body.classList.add('pf-sidebar-open');
+            toggle && toggle.setAttribute('aria-expanded', 'true');
+        }
+        function closeSidebar() {
+            sidebar && sidebar.classList.remove('show');
+            backdrop && backdrop.classList.remove('show');
+            document.body.classList.remove('pf-sidebar-open');
+            toggle && toggle.setAttribute('aria-expanded', 'false');
+        }
 
         if (toggle)   toggle.addEventListener('click', openSidebar);
         if (backdrop) backdrop.addEventListener('click', closeSidebar);
+        if (sidebar) sidebar.querySelectorAll('a').forEach(function (link) { link.addEventListener('click', closeSidebar); });
 
         document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSidebar(); });
+        window.addEventListener('resize', function () { if (window.innerWidth >= 992) closeSidebar(); });
     })();
 
     // Relógio
@@ -48,6 +60,18 @@
     document.addEventListener('DOMContentLoaded', function () {
         var tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         tooltips.forEach(function (el) { new bootstrap.Tooltip(el); });
+
+        // Tabelas legadas também ganham rolagem horizontal segura no celular.
+        document.querySelectorAll('.pf-content table').forEach(function (table) {
+            if (table.closest('.table-responsive, .pf-table-wrap, .pf-auto-table-responsive')) return;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'pf-auto-table-responsive';
+            wrapper.setAttribute('role', 'region');
+            wrapper.setAttribute('aria-label', table.getAttribute('aria-label') || 'Tabela com rolagem horizontal');
+            wrapper.setAttribute('tabindex', '0');
+            table.parentNode.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+        });
     });
 
     // Evita repetir no conteúdo o mesmo título que já aparece na navbar.

@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../includes/header.php';
 require_once __DIR__ . '/../../config/database.php';
 
 if (empty($_SESSION['usuario_id'])) {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
     exit;
 }
 
@@ -35,6 +35,6 @@ $baseUrl = rtrim(BASE_URL, '/');
 <script>
 const registerButton=document.querySelector('#registerPasskey'),statusBox=document.querySelector('#passkeyStatus');
 const showStatus=(message,ok=false)=>{statusBox.textContent=message;statusBox.className='alert mt-3 '+(ok?'alert-success':'alert-danger')};
-registerButton.addEventListener('click',async()=>{registerButton.disabled=true;statusBox.className='alert mt-3 alert-info';statusBox.textContent='Aguardando confirmação biométrica do dispositivo…';try{if(!window.PublicKeyCredential||!navigator.credentials)throw Error('Este navegador não oferece suporte a passkeys.');let response=await fetch('<?= $baseUrl ?>/api/passkey.php?acao=cadastro_opcoes',{cache:'no-store'}),result=await response.json();if(!response.ok||!result.success)throw Error(result.message);const options=PFPasskey.prepareCreate(result.data.options);const credential=await navigator.credentials.create(options);response=await fetch('<?= $baseUrl ?>/api/passkey.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'cadastro_concluir',nome:document.querySelector('#passkeyName').value,clientDataJSON:PFPasskey.encode(credential.response.clientDataJSON),attestationObject:PFPasskey.encode(credential.response.attestationObject),transports:credential.response.getTransports?credential.response.getTransports():[]})});result=await response.json();if(!response.ok||!result.success)throw Error(result.message);showStatus(result.message,true);setTimeout(()=>location.reload(),1200)}catch(error){showStatus(error.message||'Não foi possível cadastrar este dispositivo.')}finally{registerButton.disabled=false}});
+registerButton.addEventListener('click',async()=>{registerButton.disabled=true;statusBox.className='alert mt-3 alert-info';statusBox.textContent='Aguardando confirmação biométrica do dispositivo…';try{if(!window.PublicKeyCredential||!navigator.credentials)throw Error('Este navegador não oferece suporte a passkeys.');let response=await fetch('<?= $baseUrl ?>/api/passkey?acao=cadastro_opcoes',{cache:'no-store'}),result=await response.json();if(!response.ok||!result.success)throw Error(result.message);const options=PFPasskey.prepareCreate(result.data.options);const credential=await navigator.credentials.create(options);response=await fetch('<?= $baseUrl ?>/api/passkey',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'cadastro_concluir',nome:document.querySelector('#passkeyName').value,clientDataJSON:PFPasskey.encode(credential.response.clientDataJSON),attestationObject:PFPasskey.encode(credential.response.attestationObject),transports:credential.response.getTransports?credential.response.getTransports():[]})});result=await response.json();if(!response.ok||!result.success)throw Error(result.message);showStatus(result.message,true);setTimeout(()=>location.reload(),1200)}catch(error){showStatus(error.message||'Não foi possível cadastrar este dispositivo.')}finally{registerButton.disabled=false}});
 </script>
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>

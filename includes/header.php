@@ -119,7 +119,7 @@ if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
 
             <!-- TOP BAR -->
             <header class="pf-topbar">
-                <button class="pf-menu-toggle" id="pfMenuToggle" aria-label="Abrir menu">
+                <button class="pf-menu-toggle" id="pfMenuToggle" aria-label="Abrir menu" aria-controls="pfSidebar" aria-expanded="false">
                     <i class="fas fa-bars"></i>
                 </button>
 
@@ -139,7 +139,7 @@ if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
                         <?php else: foreach ($topPontosHoje as $ponto): $pontoTipo = $topTiposPonto[$ponto['tipo']] ?? ['label' => ucfirst(str_replace('_', ' ', $ponto['tipo'])), 'icon' => 'fa-clock']; ?>
                             <div class="pf-point-row"><span><i class="fas <?php echo htmlspecialchars($pontoTipo['icon']); ?>"></i><?php echo htmlspecialchars($pontoTipo['label']); ?></span><time><?php echo htmlspecialchars($ponto['hora']); ?></time></div>
                         <?php endforeach; endif; ?>
-                        <?php if ($topFuncionarioId > 0): ?><a class="dropdown-item text-center border-top mt-2 pt-2" href="<?php echo $baseUrl; ?>/modules/ponto/ponto.php">Abrir registro de ponto</a><?php endif; ?>
+                        <?php if ($topFuncionarioId > 0): ?><a class="dropdown-item text-center border-top mt-2 pt-2" href="<?php echo $baseUrl; ?>/modules/ponto/ponto">Abrir registro de ponto</a><?php endif; ?>
                     </div>
                 </div>
 
@@ -185,19 +185,19 @@ if ($topFuncionarioId > 0 && isset($db) && $db instanceof PDO) {
                             <i class="fas fa-id-card"></i> Meu cadastro
                         </a>
                         <?php if (in_array($topUserType, ['super_admin', 'admin_empresa'], true)): ?>
-                        <a class="dropdown-item" href="<?php echo $baseUrl; ?>/modules/funcionarios/cadastro_facial.php?id=<?php echo $topFuncionarioId; ?>">
+                        <a class="dropdown-item" href="<?php echo $baseUrl; ?>/modules/funcionarios/cadastro_facial?id=<?php echo $topFuncionarioId; ?>">
                             <i class="fas fa-face-smile"></i> Minha biometria facial
                         </a>
                         <?php endif; ?>
                         <?php endif; ?>
-                        <a class="dropdown-item" href="<?php echo $baseUrl; ?>/modules/perfil/alterar_senha.php">
+                        <a class="dropdown-item" href="<?php echo $baseUrl; ?>/modules/perfil/alterar_senha">
                             <i class="fas fa-key"></i> Alterar minha senha
                         </a>
-                        <a class="dropdown-item" href="<?php echo $baseUrl; ?>/modules/perfil/passkey.php">
+                        <a class="dropdown-item" href="<?php echo $baseUrl; ?>/modules/perfil/passkey">
                             <i class="fas fa-fingerprint"></i> Biometria do dispositivo
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-danger" href="<?php echo $baseUrl; ?>/logout.php">
+                        <a class="dropdown-item text-danger" href="<?php echo $baseUrl; ?>/logout">
                             <i class="fas fa-right-from-bracket"></i> Sair
                         </a>
                     </div>

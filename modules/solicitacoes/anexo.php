@@ -3,11 +3,12 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 require_once '../../config/database.php';
+require_once '../../includes/csrf.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -16,41 +17,54 @@ $solicitacao_id = $_GET['id'] ?? 0;
 $funcionario_id = $_SESSION['funcionario_id'] ?? null;
 
 if (!$solicitacao_id) {
-    header('Location: index.php');
+    header('Location: index');
     exit;
+}
+
+$usuarioTipo = $_SESSION['usuario_tipo'] ?? 'funcionario';
+$empresaId = (int) ($_SESSION['empresa_id'] ?? 0);
+$stmt = $db->prepare('SELECT id, funcionario_id FROM solicitacoes WHERE id = :id AND empresa_id = :empresa_id');
+$stmt->execute([':id' => $solicitacao_id, ':empresa_id' => $empresaId]);
+$solicitacao = $stmt->fetch();
+if (!$solicitacao || ($usuarioTipo === 'funcionario' && (int) $solicitacao['funcionario_id'] !== (int) $funcionario_id)) {
+    http_response_code(403);
+    exit('Acesso negado.');
 }
 
 // Processar upload
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['anexo'])) {
+    verifyCSRFToken();
     $file = $_FILES['anexo'];
-    $extensoes_permitidas = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'];
+    $extensoes_permitidas = ['jpg', 'jpeg', 'png', 'pdf'];
     $extensao = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     
-    if (!in_array($extensao, $extensoes_permitidas)) {
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']);
+    $mimesPermitidos = ['image/jpeg', 'image/png', 'application/pdf'];
+    if (!in_array($extensao, $extensoes_permitidas, true) || !in_array($mime, $mimesPermitidos, true)) {
         $_SESSION['mensagem'] = 'Tipo de arquivo não permitido';
         $_SESSION['tipo_mensagem'] = 'error';
-        header('Location: index.php');
+        header('Location: index');
         exit;
     }
     
     if ($file['size'] > 5 * 1024 * 1024) {
         $_SESSION['mensagem'] = 'Arquivo muito grande. Máximo 5MB';
         $_SESSION['tipo_mensagem'] = 'error';
-        header('Location: index.php');
+        header('Location: index');
         exit;
     }
     
     $uploadDir = '../../uploads/solicitacoes/';
     if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
+        mkdir($uploadDir, 0755, true);
     }
     
     $nomeArquivo = $solicitacao_id . '_' . time() . '.' . $extensao;
     $caminho = $uploadDir . $nomeArquivo;
     
     if (move_uploaded_file($file['tmp_name'], $caminho)) {
-        $stmt = $db->prepare("UPDATE solicitacoes SET anexo = :anexo WHERE id = :id");
-        $stmt->execute([':anexo' => 'uploads/solicitacoes/' . $nomeArquivo, ':id' => $solicitacao_id]);
+        $stmt = $db->prepare("UPDATE solicitacoes SET anexo = :anexo WHERE id = :id AND empresa_id = :empresa_id");
+        $stmt->execute([':anexo' => 'uploads/solicitacoes/' . $nomeArquivo, ':id' => $solicitacao_id, ':empresa_id' => $empresaId]);
         
         $_SESSION['mensagem'] = 'Anexo enviado com sucesso!';
         $_SESSION['tipo_mensagem'] = 'success';
@@ -59,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['anexo'])) {
         $_SESSION['tipo_mensagem'] = 'error';
     }
     
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 ?>
@@ -131,15 +145,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['anexo'])) {
     <div class="upload-container">
         <h2><i class="fas fa-paperclip"></i> Anexar Arquivo</h2>
         <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            <?= csrfField() ?>
             <div class="drop-area" id="dropArea">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <p>Arraste ou clique para selecionar um arquivo</p>
-                <small>Formatos: JPG, PNG, PDF, DOC (Max 5MB)</small>
+                <small>Formatos: JPG, PNG e PDF (máx. 5 MB)</small>
                 <input type="file" name="anexo" id="fileInput" style="display: none;">
             </div>
             <button type="submit" class="btn-upload">Enviar Anexo</button>
         </form>
-        <a href="index.php" class="btn-voltar">Voltar</a>
+        <a href="index" class="btn-voltar">Voltar</a>
     </div>
     
     <script>

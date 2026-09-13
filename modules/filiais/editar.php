@@ -2,11 +2,15 @@
 // modules/filiais/editar.php - Editar Filial (COMPLETO)
 $pageTitle = 'Editar Filial';
 $activePage = 'filiais';
+require_once '../../includes/auth.php';
+redirectIfNotLoggedIn();
+if (!hasPermission('gerenciar_filiais')) {
+    http_response_code(403);
+    exit('Acesso negado: seu usuário não possui permissão para gerenciar filiais.');
+}
 require_once '../../includes/header.php';
 require_once '../../config/database.php';
 require_once '../../config/multi_empresa.php';
-
-redirectIfNotAdmin();
 
 $database = new Database();
 $db = $database->getConnection();
@@ -17,7 +21,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -30,7 +34,7 @@ $stmt->execute([':id' => $id, ':empresa_id' => $empresa_id]);
 $filial = $stmt->fetch();
 
 if (!$filial) {
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -77,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($cidade)) $errors[] = 'Cidade é obrigatória';
     
     // Verificar se código já existe (excluindo a própria filial)
-    $check = $db->prepare("SELECT id FROM filialis WHERE codigo = :codigo AND empresa_id = :empresa_id AND id != :id");
+    $check = $db->prepare("SELECT id FROM filiais WHERE codigo = :codigo AND empresa_id = :empresa_id AND id != :id");
     $check->execute([':codigo' => $codigo, ':empresa_id' => $empresa_id, ':id' => $id]);
     if ($check->fetch()) $errors[] = 'Código já existe nesta empresa';
     
@@ -363,7 +367,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Salvar Alterações
                 </button>
-                <a href="visualizar.php?id=<?php echo $id; ?>" class="btn btn-secondary">
+                <a href="visualizar?id=<?php echo $id; ?>" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>
@@ -459,6 +463,5 @@ function showNotification(message, type) {
 </script>
 
 <?php require_once '../../includes/footer.php'; ?>
-
 
 

@@ -343,7 +343,7 @@ video {
         <div id="facialStatus" class="facial-status info">
             <i class="fas fa-info-circle"></i> Aguardando detecção...
         </div>
-        <a href="<?php echo htmlspecialchars(BASE_URL . '/modules/ponto/ponto.php'); ?>" class="back-action"><i class="fas fa-arrow-left"></i> Voltar</a>
+        <a href="<?php echo htmlspecialchars(BASE_URL . '/modules/ponto/ponto'); ?>" class="back-action"><i class="fas fa-arrow-left"></i> Voltar</a>
         
         <div class="modal-buttons">
             <button id="capturarFace" class="btn-confirmar">
@@ -561,7 +561,7 @@ async function registrarPontoPorFace(auto = false) {
     capturarFace.innerHTML = '<span class="loading"></span> Processando...';
     
     try {
-        const response = await fetch(appBaseUrl + '/api/biometrico.php', {
+        const response = await fetch(appBaseUrl + '/api/biometrico', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

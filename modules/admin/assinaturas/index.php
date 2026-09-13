@@ -6,7 +6,7 @@ require_once '../../../includes/config.php';
 
 // Verificar se é super admin
 if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_tipo'] ?? '') !== 'super_admin') {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
     exit;
 }
 
@@ -189,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao']) && $_POST['ac
         <div class="filter-group">
             <label>&nbsp;</label>
             <button type="submit" class="btn btn-primary">Filtrar</button>
-            <a href="index.php" class="btn btn-secondary">Limpar</a>
+            <a href="index" class="btn btn-secondary">Limpar</a>
         </div>
     </form>
 </div>

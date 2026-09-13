@@ -20,6 +20,10 @@ if (!is_array($input)) {
     jsonOut(false, 'JSON invalido', 400);
 }
 
+if (($remaining = loginThrottleRemaining('facial-login')) > 0) {
+    jsonOut(false, 'Muitas tentativas. Aguarde antes de tentar novamente.', 429);
+}
+
 $descritor = $input['descritor'] ?? [];
 if (facialNormalizeDescriptor($descritor) === null) {
     jsonOut(false, 'Descritor facial invalido', 400);
@@ -42,6 +46,7 @@ try {
 
     $match = facialBestMatch($descritor, $faces);
     if (!$match['matched']) {
+        loginThrottleFailure('facial-login');
         $message = ($match['reason'] ?? '') === 'ambiguous'
             ? 'Reconhecimento inconclusivo. Tente novamente em melhor iluminacao'
             : 'Rosto nao reconhecido';
@@ -50,12 +55,14 @@ try {
         ]);
     }
     $melhor = $match['face'];
+    loginThrottleClear('facial-login');
 
     session_regenerate_id(true);
     $_SESSION['usuario_id'] = $melhor['funcionario_id'];
     $_SESSION['usuario_nome'] = $melhor['nome'];
     $_SESSION['usuario_email'] = $melhor['email'];
-    $_SESSION['usuario_tipo'] = appNormalizeUserType($melhor['tipo_usuario'] ?: 'funcionario');
+    // A face isoladamente não concede privilégios administrativos.
+    $_SESSION['usuario_tipo'] = 'funcionario';
     $_SESSION['funcionario_id'] = $melhor['funcionario_id'];
     $_SESSION['empresa_id'] = $melhor['empresa_id'] ?? null;
     $_SESSION['filial_id'] = $melhor['filial_id'] ?? null;

@@ -58,7 +58,7 @@ $stmt->execute([
 $protocolo = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'];
 $basePath = rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
-$url_autorizacao = $protocolo . '://' . $host . $basePath . '/modules/ponto/autorizar_gerente.php?token=' . $token;
+$url_autorizacao = $protocolo . '://' . $host . $basePath . '/modules/ponto/autorizar_gerente?token=' . $token;
 
 // Gerar QR Code
 $qr_url = "https://quickchart.io/qr?text=" . urlencode($url_autorizacao) . "&size=250&margin=2";

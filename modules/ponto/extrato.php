@@ -4,7 +4,7 @@ session_start();
 
 // Verificar se está logado
 if (!isset($_SESSION['funcionario_id']) && !isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -33,7 +33,7 @@ if (!$funcionario_id) {
     echo "<div style='text-align: center; padding: 50px;'>
             <h2>Perfil não encontrado</h2>
             <p>Contacte o administrador.</p>
-            <a href='../../logout.php'>Sair</a>
+            <a href='../../logout'>Sair</a>
           </div>";
     exit;
 }
@@ -48,7 +48,7 @@ $funcionario = $stmt->fetch();
 
 if (!$funcionario) {
     session_destroy();
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 

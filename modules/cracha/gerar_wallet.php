@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['funcionario_id']) && !isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -40,10 +40,13 @@ $dados_qr = [
     'empresa' => $funcionario['empresa_nome'],
     'filial' => $funcionario['filial_nome'],
     'foto' => $funcionario['foto'],
+    'empresa_id' => (int) $funcionario['empresa_id'],
+    'exp' => time() + 31536000,
     'valido_ate' => date('Y-m-d', strtotime('+1 year'))
 ];
+$dados_qr['assinatura'] = hash_hmac('sha256', $dados_qr['matricula'] . '|' . $dados_qr['empresa_id'] . '|' . $dados_qr['exp'], APP_SIGNING_KEY);
 
-$url_validacao = $base_url . '/validar_cracha.php?data=' . urlencode(json_encode($dados_qr));
+$url_validacao = $base_url . '/validar_cracha?data=' . urlencode(json_encode($dados_qr));
 
 // CPF formatado
 $cpf_formatado = '';
@@ -373,7 +376,7 @@ $data_validade = date('d/m/Y', strtotime('+1 year'));
                     </ul>
                 </div>
                 
-                <a href="meu_cracha.php" class="btn-voltar">
+                <a href="meu_cracha" class="btn-voltar">
                     <i class="fas fa-arrow-left"></i> Voltar ao Crachá
                 </a>
             </div>

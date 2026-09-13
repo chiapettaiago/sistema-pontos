@@ -16,7 +16,7 @@ if ($empresa_id === null || $empresa_id === '') {
     $empresa_id = $_SESSION['empresa_id'] ?? null;
 }
 if ($empresa_id === null || $empresa_id === '') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -182,7 +182,7 @@ $logs = $stmt->fetchAll();
         <p>Gerencie o cadastro biométrico dos funcionários</p>
     </div>
     <div class="module-actions">
-        <a href="cadastrar.php" class="btn btn-primary">
+        <a href="cadastrar" class="btn btn-primary">
             <i class="fas fa-user-plus"></i> Cadastrar Biometria
         </a>
     </div>
@@ -212,23 +212,23 @@ $logs = $stmt->fetchAll();
     <div class="summary-card">
         <div class="summary-title">Foto cadastrada</div>
         <div class="summary-value"><?php echo $stats['total_funcionarios'] ?? 0; ?></div>
-        <a href="../funcionarios/index.php" class="summary-link"><i class="fas fa-user-edit"></i> Revisar fotos dos funcionários</a>
+        <a href="../funcionarios/index" class="summary-link"><i class="fas fa-user-edit"></i> Revisar fotos dos funcionários</a>
     </div>
     <div class="summary-card">
         <div class="summary-title">Biometria facial</div>
         <div class="summary-value"><?php echo $stats['total_facial'] ?? 0; ?></div>
-        <a href="cadastrar.php" class="summary-link"><i class="fas fa-camera"></i> Cadastrar/atualizar rostos</a>
+        <a href="cadastrar" class="summary-link"><i class="fas fa-camera"></i> Cadastrar/atualizar rostos</a>
     </div>
     <div class="summary-card">
         <div class="summary-title">Biometria digital</div>
         <div class="summary-value"><?php echo $stats['total_digital'] ?? 0; ?></div>
-        <a href="../biometrico/digital.php" class="summary-link"><i class="fas fa-fingerprint"></i> Revisar digital</a>
+        <a href="../biometrico/digital" class="summary-link"><i class="fas fa-fingerprint"></i> Revisar digital</a>
     </div>
 </div>
 
 <!-- Ações Principais -->
 <div class="biometrico-actions">
-    <a href="cadastrar.php" class="action-card">
+    <a href="cadastrar" class="action-card">
         <div class="action-icon action-facial">
             <i class="fas fa-camera"></i>
         </div>
@@ -236,7 +236,7 @@ $logs = $stmt->fetchAll();
         <div class="action-desc">Registre a face dos funcionários</div>
     </a>
     
-    <a href="../ponto/biometrico.php" class="action-card">
+    <a href="../ponto/biometrico" class="action-card">
         <div class="action-icon action-digital">
             <i class="fas fa-fingerprint"></i>
         </div>

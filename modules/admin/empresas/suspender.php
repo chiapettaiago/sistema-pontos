@@ -6,16 +6,20 @@ require_once '../../../includes/config.php';
 
 // Verificar se está logado e é super admin
 if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_tipo'] ?? '') !== 'super_admin') {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
     exit;
 }
 
 require_once '../../../config/database.php';
+require_once '../../../includes/csrf.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); exit('Método não permitido.'); }
+verifyCSRFToken();
 
 $database = new Database();
 $db = $database->getConnection();
 
-$id = $_GET['id'] ?? 0;
+$id = (int) ($_POST['id'] ?? 0);
 
 // Buscar nome da empresa para a mensagem
 $stmt = $db->prepare("SELECT nome FROM empresas WHERE id = :id");
@@ -45,7 +49,6 @@ if ($empresa) {
 }
 
 // Redirecionar para a lista de empresas
-header('Location: index.php');
+header('Location: index');
 exit;
 ?>
-

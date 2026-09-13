@@ -7,7 +7,7 @@ require_once '../../config/multi_empresa.php';
 
 // Verificar se é super admin
 if ($_SESSION['usuario_tipo'] !== 'super_admin') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -170,7 +170,7 @@ $assinaturas_vencer = $stmt->fetchAll();
                                     </span>
                                 </td>
                                 <td class="text-end">
-                                    <a href="empresas/visualizar.php?id=<?php echo $empresa['id']; ?>"
+                                    <a href="empresas/visualizar?id=<?php echo $empresa['id']; ?>"
                                        class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Visualizar">
                                         <i class="fas fa-eye"></i>
                                     </a>
@@ -206,7 +206,7 @@ $assinaturas_vencer = $stmt->fetchAll();
                             </span>
                         </td>
                         <td class="text-end">
-                            <a href="assinaturas/index.php?renovar=<?php echo $a['id']; ?>" class="btn btn-sm btn-warning">
+                            <a href="assinaturas/index?renovar=<?php echo $a['id']; ?>" class="btn btn-sm btn-warning">
                                 <i class="fas fa-sync-alt"></i> Renovar
                             </a>
                         </td>
@@ -227,22 +227,22 @@ $assinaturas_vencer = $stmt->fetchAll();
     <div class="card-body">
         <div class="row g-2">
             <div class="col-6 col-md-3">
-                <a href="empresas/index.php" class="btn btn-outline-primary w-100">
+                <a href="empresas/index" class="btn btn-outline-primary w-100">
                     <i class="fas fa-building d-block mb-1 fs-5"></i>Empresas
                 </a>
             </div>
             <div class="col-6 col-md-3">
-                <a href="planos/index.php" class="btn btn-outline-warning w-100">
+                <a href="planos/index" class="btn btn-outline-warning w-100">
                     <i class="fas fa-crown d-block mb-1 fs-5"></i>Planos
                 </a>
             </div>
             <div class="col-6 col-md-3">
-                <a href="assinaturas/index.php" class="btn btn-outline-success w-100">
+                <a href="assinaturas/index" class="btn btn-outline-success w-100">
                     <i class="fas fa-receipt d-block mb-1 fs-5"></i>Assinaturas
                 </a>
             </div>
             <div class="col-6 col-md-3">
-                <a href="../relatorios/geral.php" class="btn btn-outline-secondary w-100">
+                <a href="../relatorios/geral" class="btn btn-outline-secondary w-100">
                     <i class="fas fa-chart-bar d-block mb-1 fs-5"></i>Relatórios
                 </a>
             </div>

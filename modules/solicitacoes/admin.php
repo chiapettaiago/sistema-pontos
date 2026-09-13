@@ -6,17 +6,18 @@ $activePage = 'solicitacoes_admin';
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa', 'gestor'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
 require_once '../../config/database.php';
+require_once '../../includes/csrf.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -26,6 +27,7 @@ $funcionario_logado_id = $_SESSION['funcionario_id'] ?? null;
 
 // Processar ação
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCSRFToken();
     $solicitacao_id = $_POST['id'] ?? 0;
     $acao = $_POST['acao'] ?? '';
     $resposta = trim($_POST['resposta'] ?? '');
@@ -39,13 +41,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                       resposta = :resposta, 
                                       data_resposta = NOW(),
                                       respondido_por = :respondido_por
-                                  WHERE id = :id");
+                                  WHERE id = :id AND empresa_id = :empresa_id");
             
             $stmt->execute([
                 ':status' => $novo_status,
                 ':resposta' => $resposta,
                 ':respondido_por' => $funcionario_logado_id,
                 ':id' => $solicitacao_id
+                , ':empresa_id' => $empresa_id
             ]);
             
             $_SESSION['mensagem'] = $acao === 'aprovar' ? 'Solicitação aprovada!' : 'Solicitação rejeitada!';
@@ -54,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['mensagem'] = 'Erro: ' . $e->getMessage();
             $_SESSION['tipo_mensagem'] = 'error';
         }
-        header('Location: admin.php');
+        header('Location: admin');
         exit;
     }
 }
@@ -90,9 +93,9 @@ $query = "SELECT s.*,
           LEFT JOIN funcionarios f ON s.funcionario_id = f.id
           LEFT JOIN filiais fil ON f.filial_id = fil.id
           LEFT JOIN cargos c ON f.cargo_id = c.id
-          WHERE 1=1";
+          WHERE s.empresa_id = :empresa_id";
 
-$params = [];
+$params = [':empresa_id' => $empresa_id];
 
 if ($status_filtro && $status_filtro !== 'todos') {
     $query .= " AND s.status = :status";
@@ -110,8 +113,9 @@ $stats_query = "SELECT
                 SUM(CASE WHEN status = 'pendente' THEN 1 ELSE 0 END) as pendentes,
                 SUM(CASE WHEN status = 'aprovado' THEN 1 ELSE 0 END) as aprovadas,
                 SUM(CASE WHEN status = 'rejeitado' THEN 1 ELSE 0 END) as rejeitadas
-                FROM solicitacoes";
-$stmt = $db->query($stats_query);
+                FROM solicitacoes WHERE empresa_id = :empresa_id";
+$stmt = $db->prepare($stats_query);
+$stmt->execute([':empresa_id' => $empresa_id]);
 $stats = $stmt->fetch();
 
 require_once '../../includes/header.php';
@@ -178,12 +182,12 @@ require_once '../../includes/header.php';
                         <td class="text-end">
                             <?php if ($sol['status'] === 'pendente'): ?>
                             <div class="btn-group btn-group-sm">
-                                <a href="aprovar.php?id=<?php echo $sol['id']; ?>" class="btn btn-success" onclick="return confirm('Aprovar?')">
+                                <form method="post" action="aprovar" class="d-inline" onsubmit="return confirm('Aprovar?')"><?= csrfField() ?><input type="hidden" name="id" value="<?php echo (int) $sol['id']; ?>"><input type="hidden" name="acao" value="aprovar"><button type="submit" class="btn btn-success">
                                     <i class="fas fa-check"></i>
-                                </a>
-                                <a href="cancelar.php?id=<?php echo $sol['id']; ?>" class="btn btn-danger" onclick="return confirm('Reprovar?')">
+                                </button></form>
+                                <form method="post" action="aprovar" class="d-inline" onsubmit="return confirm('Reprovar?')"><?= csrfField() ?><input type="hidden" name="id" value="<?php echo (int) $sol['id']; ?>"><input type="hidden" name="acao" value="rejeitar"><button type="submit" class="btn btn-danger">
                                     <i class="fas fa-times"></i>
-                                </a>
+                                </button></form>
                             </div>
                             <?php else: ?>
                             <span class="text-muted small">—</span>

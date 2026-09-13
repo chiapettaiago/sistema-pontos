@@ -2,6 +2,8 @@
 // modules/funcionarios/alterar_senha.php - Alterar Senha do Funcionário
 $pageTitle = 'Alterar Senha';
 $activePage = 'funcionarios';
+require_once '../../includes/auth.php';
+redirectIfNotLoggedIn();
 require_once '../../includes/header.php';
 require_once '../../config/database.php';
 
@@ -12,13 +14,21 @@ $db = $database->getConnection();
 
 $id = $_GET['id'] ?? 0;
 
+if (!canEditFuncionario((int) $id)) {
+    http_response_code(403);
+    exit('Acesso negado: seu usuário não pode alterar a senha deste funcionário.');
+}
+
 // Buscar dados do funcionário
-$stmt = $db->prepare("SELECT nome FROM funcionarios WHERE id = :id");
-$stmt->execute([':id' => $id]);
+$isSuperAdmin = ($_SESSION['usuario_tipo'] ?? '') === 'super_admin';
+$stmt = $db->prepare("SELECT nome FROM funcionarios WHERE id = :id" . ($isSuperAdmin ? '' : ' AND empresa_id = :empresa_id'));
+$params = [':id' => $id];
+if (!$isSuperAdmin) $params[':empresa_id'] = (int) ($_SESSION['empresa_id'] ?? 0);
+$stmt->execute($params);
 $funcionario = $stmt->fetch();
 
 if (!$funcionario) {
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -39,8 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $senha_hash = password_hash($nova_senha, PASSWORD_DEFAULT);
             
-            $stmt = $db->prepare("UPDATE funcionarios SET senha = :senha WHERE id = :id");
-            $stmt->execute([':senha' => $senha_hash, ':id' => $id]);
+            $stmt = $db->prepare("UPDATE funcionarios SET senha = :senha WHERE id = :id" . ($isSuperAdmin ? '' : ' AND empresa_id = :empresa_id'));
+            $updateParams = [':senha' => $senha_hash, ':id' => $id];
+            if (!$isSuperAdmin) $updateParams[':empresa_id'] = (int) ($_SESSION['empresa_id'] ?? 0);
+            $stmt->execute($updateParams);
             
             logAcao($db, 'UPDATE', 'funcionarios', $id, "Alterou senha do funcionário: {$funcionario['nome']}");
             
@@ -84,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Salvar Nova Senha
                 </button>
-                <a href="visualizar.php?id=<?php echo $id; ?>" class="btn btn-secondary">
+                <a href="visualizar?id=<?php echo $id; ?>" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>

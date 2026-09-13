@@ -38,7 +38,7 @@ try {
 
 // Testar auth.php
 echo "<h2>Teste de auth.php:</h2>";
-echo '<form method="POST" action="auth.php">';
+echo '<form method="POST" action="auth">';
 echo '<input type="email" name="email" value="joao@pontofacil.com" placeholder="Email">';
 echo '<input type="password" name="senha" value="123456" placeholder="Senha">';
 echo '<button type="submit">Testar</button>';

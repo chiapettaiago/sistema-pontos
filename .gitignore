@@ -2,3 +2,10 @@
 .env.local
 vendor/
 node_modules/
+
+# Dados operacionais, pessoais e artefatos de produção.
+uploads/*
+!uploads/.htaccess
+**/error_log
+modules/backup/backups/*
+!modules/backup/backups/.htaccess

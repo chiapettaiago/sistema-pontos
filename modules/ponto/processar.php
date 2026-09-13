@@ -5,7 +5,7 @@ require_once '../../config/database.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     $_SESSION['mensagem'] = 'Faça login primeiro';
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -29,7 +29,7 @@ $tipos_validos = ['entrada', 'saida_almoco', 'volta_almoco', 'saida'];
 
 if (!in_array($tipo, $tipos_validos)) {
     $_SESSION['mensagem'] = 'Tipo de ponto inválido';
-    header('Location: ponto.php');
+    header('Location: ponto');
     exit;
 }
 
@@ -45,7 +45,7 @@ $stmt->execute([
 
 if ($stmt->fetch()) {
     $_SESSION['mensagem'] = 'Você já registrou este ponto hoje';
-    header('Location: ponto.php');
+    header('Location: ponto');
     exit;
 }
 
@@ -64,7 +64,7 @@ if ($ultimo) {
     $indice_anterior = array_search($ultimo['tipo'], $sequencia);
     if ($indice_atual != $indice_anterior + 1) {
         $_SESSION['mensagem'] = 'Sequência incorreta!';
-        header('Location: ponto.php');
+        header('Location: ponto');
         exit;
     }
 }
@@ -101,6 +101,6 @@ try {
     $_SESSION['tipo_mensagem'] = 'error';
 }
 
-header('Location: ponto.php');
+header('Location: ponto');
 exit;
 ?>

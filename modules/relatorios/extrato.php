@@ -157,7 +157,7 @@ foreach ($extrato as &$dia) {
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-search"></i> Filtrar
             </button>
-            <a href="extrato.php" class="btn btn-secondary">
+            <a href="extrato" class="btn btn-secondary">
                 <i class="fas fa-times"></i> Limpar
             </a>
         </div>

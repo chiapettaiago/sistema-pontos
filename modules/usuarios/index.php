@@ -5,7 +5,7 @@ require_once '../../includes/config.php';
 // Super admin gerencia todos; admin da empresa gerencia apenas sua empresa.
 $usuarioTipoAtual = $_SESSION['usuario_tipo'] ?? '';
 if (!isset($_SESSION['usuario_id']) || !in_array($usuarioTipoAtual, ['super_admin', 'admin_empresa'], true)) {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
     exit;
 }
 $empresaAtualId = $_SESSION['empresa_id'] ?? null;
@@ -134,7 +134,7 @@ if ($usuarioTipoAtual === 'super_admin') {
                 <h5 class="modal-title text-white"><i class="fas fa-user-shield me-2"></i><span id="modalUsuarioTitulo">Novo Usuário</span></h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="salvar.php">
+            <form method="POST" action="salvar">
                 <div class="modal-body">
                     <input type="hidden" name="id" id="inputUserId">
                     <div class="mb-3">

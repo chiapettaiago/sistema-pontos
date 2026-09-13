@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-header('Location: ../../login.php');
+header('Location: ../../login');
     exit;
 }
 
@@ -39,7 +39,7 @@ if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
     }
     
     // Redirecionar para página inicial
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -428,10 +428,10 @@ $modulos_lista = ['funcionarios', 'pontos', 'solicitacoes', 'relatorios', 'confi
             <p>Registro de todas as ações dos usuários no sistema</p>
         </div>
         <div class="module-actions">
-            <a href="exportar.php" class="btn-export">
+            <a href="exportar" class="btn-export">
                 <i class="fas fa-file-excel"></i> Exportar Logs
             </a>
-            <a href="limpar.php" class="btn-clear-logs" onclick="return confirm('Tem certeza que deseja limpar logs antigos? Esta ação não pode ser desfeita.')">
+            <a href="limpar" class="btn-clear-logs" onclick="return confirm('Tem certeza que deseja limpar logs antigos? Esta ação não pode ser desfeita.')">
                 <i class="fas fa-trash-alt"></i> Limpar Logs Antigos
             </a>
         </div>
@@ -515,7 +515,7 @@ $modulos_lista = ['funcionarios', 'pontos', 'solicitacoes', 'relatorios', 'confi
             </div>
             <div class="filter-group">
                 <label>&nbsp;</label>
-                <a href="index.php" class="btn-clear">Limpar</a>
+                <a href="index" class="btn-clear">Limpar</a>
             </div>
         </form>
     </div>
@@ -573,7 +573,7 @@ $modulos_lista = ['funcionarios', 'pontos', 'solicitacoes', 'relatorios', 'confi
                                 </td>
                                 <td><?php echo htmlspecialchars($log['ip_address']); ?></td>
                                 <td>
-                                    <a href="detalhes.php?id=<?php echo $log['id']; ?>" class="btn-icon" title="Ver detalhes">
+                                    <a href="detalhes?id=<?php echo $log['id']; ?>" class="btn-icon" title="Ver detalhes">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                 </td>

@@ -3,13 +3,13 @@
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
 $usuario_tipo = $_SESSION['usuario_tipo'] ?? '';
 if (!in_array($usuario_tipo, ['super_admin', 'admin_empresa'])) {
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -164,7 +164,7 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
                 <div class="config-descricao">
                     Configure os dados cadastrais da sua empresa, como nome, CNPJ, endereço e logo.
                 </div>
-                <a href="empresa.php" class="btn-config">
+                <a href="empresa" class="btn-config">
                     <i class="fas fa-edit"></i> Configurar Dados
                 </a>
             </div>
@@ -180,7 +180,7 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
                 <div class="config-descricao">
                     Defina os horários padrão de entrada, almoço e saída, além de tolerâncias.
                 </div>
-                <a href="horarios.php" class="btn-config">
+                <a href="horarios" class="btn-config">
                     <i class="fas fa-calendar-alt"></i> Configurar Horários
                 </a>
             </div>
@@ -196,7 +196,7 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
                 <div class="config-descricao">
                     Configure regras de horas extras, descontos por atraso e carga horária.
                 </div>
-                <a href="regras.php" class="btn-config">
+                <a href="regras" class="btn-config">
                     <i class="fas fa-ruler"></i> Configurar Regras
                 </a>
             </div>
@@ -212,7 +212,7 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
                 <div class="config-descricao">
                     Cadastre feriados nacionais, estaduais, municipais e dias com horário especial.
                 </div>
-                <a href="feriados.php" class="btn-config">
+                <a href="feriados" class="btn-config">
                     <i class="fas fa-plus-circle"></i> Gerenciar Feriados
                 </a>
             </div>
@@ -228,7 +228,7 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
                 <div class="config-descricao">
                     Configure o servidor SMTP para envio de notificações por e-mail.
                 </div>
-                <a href="email.php" class="btn-config">
+                <a href="email" class="btn-config">
                     <i class="fas fa-server"></i> Configurar E-mail
                 </a>
             </div>
@@ -244,7 +244,7 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
                 <div class="config-descricao">
                     Configure as regras para o reconhecimento facial no registro de ponto.
                 </div>
-                <a href="facial.php" class="btn-config">
+                <a href="facial" class="btn-config">
                     <i class="fas fa-fingerprint"></i> Configurar Facial
                 </a>
             </div>
@@ -260,7 +260,7 @@ $empresa_id = $_SESSION['empresa_id'] ?? 1;
                 <div class="config-descricao">
                     Realize backup e restauração do banco de dados.
                 </div>
-                <a href="../backup/index.php" class="btn-config">
+                <a href="../backup/index" class="btn-config">
                     <i class="fas fa-download"></i> Gerenciar Backup
                 </a>
             </div>

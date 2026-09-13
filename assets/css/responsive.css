@@ -69,3 +69,167 @@ button, input, select, textarea { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+/* ================================================================
+   Compatibilidade móvel global para módulos novos e páginas legadas
+   ================================================================ */
+html { width: 100%; overflow-x: clip; }
+body { width: 100%; min-width: 0; }
+body.pf-sidebar-open { overflow: hidden; }
+.pf-app-wrapper, .pf-main-content, .pf-content { min-width: 0; }
+.pf-content { overflow-wrap: anywhere; }
+.pf-content iframe, .pf-content object, .pf-content embed { max-width: 100%; }
+.pf-content pre, .pf-content code, .cron-box { max-width: 100%; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* Conteúdo que historicamente utilizava largura fixa. */
+.container, .module-container, .dashboard-container, .backup-container,
+.config-container, .audit-container, .report-container, .profile-container,
+.form-container, .table-container, .content-container {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* Grades inline e legadas não podem forçar a largura da viewport. */
+.pf-content [class*="grid"], .pf-content [class*="-row"] { min-width: 0; }
+.info-grid, .biometria-grid, .cards-grid, .reports-grid, .filters-grid,
+.quick-actions, .settings-grid, .details-grid, .charts-row {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+}
+
+/* Todos os controles devem caber no seu contêiner e ser fáceis de tocar. */
+.pf-content input:not([type="checkbox"]):not([type="radio"]),
+.pf-content select, .pf-content textarea, .pf-content .form-control,
+.pf-content .form-select, .pf-content .input-group { width: 100%; max-width: 100%; min-width: 0; }
+.pf-content textarea { resize: vertical; }
+.pf-content .input-group > .form-control { width: 1%; }
+.pf-content .btn, .pf-topbar button, .pf-sidebar a { touch-action: manipulation; }
+
+/* Proteção para todas as tabelas, inclusive as que não usam Bootstrap. */
+.pf-auto-table-responsive, .table-responsive, .pf-table-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+    border-radius: inherit;
+}
+.pf-auto-table-responsive > table, .table-responsive > table, .pf-table-wrap > table { margin-bottom: 0; }
+.pf-content table { max-width: none; }
+.pf-content table th, .pf-content table td { vertical-align: middle; }
+
+/* Cabeçalhos, filtros e barras de ação podem quebrar sem sobreposição. */
+.pf-page-header, .module-header, .dashboard-header, .table-header,
+.filter-header, .card-header, .modal-header, .modal-footer {
+    max-width: 100%;
+    flex-wrap: wrap;
+}
+.pf-page-header > *, .module-header > *, .dashboard-header > *,
+.table-header > *, .filter-header > * { min-width: 0; }
+.module-actions, .page-actions, .header-actions, .table-actions,
+.filter-actions, .biometria-actions-quick { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+/* Modais legados passam a respeitar a altura disponível. */
+.modal { padding: max(.75rem, env(safe-area-inset-top)) .75rem max(.75rem, env(safe-area-inset-bottom)); overflow-y: auto; }
+.modal-dialog, .modal-content { max-width: calc(100vw - 1.5rem); }
+.modal-content { max-height: calc(100dvh - 1.5rem); overflow-y: auto; }
+
+@media (max-width: 767.98px) {
+    html { font-size: 15px; }
+    .pf-content .btn, .pf-content button, .pf-content input:not([type="checkbox"]):not([type="radio"]),
+    .pf-content select, .pf-topbar button { min-height: 44px; }
+    .pf-content input[type="checkbox"], .pf-content input[type="radio"] { min-width: 20px; min-height: 20px; }
+    .pf-topbar {
+        position: sticky;
+        top: 0;
+        min-width: 0;
+        height: auto;
+        min-height: 62px;
+        padding-top: max(.65rem, env(safe-area-inset-top));
+        z-index: 1030;
+    }
+    .pf-topbar-title { flex: 1 1 80px; min-width: 0; }
+    .pf-topbar-user, .pf-today-points { flex: 0 0 auto; }
+    .pf-topbar-user-trigger { padding: .25rem; }
+    .pf-topbar-avatar { width: 36px; height: 36px; }
+    .pf-user-dropdown { position: fixed !important; inset: auto .75rem auto .75rem !important; width: auto; transform: none !important; }
+
+    .pf-content > style:first-child + *, .pf-content > .container:first-child,
+    .pf-content > .module-container:first-child { margin-top: 0; }
+    .pf-content .card, .pf-content .form-card, .pf-content .table-card,
+    .pf-content .info-card, .pf-content .chart-card { max-width: 100%; }
+    .pf-content .card-body, .pf-content .form-body, .pf-content .form-main { padding: 1rem !important; }
+
+    .pf-page-header, .module-header, .dashboard-header, .table-header {
+        display: flex !important;
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: .75rem;
+    }
+    .pf-page-header form, .pf-page-header form.d-flex,
+    .filters, .filter-bar, .search-box, .module-actions, .page-actions,
+    .header-actions, .table-actions { width: 100%; }
+    .pf-page-header form.d-flex, .filters, .filter-bar {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    .module-actions > *, .page-actions > *, .header-actions > *,
+    .table-actions > *, .filter-actions > * { flex: 1 1 auto; }
+
+    /* Sobrescreve grids inline comuns sem afetar linhas Bootstrap. */
+    .pf-content [style*="grid-template-columns"]:not(.row) {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+    .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .charts-row, .dashboard-grid, .content-grid, .info-grid,
+    .biometria-grid, .cards-grid, .reports-grid, .settings-grid,
+    .details-grid { grid-template-columns: minmax(0, 1fr) !important; }
+
+    .pf-auto-table-responsive { margin-inline: 0; }
+    .pf-content table { min-width: 640px; font-size: .875rem; }
+    .pf-content table.table-sm { min-width: 520px; }
+    .pf-content table th, .pf-content table td { white-space: nowrap; }
+    .pf-content table td .btn-group { display: inline-flex; width: auto; }
+
+    .form-actions, .modal-footer { display: grid !important; grid-template-columns: 1fr; width: 100%; }
+    .form-actions > *, .modal-footer > * { width: 100%; margin: 0 !important; }
+    .input-group { flex-wrap: wrap; gap: .5rem; }
+    .input-group > .form-control, .input-group > .form-select { flex: 1 0 100%; width: 100%; border-radius: var(--bs-border-radius) !important; }
+    .input-group > .btn, .input-group > a.btn { flex: 1 1 auto; border-radius: var(--bs-border-radius) !important; }
+
+    .profile-header { flex-direction: column; align-items: center; text-align: center; }
+    .profile-info, .profile-photo { max-width: 100%; }
+    .alert { overflow-wrap: anywhere; }
+}
+
+@media (max-width: 575.98px) {
+    .pf-theme-toggle { display: none !important; }
+    .pf-today-points .dropdown-menu { position: fixed !important; left: .75rem !important; right: .75rem !important; width: auto; min-width: 0; transform: none !important; }
+    .pf-page-header .btn, .module-actions .btn, .page-actions .btn,
+    .header-actions .btn, .table-actions .btn { width: 100%; justify-content: center; }
+    .stats-grid { grid-template-columns: minmax(0, 1fr) !important; }
+    .pf-content table { min-width: 560px; }
+    .modal { align-items: flex-start !important; }
+    .notification {
+        left: .75rem !important;
+        right: .75rem !important;
+        bottom: calc(.75rem + env(safe-area-inset-bottom)) !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+    }
+}
+
+@media (max-width: 359.98px) {
+    .pf-content { padding-inline: .5rem; }
+    .pf-menu-toggle { padding-inline: .35rem; }
+    .pf-today-points > .dropdown-toggle { padding-inline: .5rem; }
+    .pf-topbar-title { font-size: .9rem; }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+    .pf-sidebar { width: min(72vw, 300px); }
+    .pf-sidebar-header { padding-block: .75rem; }
+    .pf-nav-item { padding-block: .45rem; }
+    .modal-content { max-height: calc(100dvh - 1rem); }
+}

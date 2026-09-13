@@ -6,17 +6,21 @@ require_once '../../../includes/config.php';
 
 // Verificar se está logado e é super admin
 if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_tipo'] ?? '') !== 'super_admin') {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
     exit;
 }
 
 require_once '../../../config/database.php';
+require_once '../../../includes/csrf.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') { http_response_code(405); exit('Método não permitido.'); }
+verifyCSRFToken();
 
 $database = new Database();
 $db = $database->getConnection();
 
-$id = $_GET['id'] ?? 0;
-$recuperar = isset($_GET['recuperar']) ? true : false;
+$id = (int) ($_POST['id'] ?? 0);
+$recuperar = false;
 
 // Buscar dados da empresa
 $stmt = $db->prepare("SELECT nome, status FROM empresas WHERE id = :id");
@@ -26,7 +30,7 @@ $empresa = $stmt->fetch();
 if (!$empresa) {
     $_SESSION['mensagem'] = "Empresa não encontrada";
     $_SESSION['tipo_mensagem'] = "error";
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -48,7 +52,7 @@ if ($recuperar) {
     
     $_SESSION['mensagem'] = "Empresa '{$empresa['nome']}' foi recuperada com sucesso!";
     $_SESSION['tipo_mensagem'] = "success";
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -64,7 +68,7 @@ $total_funcionarios = $stmt->fetch()['total'];
 if ($total_funcionarios > 0) {
     $_SESSION['mensagem'] = "Não é possível excluir a empresa '{$empresa['nome']}' pois ela possui $total_funcionarios funcionários ativos. Primeiro desligue os funcionários.";
     $_SESSION['tipo_mensagem'] = "error";
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -128,7 +132,6 @@ $log->execute([
 $_SESSION['mensagem'] = "Empresa '{$empresa['nome']}' foi excluída com sucesso!";
 $_SESSION['tipo_mensagem'] = "success";
 
-header('Location: index.php');
+header('Location: index');
 exit;
 ?>
-

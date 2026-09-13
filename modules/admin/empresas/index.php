@@ -6,7 +6,7 @@ require_once '../../../includes/config.php';
 
 // Verificar se está logado e é super admin
 if (!isset($_SESSION['usuario_id']) || ($_SESSION['usuario_tipo'] ?? '') !== 'super_admin') {
-    header('Location: ' . BASE_URL . '/login.php');
+    header('Location: ' . BASE_URL . '/login');
     exit;
 }
 
@@ -14,6 +14,7 @@ $pageTitle = 'Empresas';
 $activePage = 'admin_empresas';
 require_once '../../../includes/header.php';
 require_once '../../../config/database.php';
+require_once '../../../includes/csrf.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -176,10 +177,10 @@ $empresas = $stmt->fetchAll();
         <p>Gerencie todas as empresas cadastradas na plataforma</p>
     </div>
     <div class="module-actions">
-        <a href="cadastrar.php" class="btn btn-primary">
+        <a href="cadastrar" class="btn btn-primary">
             <i class="fas fa-plus"></i> Nova Empresa
         </a>
-        <a href="recuperar.php" class="btn btn-secondary btn-reciclar">
+        <a href="recuperar" class="btn btn-secondary btn-reciclar">
             <i class="fas fa-trash-restore"></i> Reciclagem
         </a>
     </div>
@@ -204,7 +205,7 @@ $empresas = $stmt->fetchAll();
         <div class="filter-group">
             <label>&nbsp;</label>
             <button type="submit" class="btn btn-primary">Filtrar</button>
-            <a href="index.php" class="btn btn-secondary">Limpar</a>
+            <a href="index" class="btn btn-secondary">Limpar</a>
         </div>
     </form>
 </div>
@@ -228,25 +229,25 @@ $empresas = $stmt->fetchAll();
                     <i class="fas fa-ellipsis-v"></i>
                 </button>
                 <div class="dropdown-menu">
-                    <a href="visualizar.php?id=<?php echo $empresa['id']; ?>" class="dropdown-item">
+                    <a href="visualizar?id=<?php echo $empresa['id']; ?>" class="dropdown-item">
                         <i class="fas fa-eye"></i> Visualizar
                     </a>
-                    <a href="editar.php?id=<?php echo $empresa['id']; ?>" class="dropdown-item">
+                    <a href="editar?id=<?php echo $empresa['id']; ?>" class="dropdown-item">
                         <i class="fas fa-edit"></i> Editar
                     </a>
                     <?php if ($empresa['status'] == 'ativa'): ?>
-                    <a href="suspender.php?id=<?php echo $empresa['id']; ?>" class="dropdown-item text-warning" onclick="return confirm('Tem certeza que deseja suspender esta empresa?')">
+                    <form method="post" action="suspender" onsubmit="return confirm('Tem certeza que deseja suspender esta empresa?')"><?= csrfField() ?><input type="hidden" name="id" value="<?php echo (int) $empresa['id']; ?>"><button type="submit" class="dropdown-item text-warning">
                         <i class="fas fa-pause-circle"></i> Suspender
-                    </a>
+                    </button></form>
                     <?php elseif ($empresa['status'] == 'suspensa'): ?>
-                    <a href="ativar.php?id=<?php echo $empresa['id']; ?>" class="dropdown-item text-success" onclick="return confirm('Tem certeza que deseja ativar esta empresa?')">
+                    <form method="post" action="ativar" onsubmit="return confirm('Tem certeza que deseja ativar esta empresa?')"><?= csrfField() ?><input type="hidden" name="id" value="<?php echo (int) $empresa['id']; ?>"><button type="submit" class="dropdown-item text-success">
                         <i class="fas fa-play-circle"></i> Ativar
-                    </a>
+                    </button></form>
                     <?php endif; ?>
                     <!-- Apenas Super Admin pode excluir -->
-                    <a href="excluir.php?id=<?php echo $empresa['id']; ?>" class="dropdown-item text-danger" onclick="return confirm('ATENÇÃO! Esta ação moverá a empresa para a lixeira. Os funcionários serão preservados no histórico. Deseja continuar?')">
+                    <form method="post" action="excluir" onsubmit="return confirm('ATENÇÃO! Esta ação moverá a empresa para a lixeira. Deseja continuar?')"><?= csrfField() ?><input type="hidden" name="id" value="<?php echo (int) $empresa['id']; ?>"><button type="submit" class="dropdown-item text-danger">
                         <i class="fas fa-trash"></i> Mover para Lixeira
-                    </a>
+                    </button></form>
                 </div>
             </div>
         </div>
@@ -273,7 +274,7 @@ $empresas = $stmt->fetchAll();
 <div class="empty-state" style="text-align: center; padding: 60px;">
     <i class="fas fa-building" style="font-size: 48px; color: #ccc;"></i>
     <p style="margin-top: 16px;">Nenhuma empresa encontrada</p>
-    <a href="cadastrar.php" class="btn btn-primary" style="margin-top: 16px;">
+    <a href="cadastrar" class="btn btn-primary" style="margin-top: 16px;">
         <i class="fas fa-plus"></i> Cadastrar primeira empresa
     </a>
 </div>

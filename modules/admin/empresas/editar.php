@@ -6,7 +6,7 @@ require_once '../../../includes/header.php';
 require_once '../../../config/database.php';
 
 if ($_SESSION['usuario_tipo'] !== 'super_admin') {
-    header('Location: ' . BASE_URL . '/index.php');
+    header('Location: ' . BASE_URL . '/index');
     exit;
 }
 
@@ -21,7 +21,7 @@ $stmt->execute([':id' => $id]);
 $empresa = $stmt->fetch();
 
 if (!$empresa) {
-    header('Location: index.php');
+    header('Location: index');
     exit;
 }
 
@@ -547,7 +547,7 @@ small {
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-save"></i> Salvar Alterações
                 </button>
-                <a href="visualizar.php?id=<?php echo $id; ?>" class="btn btn-secondary">
+                <a href="visualizar?id=<?php echo $id; ?>" class="btn btn-secondary">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>

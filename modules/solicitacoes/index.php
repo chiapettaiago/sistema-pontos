@@ -9,7 +9,7 @@ $activePage = 'solicitacoes';
 session_start();
 
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -33,7 +33,7 @@ if (!$funcionario_id && isset($_SESSION['usuario_id'])) {
 
 if (!$funcionario_id) {
     $_SESSION['mensagem'] = 'Perfil de funcionário não encontrado.';
-    header('Location: ../../index.php');
+    header('Location: ../../index');
     exit;
 }
 
@@ -117,7 +117,7 @@ require_once '../../includes/header.php';
         <h1><i class="fas fa-envelope-open-text me-2 text-primary"></i>Minhas Solicitações</h1>
         <p class="text-muted">Acompanhe suas solicitações de ajuste</p>
     </div>
-    <a href="nova.php" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Nova Solicitação</a>
+    <a href="nova" class="btn btn-primary"><i class="fas fa-plus me-1"></i>Nova Solicitação</a>
 </div>
 
 <!-- Filtros -->
@@ -167,9 +167,9 @@ require_once '../../includes/header.php';
                             <span class="badge <?php echo $bc[$sol['status']] ?? 'bg-secondary'; ?>"><?php echo ucfirst($sol['status']); ?></span>
                         </td>
                         <td class="text-end">
-                            <a href="nova.php?id=<?php echo $sol['id']; ?>" class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></a>
+                            <a href="nova?id=<?php echo $sol['id']; ?>" class="btn btn-sm btn-outline-primary"><i class="fas fa-eye"></i></a>
                             <?php if ($sol['status'] === 'pendente'): ?>
-                            <a href="cancelar.php?id=<?php echo $sol['id']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Cancelar solicitação?')">
+                            <a href="cancelar?id=<?php echo $sol['id']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Cancelar solicitação?')">
                                 <i class="fas fa-times"></i>
                             </a>
                             <?php endif; ?>

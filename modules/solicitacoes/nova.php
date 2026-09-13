@@ -3,7 +3,7 @@
 session_start();
 
 if (!isset($_SESSION['funcionario_id']) && !isset($_SESSION['usuario_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../login');
     exit;
 }
 
@@ -32,7 +32,7 @@ if (!$funcionario_id) {
     echo "<div style='text-align: center; padding: 50px;'>
             <h2>Perfil não encontrado</h2>
             <p>Contacte o administrador.</p>
-            <a href='../../logout.php'>Sair</a>
+            <a href='../../logout'>Sair</a>
           </div>";
     exit;
 }
@@ -319,7 +319,7 @@ small {
             <?php if ($success): ?>
                 <div class="alert alert-success"><?php echo $success; ?></div>
                 <div style="text-align: center; margin-top: 20px;">
-                    <a href="index.php" class="btn btn-primary">Ver minhas solicitações</a>
+                    <a href="index" class="btn btn-primary">Ver minhas solicitações</a>
                 </div>
             <?php else: ?>
                 <div class="info-box">
@@ -374,7 +374,7 @@ small {
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-paper-plane"></i> Enviar Solicitação
                         </button>
-                        <a href="index.php" class="btn btn-secondary">
+                        <a href="index" class="btn btn-secondary">
                             <i class="fas fa-times"></i> Cancelar
                         </a>
                     </div>

@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'valido_ate' => date('Y-m-d', strtotime('+1 year'))
         ];
         
-        $url_validacao = $base_url . '/validar_cracha.php?data=' . urlencode(json_encode($dados_qr));
+        $url_validacao = $base_url . '/validar_cracha?data=' . urlencode(json_encode($dados_qr));
         
         $response['cracha'] = [
             'qr_code_url' => "https://quickchart.io/qr?text=" . urlencode($url_validacao) . "&size=200&margin=2",

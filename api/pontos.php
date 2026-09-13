@@ -8,8 +8,8 @@ $db = getDB();
 // Buscar funcionário_id
 $funcionario_id = $user['funcionario_id'] ?? null;
 if (!$funcionario_id) {
-    $stmt = $db->prepare("SELECT id FROM funcionarios WHERE email = :email");
-    $stmt->execute([':email' => $user['email']]);
+    $stmt = $db->prepare("SELECT id FROM funcionarios WHERE email = :email AND empresa_id = :empresa_id");
+    $stmt->execute([':email' => $user['email'], ':empresa_id' => $user['empresa_id']]);
     $func = $stmt->fetch();
     $funcionario_id = $func ? $func['id'] : null;
 }
@@ -75,9 +75,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $foto_nome = $funcionario_id . '_' . date('Ymd_His') . '.jpg';
         $foto_path = 'uploads/pontos_facial/' . $foto_nome;
-        $foto_data = str_replace('data:image/jpeg;base64,', '', $foto_base64);
-        $foto_data = str_replace(' ', '+', $foto_data);
-        file_put_contents('../' . $foto_path, base64_decode($foto_data));
+        if (!preg_match('#^data:image/jpeg;base64,([A-Za-z0-9+/=]+)$#', $foto_base64, $fotoMatch)) {
+            jsonError('Foto inválida', 'INVALID_PHOTO', 422);
+        }
+        $foto_data = base64_decode($fotoMatch[1], true);
+        if ($foto_data === false || strlen($foto_data) > 5 * 1024 * 1024 || @imagecreatefromstring($foto_data) === false) {
+            jsonError('Foto inválida ou muito grande', 'INVALID_PHOTO', 422);
+        }
+        if (file_put_contents('../' . $foto_path, $foto_data, LOCK_EX) === false) {
+            jsonError('Não foi possível armazenar a foto', 'PHOTO_WRITE_ERROR', 500);
+        }
     }
     
     // Buscar filial do funcionário
@@ -87,13 +94,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Registrar ponto
     $stmt = $db->prepare("INSERT INTO pontos 
-                          (funcionario_id, filial_id, tipo, data_hora, latitude, longitude, foto_facial, origem) 
+                          (funcionario_id, filial_id, empresa_id, tipo, data_hora, latitude, longitude, foto_facial, origem)
                           VALUES 
-                          (:funcionario_id, :filial_id, :tipo, NOW(), :latitude, :longitude, :foto, 'api')");
+                          (:funcionario_id, :filial_id, :empresa_id, :tipo, NOW(), :latitude, :longitude, :foto, 'api')");
     
     $stmt->execute([
         ':funcionario_id' => $funcionario_id,
         ':filial_id' => $filial_id,
+        ':empresa_id' => $user['empresa_id'],
         ':tipo' => $tipo,
         ':latitude' => $latitude,
         ':longitude' => $longitude,

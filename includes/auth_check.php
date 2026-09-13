@@ -29,7 +29,7 @@ function forceAuthentication() {
     }
 
     appRememberIntendedRoute();
-    header('Location: ' . authCheckUrl('/login.php'));
+    header('Location: ' . authCheckUrl('/login'));
     exit;
 }
 
@@ -45,7 +45,7 @@ function requireAdmin() {
 
     if (!$isAdmin) {
         header('HTTP/1.0 403 Forbidden');
-        die('<h1>Acesso Negado</h1><p>Acesso restrito a administradores.</p><a href="' . authCheckUrl('/index.php') . '">Voltar ao Dashboard</a>');
+        die('<h1>Acesso Negado</h1><p>Acesso restrito a administradores.</p><a href="' . authCheckUrl('/index') . '">Voltar ao Dashboard</a>');
     }
 
     return true;
