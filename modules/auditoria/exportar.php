@@ -108,7 +108,9 @@ if ($formato == 'csv') {
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exportar Logs - Auditoria</title>
+    <link rel="stylesheet" href="../../assets/css/public-responsive.css" media="screen">
     <style>
         body {
             font-family: Arial, sans-serif;

@@ -13,7 +13,9 @@ echo "<!DOCTYPE html>";
 echo "<html lang='pt-br'>";
 echo "<head>";
 echo "<meta charset='UTF-8'>";
+echo "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
 echo "<title>Setup - Modelos de Reconhecimento Facial</title>";
+echo "<link rel='stylesheet' href='assets/css/public-responsive.css'>";
 echo "<style>";
 echo "body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }";
 echo "h1 { color: #667eea; }";
@@ -146,4 +148,3 @@ echo "</div>";
 echo "</body>";
 echo "</html>";
 ?>
-

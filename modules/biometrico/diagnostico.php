@@ -51,6 +51,7 @@ foreach (array_keys($checks) as $table) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diagnóstico Biométrico</title>
+    <link rel="stylesheet" href="../../assets/css/public-responsive.css">
     <style>
         body { font-family: Arial, sans-serif; background: #f6f7fb; margin: 0; padding: 24px; color: #111827; }
         .wrap { max-width: 900px; margin: 0 auto; }

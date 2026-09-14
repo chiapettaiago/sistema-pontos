@@ -1,0 +1,65 @@
+/* Protecao responsiva para paginas independentes do layout autenticado. */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { width: 100%; min-width: 0; }
+body > * { max-width: 100%; }
+
+img, picture, svg, video, canvas, iframe, object, embed {
+    max-width: 100%;
+    height: auto;
+}
+
+main, section, article, header, footer, nav, form, fieldset,
+.container, .wrapper, .wrap, .card, .content {
+    min-width: 0;
+    max-width: 100%;
+}
+
+fieldset { width: 100%; }
+input:not([type="checkbox"]):not([type="radio"]), select, textarea,
+button, .input-group { max-width: 100%; }
+pre, code { max-width: 100%; overflow-wrap: anywhere; }
+pre { overflow-x: auto; white-space: pre-wrap; }
+
+@media (max-width: 768px) {
+    body { padding-inline: clamp(.75rem, 4vw, 1.25rem); }
+    body > *, main > *, .container > *, .wrapper > *, .wrap > * { min-width: 0; }
+
+    [style*="display: flex"], [style*="display:flex"],
+    .actions, .buttons, .form-actions, .filters, .toolbar {
+        flex-wrap: wrap;
+    }
+    [style*="display: flex"] > *, [style*="display:flex"] > *,
+    .actions > *, .buttons > *, .form-actions > *, .filters > *, .toolbar > * {
+        min-width: 0;
+    }
+    [style*="grid-template-columns"] { grid-template-columns: minmax(0, 1fr) !important; }
+
+    input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+        width: 100%;
+        min-width: 0;
+    }
+    button, .button, .btn { white-space: normal; overflow-wrap: anywhere; }
+
+    /* Em documentos independentes a propria tabela e o componente rolavel. */
+    table {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+    th, td { overflow-wrap: normal; }
+
+    dialog, .modal, .modal-dialog, .modal-content {
+        max-width: calc(100vw - 1.5rem) !important;
+    }
+    [style*="width:"]:not(table):not(col) { max-width: 100% !important; }
+    [style*="min-width:"]:not(table):not(th):not(td) { min-width: 0 !important; }
+}
+
+@media (max-width: 430px) {
+    body { padding-inline: .75rem; }
+    .card, .content, .container, .wrapper, .wrap { padding-inline: min(1rem, 4vw); }
+}

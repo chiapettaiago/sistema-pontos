@@ -67,6 +67,7 @@ $data_validade = date('d/m/Y', strtotime('+1 year'));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Adicionar à Carteira - PontoFácil</title>
+    <link rel="stylesheet" href="../../assets/css/public-responsive.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>

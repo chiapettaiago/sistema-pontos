@@ -77,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Simplificado - Teste</title>
+    <link rel="stylesheet" href="assets/css/public-responsive.css">
     <style>
         body { font-family: Arial; padding: 20px; text-align: center; }
         .container { max-width: 400px; margin: 0 auto; background: #f5f5f5; padding: 20px; border-radius: 10px; }

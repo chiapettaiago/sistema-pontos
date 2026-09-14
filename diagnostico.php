@@ -65,6 +65,7 @@ if (isset($_GET['clear_session'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diagnostico do Sistema</title>
+    <link rel="stylesheet" href="assets/css/public-responsive.css">
     <style>
         body { font-family: Arial, sans-serif; background: #f6f7fb; color: #111827; padding: 24px; }
         .card { max-width: 900px; margin: 0 auto 16px; background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 6px 24px rgba(0,0,0,.08); }
@@ -127,4 +128,3 @@ if (isset($_GET['clear_session'])) {
     </div>
 </body>
 </html>
-

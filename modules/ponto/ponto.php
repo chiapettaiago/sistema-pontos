@@ -195,6 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Bater Ponto - <?php echo htmlspecialchars($funcionario['nome'] ?? 'Usuário'); ?></title>
+    <link rel="stylesheet" href="../../assets/css/public-responsive.css">
     <link rel="icon" type="image/svg+xml" href="<?php echo BASE_URL; ?>/assets/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">

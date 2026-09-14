@@ -93,6 +93,7 @@ $noPhotoText = strtoupper(substr($funcionario['nome'], 0, 1));
 <head>
     <meta charset="UTF-8">
     <title>Crachá - <?php echo htmlspecialchars($funcionario['nome']); ?></title>
+    <link rel="stylesheet" href="../../assets/css/public-responsive.css" media="screen">
     <style>
         * {
             margin: 0;

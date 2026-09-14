@@ -50,6 +50,7 @@ $csrf_token=generateCSRFToken(); $baseUrl=rtrim(BASE_URL,'/');
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f7f6f9">
 <title>Entrar · Ponto Fácil</title>
+<link rel="stylesheet" href="<?= $baseUrl ?>/assets/css/public-responsive.css">
 <link rel="icon" type="image/svg+xml" href="<?= $baseUrl ?>/assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
