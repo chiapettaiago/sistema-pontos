@@ -1,0 +1,13 @@
+PontoFácil — Apresentação comercial
+
+10 slides 16:9. Textos, cards, gráficos e mockups são editáveis no PowerPoint.
+Fonte: Aptos (substituível pelo PowerPoint se indisponível).
+Os indicadores são ilustrativos e não representam resultados reais.
+Personalize os campos do slide 10 com logo, apresentador, contato, site e QR Code válido.
+Transições e animações: fade discreto.
+A prévia PNG é uma renderização auxiliar do layout; o PowerPoint pode apresentar pequenas diferenças tipográficas.
+
+Imagem da capa: gerada com a ferramenta integrada image_gen, habilidade imagegen.
+Prompt: premium corporate editorial photograph; diverse team of three Brazilian adult office professionals collaborating at a modern desk with laptop; glass office; navy and violet light; realistic skin; natural expressions; subtle biometric corner brackets; no invasive surveillance; no text or logos.
+
+Referências de conteúdo: briefing do usuário e README.md do projeto.
