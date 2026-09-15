@@ -1684,6 +1684,34 @@ textarea.form-control, .form-group textarea { min-height: 110px; }
 /* Diálogos */
 .modal-backdrop.show { opacity: .52; backdrop-filter: blur(4px); }
 .modal-content { border: 1px solid var(--border-color); border-radius: 22px; box-shadow: 0 28px 90px rgba(25,12,30,.28); }
+
+/* Cadastro de usuários: não depende da largura padrão do Bootstrap, que pode
+   ser sobrescrita por estilos de módulos legados. */
+.pf-user-modal .modal-dialog {
+    width: min(100% - 2rem, 640px);
+    max-width: 640px;
+    margin: 1.75rem auto;
+}
+.pf-user-modal .modal-content {
+    width: 100%;
+    overflow: hidden;
+}
+.pf-user-modal .modal-header { padding: 1.125rem 1.5rem; }
+.pf-user-modal .modal-body { padding: 1.5rem; }
+.pf-user-modal .modal-footer { padding: 1rem 1.5rem; }
+.pf-user-modal .form-label { margin-bottom: .45rem; }
+.pf-user-modal .form-control,
+.pf-user-modal .form-select { min-height: 46px; }
+
+@media (max-width: 575.98px) {
+    .pf-user-modal .modal-dialog {
+        width: calc(100% - 1rem);
+        margin: .5rem auto;
+    }
+    .pf-user-modal .modal-header,
+    .pf-user-modal .modal-body,
+    .pf-user-modal .modal-footer { padding-inline: 1rem; }
+}
 .modal-header { padding: 1.05rem 1.25rem; }
 .modal-body { padding: 1.25rem; }
 .modal-footer { padding: 1rem 1.25rem; }

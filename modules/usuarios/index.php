@@ -127,8 +127,8 @@ if ($usuarioTipoAtual === 'super_admin') {
 </div>
 
 <!-- Modal Usuário -->
-<div class="modal fade" id="modalUsuario" tabindex="-1">
-    <div class="modal-dialog">
+<div class="modal fade pf-user-modal" id="modalUsuario" tabindex="-1" aria-labelledby="modalUsuarioTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" style="background:var(--pf-gradient);">
                 <h5 class="modal-title text-white"><i class="fas fa-user-shield me-2"></i><span id="modalUsuarioTitulo">Novo Usuário</span></h5>
@@ -138,15 +138,15 @@ if ($usuarioTipoAtual === 'super_admin') {
                 <div class="modal-body">
                     <input type="hidden" name="id" id="inputUserId">
                     <div class="mb-3">
-                        <label class="form-label">Nome</label>
-                        <input type="text" name="nome" id="inputUserNome" class="form-control" required>
+                        <label class="form-label" for="inputUserNome">Nome</label>
+                        <input type="text" name="nome" id="inputUserNome" class="form-control" autocomplete="name" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">E-mail</label>
-                        <input type="email" name="email" id="inputUserEmail" class="form-control" required>
+                        <label class="form-label" for="inputUserEmail">E-mail</label>
+                        <input type="email" name="email" id="inputUserEmail" class="form-control" autocomplete="email" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Tipo</label>
+                        <label class="form-label" for="inputUserTipo">Tipo</label>
                         <select name="tipo" id="inputUserTipo" class="form-select">
                             <option value="admin_empresa">Administrador</option>
                             <option value="gestor">Gestor</option>
@@ -154,8 +154,8 @@ if ($usuarioTipoAtual === 'super_admin') {
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Senha <small class="text-muted">(deixe em branco para manter)</small></label>
-                        <input type="password" name="senha" class="form-control">
+                        <label class="form-label" for="inputUserSenha">Senha <small class="text-muted">(deixe em branco para manter)</small></label>
+                        <input type="password" name="senha" id="inputUserSenha" class="form-control" autocomplete="new-password">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -168,6 +168,14 @@ if ($usuarioTipoAtual === 'super_admin') {
 </div>
 
 <script>
+// O layout autenticado usa um contexto de empilhamento isolado. O backdrop do
+// Bootstrap é inserido no body; manter o modal no mesmo nível evita que ele
+// fique escurecido e bloqueado pelo próprio backdrop.
+var modalUsuario = document.getElementById('modalUsuario');
+if (modalUsuario && modalUsuario.parentElement !== document.body) {
+    document.body.appendChild(modalUsuario);
+}
+
 document.querySelectorAll('.btn-editar-usuario').forEach(function(btn) {
     btn.addEventListener('click', function() {
         document.getElementById('modalUsuarioTitulo').textContent = 'Editar Usuário';
@@ -175,12 +183,17 @@ document.querySelectorAll('.btn-editar-usuario').forEach(function(btn) {
         document.getElementById('inputUserNome').value  = this.dataset.nome;
         document.getElementById('inputUserEmail').value = this.dataset.email;
         document.getElementById('inputUserTipo').value  = this.dataset.tipo;
+        document.getElementById('inputUserSenha').value = '';
     });
 });
 document.querySelector('[data-bs-target="#modalUsuario"]')?.addEventListener('click', function() {
     if (!this.classList.contains('btn-editar-usuario')) {
         document.getElementById('modalUsuarioTitulo').textContent = 'Novo Usuário';
         document.getElementById('inputUserId').value = '';
+        document.getElementById('inputUserNome').value = '';
+        document.getElementById('inputUserEmail').value = '';
+        document.getElementById('inputUserTipo').value = 'admin_empresa';
+        document.getElementById('inputUserSenha').value = '';
     }
 });
 </script>
